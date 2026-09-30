@@ -539,7 +539,7 @@ steps (15 tests), and the probe was removed. This is the first part of #152.
 Field's `red-600` failing AA off white, the issue's second part, is not
 touched here.
 
-## 2026-09-30 — The Webflow reference, captured whole, and the match harness (OD7-P0)
+## 2026-09-30 — The Webflow reference, captured whole, and the match harness (#2, OD7-P0)
 
 This repo was created from reddoor-starter by hand on 2026-09-30 (reddoor-maintenance BACKLOG Operator decisions 33), because the cloud session that captured the reference was refused an org repo create. This is the first work on it.
 
