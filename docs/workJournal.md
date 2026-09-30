@@ -538,3 +538,27 @@ It still refuses a `none` hue. With the fix, the same probe passes both
 steps (15 tests), and the probe was removed. This is the first part of #152.
 Field's `red-600` failing AA off white, the issue's second part, is not
 touched here.
+
+## 2026-09-30 — The Webflow reference, captured whole, and the match harness (OD7-P0)
+
+This repo was created from reddoor-starter by hand on 2026-09-30 (reddoor-maintenance BACKLOG Operator decisions 33), because the cloud session that captured the reference was refused an org repo create. This is the first work on it.
+
+**Why the capture is here and not fetched later.** `www.williamson-homes.com` is served by Webflow, and Reddoor's Webflow workspace cancels on 2026-10-19. A Webflow reference that has stopped serving cannot be captured again (Beachfront). So `matching/spec/` holds the whole reference as `scripts/webflow-capture/capture.mjs` in reddoor-maintenance fetched it on 2026-09-30:
+
+- 10 pages, one per URL the site links from `/`;
+- every file those pages load, recursively: stylesheets and their `url()`s, both `webflow.js` chunks, jQuery, the githack counter script, every `srcset` variant, favicons, and the Montserrat and Lato faces from Google Fonts.
+
+That is 428 referenced files plus the file of a commented-out jsDelivr script on `/about-us`, 161 MB on disk. The bytes came from reddoor-maintenance's branch `capture/od7-williamson-2026-09-30` at `a89da157`. Their `manifest.json` is byte-identical to the copy on reddoor-maintenance `main`. Nothing in the capture is rewritten: every URL in its HTML still points at Webflow's CDN, and it is a record of what the reference loads, not a servable site.
+
+**Proving it whole, here.** `lib.mjs` and `check.mjs` travel with the bytes, from reddoor-maintenance at `852456c9`, after its three review rounds. `node matching/spec/check.mjs matching/spec --expect-pages 10` re-derives every reference from the captured bytes and requires each one on disk with the manifest's sha256. In this repo it reports 10 pages, 428 files present, 0 excluded, 0 failed. The control: with one `-p-800` srcset variant deleted from a copy, it exits 1 and names the URL and the page that references it.
+
+**The harness.** Installed by `reddoor-maint match-harness --ref https://www.williamson-homes.com` from reddoor-maintenance `852456c9`. The harness settings are:
+
+- `refMark` is `data-wf-site="645ec08251dadc9000a072e5"`, Homes' Webflow site id. It is what lets the preflight tell the reference from this site after DNS moves.
+- `selfHosts` is `williamson-homes.netlify.app`.
+
+`node matching/harness.mjs --check-ref` gives `REF OK`. With Construction's site id in `refMark` it gives `REF REFUSED … not the reference`, the negative control.
+
+**One interaction the recipe does not handle.** Installing the harness adds `src/lib/site-pages.js` and turns on the "this site has a matching harness" paragraph of `docs/COMPONENTS.md`. The file is generated, so `scripts/capability-index.test.ts` went red until `node scripts/capability-index.mjs` was re-run. The next harness install will hit the same thing.
+
+**Not done, and why.** `slicemachine.config.json` still names the `your-prismic-repo-name` sentinel. That is deliberate: no Prismic repository exists for this site yet (`williamson-homes.cdn.prismic.io` → 404 on 2026-09-30), and the sentinel is what keeps the build green until one does. Phase 1 (the build, the 6 seeded projects and the Netlify preview) starts when the operator has created the Prismic repository and its write token.

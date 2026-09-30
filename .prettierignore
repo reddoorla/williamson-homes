@@ -50,3 +50,7 @@ src/routes/dev/match/\[uid\]/+page.svelte
 src/lib/site-pages.test.ts
 
 # end reddoor-maint match-harness
+
+# The Webflow reference capture: third-party bytes that must stay exactly as
+# fetched (their sha256 is in matching/spec/manifest.json).
+matching/spec/

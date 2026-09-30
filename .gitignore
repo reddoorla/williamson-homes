@@ -58,3 +58,8 @@ matching/*.json
 matching/*.png
 
 # end reddoor-maint match-harness
+
+# The Webflow reference capture (OD7-P0): the live site's pages and every file
+# they load, byte for byte, with the offline check that proves it whole. Tracked,
+# because the reference stops serving on 2026-10-19.
+!matching/spec/
