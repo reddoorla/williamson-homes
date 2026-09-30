@@ -30,12 +30,12 @@ const AA_NORMAL_TEXT = 4.5;
 /** Tokens the template renders as text on a LIGHT ground. */
 const LIGHT_GROUND_TEXT = ["secondary", "primary", "dark", "black"] as const;
 /** The light grounds those land on. */
-const LIGHT_GROUNDS = ["background", "white"] as const;
+const LIGHT_GROUNDS = ["background", "white", "light"] as const;
 
 /** Tokens the template renders as text on a DARK ground. */
 const DARK_GROUND_TEXT = ["white"] as const;
 /** The dark grounds those land on. */
-const DARK_GROUNDS = ["primary", "dark", "black"] as const;
+const DARK_GROUNDS = ["primary", "dark", "black", "secondary", "teal"] as const;
 
 /**
  * `bg-light` is deliberately NOT in LIGHT_GROUNDS. It is a ground the template

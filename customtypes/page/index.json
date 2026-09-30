@@ -27,31 +27,37 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "lead_text": {
+            "page_hero": {
               "type": "SharedSlice"
             },
-            "text_columns": {
+            "statement": {
               "type": "SharedSlice"
             },
-            "accordion": {
+            "quote_banner": {
               "type": "SharedSlice"
             },
-            "rich_text": {
+            "process_steps": {
               "type": "SharedSlice"
             },
-            "hero": {
+            "featured_projects": {
               "type": "SharedSlice"
             },
-            "media_text": {
+            "project_list": {
               "type": "SharedSlice"
             },
-            "section_grid": {
+            "lets_talk": {
               "type": "SharedSlice"
             },
-            "testimonial": {
+            "anchor_intro": {
               "type": "SharedSlice"
             },
-            "cta_banner": {
+            "timeline": {
+              "type": "SharedSlice"
+            },
+            "image_cards": {
+              "type": "SharedSlice"
+            },
+            "team_contacts": {
               "type": "SharedSlice"
             }
           }

@@ -1,0 +1,43 @@
+{
+  "id": "quote_banner",
+  "type": "SharedSlice",
+  "name": "QuoteBanner",
+  "description": "QuoteBanner",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Testimonial over a full-width photo",
+      "imageUrl": "",
+      "primary": {
+        "background_image": {
+          "type": "Image",
+          "config": {
+            "label": "background image",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "quote": {
+          "type": "StructuredText",
+          "config": {
+            "label": "quote",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "paragraph"
+          }
+        },
+        "attribution": {
+          "type": "Text",
+          "config": {
+            "label": "attribution",
+            "placeholder": ""
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

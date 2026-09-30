@@ -2,6 +2,14 @@
 @import "tailwindcss";
 @source not "../matching/spec";
 
+@font-face {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/montserrat-latin.woff2") format("woff2");
+}
+
 @theme {
   --screen-sm: 560px;
   --screen-md: 768px;
@@ -14,13 +22,12 @@
   --color-white: white;
   --color-background: white;
 
-  /* Neutral placeholder palette — replace per project (docs/STARTER.md). Every
-     value is distinct on purpose so a forgotten token is visible, not silent. */
-  --color-light: #e5e7eb;
-  --color-primary: #111827;
-  --color-dark: #1f2937;
-  --color-secondary: #6b7280;
-  --color-accent: #2563eb;
+  --color-light: #f1f2f2;
+  --color-primary: #005a78;
+  --color-dark: #333333;
+  --color-secondary: #6d6a69;
+  --color-accent: #dee8eb;
+  --color-teal: #407f82;
 
   /* Tailwind 4.3 writes 13 of its palette entries with a `none` hue — every
      neutral, zinc-50 and mauve-50, e.g. neutral-900 is `oklch(20.5% 0 none)`.
@@ -44,12 +51,8 @@
   --color-zinc-50: oklch(98.5% 0 0);
   --color-mauve-50: oklch(98.5% 0 0);
 
-  /* Type — set per project. Self-host the brand's licensed woff2 files under
-     static/fonts (preload the body face in app.html) or load a kit, then
-     point these at the loaded family names. Until then the system stack
-     applies. `font-heading` / `font-body` utilities come from these tokens. */
-  --font-heading: ui-sans-serif, system-ui, sans-serif;
-  --font-body: ui-sans-serif, system-ui, sans-serif;
+  --font-heading: Montserrat, ui-sans-serif, system-ui, sans-serif;
+  --font-body: Montserrat, ui-sans-serif, system-ui, sans-serif;
 
   --transition-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
   --transition-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
@@ -356,5 +359,101 @@ main > section.hero-band:first-child {
     pointer-events: none;
     will-change: transform;
     filter: blur(0.5px);
+  }
+}
+
+@utility wh-filter-white {
+  filter: brightness(0) invert(1);
+}
+
+@utility wh-filter-black {
+  filter: invert(1);
+}
+
+@utility wh-h2 {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  @media (max-width: 767px) {
+    font-size: 18px;
+    line-height: 28px;
+  }
+}
+
+@utility wh-h3 {
+  font-size: 22px;
+  line-height: 36px;
+  font-weight: 400;
+  @media (max-width: 479px) {
+    font-size: 16px;
+    line-height: 28px;
+  }
+}
+
+@utility wh-eyebrow {
+  color: var(--color-secondary);
+  font-size: 15px;
+  line-height: 1.6em;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  @media (max-width: 479px) {
+    font-size: 14px;
+  }
+}
+
+@utility wh-p {
+  font-size: 17px;
+  line-height: 32px;
+  @media (max-width: 479px) {
+    font-size: 12px;
+    line-height: 24px;
+  }
+}
+
+@utility wh-prose {
+  font-size: 17px;
+  line-height: 32px;
+  & p + p {
+    margin-top: 2rem;
+  }
+  @media (max-width: 479px) {
+    font-size: 12px;
+    line-height: 24px;
+  }
+}
+
+@utility wh-statement-heading {
+  font-size: 22px;
+  line-height: 36px;
+  font-weight: 400;
+  @media (max-width: 479px) {
+    font-size: 16px;
+    line-height: 28px;
+  }
+}
+
+@keyframes wh-ken-burns {
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.12) translate(-2%, -2%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wh-ken-burns {
+    animation: wh-ken-burns 24s ease-in-out infinite alternate;
+  }
+}
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+    font-weight: 300;
+    color: var(--color-dark);
   }
 }

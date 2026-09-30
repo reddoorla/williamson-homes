@@ -1,0 +1,65 @@
+{
+  "id": "timeline",
+  "type": "SharedSlice",
+  "name": "Timeline",
+  "description": "Timeline",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Family history timeline: names, a line of text and a captioned photo",
+      "imageUrl": "",
+      "primary": {
+        "section_id": {
+          "type": "Text",
+          "config": {
+            "label": "section id (anchor)",
+            "placeholder": ""
+          }
+        },
+        "heading": {
+          "type": "Text",
+          "config": {
+            "label": "heading",
+            "placeholder": ""
+          }
+        }
+      },
+      "items": {
+        "name": {
+          "type": "StructuredText",
+          "config": {
+            "label": "name",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading3"
+          }
+        },
+        "body": {
+          "type": "Text",
+          "config": {
+            "label": "text",
+            "placeholder": ""
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "photo",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "caption": {
+          "type": "Text",
+          "config": {
+            "label": "caption",
+            "placeholder": ""
+          }
+        }
+      }
+    }
+  ]
+}

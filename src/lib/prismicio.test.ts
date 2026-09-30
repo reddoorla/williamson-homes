@@ -30,7 +30,11 @@ describe("linkResolver", () => {
     expect(linkResolver(doc("page", "our-team"))).toBe("/our-team");
   });
 
-  it("returns null for non-page types", () => {
+  it("resolves project docs to /projects/:uid", () => {
+    expect(linkResolver(doc("project", "palos-verdes-cove"))).toBe("/projects/palos-verdes-cove");
+  });
+
+  it("returns null for other types", () => {
     expect(linkResolver(doc("person", "dr-quan"))).toBeNull();
     expect(linkResolver(doc("settings", "x"))).toBeNull();
   });

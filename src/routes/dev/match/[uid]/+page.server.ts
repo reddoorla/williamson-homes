@@ -1,6 +1,11 @@
 import { error } from "@sveltejs/kit";
 import { dev } from "$app/environment";
+import { readFile } from "node:fs/promises";
+import { captureFileFor } from "$lib/capture-files.js";
 import { documents } from "$lib/site-pages.js";
+import { headerToneFor } from "$lib/header-tone";
+import { toCard } from "$lib/projects";
+import type { ProjectDocument } from "../../../../prismicio-types";
 
 // Local matching surface: renders the assemblies in $lib/site-pages.js — the
 // same module a Prismic Migration API script publishes from (start from the
@@ -9,25 +14,27 @@ import { documents } from "$lib/site-pages.js";
 // what ships. Not prerendered, SSR-on-demand, dev-only.
 export const prerender = false;
 
-// A migration script resolves images to asset ids (migration.createAsset);
-// here they only need a URL. Dimensions are nominal — slices size their own
-// image boxes in CSS.
-const devImg = (u: string) => ({
-  url: u,
-  alt: null,
-  copyright: null,
-  dimensions: { width: 1600, height: 1067 },
-  edit: { x: 0, y: 0, zoom: 1, background: "transparent" },
-  id: u,
-});
-
-export async function load({ params }) {
+export async function load({ params, url }) {
   // FIRST statement: everything below reads fixtures that must not be reachable
   // from a production build. The launch recipe asserts this route 404s on the
   // deployed URL, with /dev/a11y-fixtures as the 200 control.
   if (!dev) error(404, { message: "Not found" });
 
-  const docs = documents(devImg) as Array<{ uid: string; data: { slices?: unknown[] } }>;
+  const manifest = JSON.parse(await readFile("matching/spec/manifest.json", "utf8"));
+  const devImg = (key: string) => ({
+    url: `${url.origin}/dev/spec/${encodeURI(captureFileFor(manifest, key))}`,
+    alt: null,
+    copyright: null,
+    dimensions: { width: 1600, height: 1067 },
+    edit: { x: 0, y: 0, zoom: 1, background: "transparent" },
+    id: key,
+  });
+
+  const docs = documents(devImg) as Array<{
+    type: string;
+    uid: string;
+    data: { slices?: unknown[] };
+  }>;
   const doc = docs.find((d) => d.uid === params.uid);
   // The leading token is a MACHINE tell for the launch recipe's dev-guard. This
   // 404 renders through the site's own +error.svelte exactly like a guarded
@@ -39,5 +46,18 @@ export async function load({ params }) {
       message: `reddoor-match-twin:no-assembly: no assembly for "${params.uid}" (have: ${docs.map((d) => d.uid).join(", ") || "none"})`,
     });
 
-  return { uid: params.uid, slices: doc.data.slices ?? [] };
+  const projects = docs
+    .filter((d) => d.type === "project")
+    .map((d) => ({ ...d, id: `project-${d.uid}` }) as unknown as ProjectDocument);
+  const project = doc.type === "project" ? projects.find((p) => p.uid === doc.uid) : undefined;
+
+  return {
+    uid: params.uid,
+    slices: doc.data.slices ?? [],
+    project,
+    projects: projects.map(toCard),
+    headerTone: project
+      ? ("light" as const)
+      : headerToneFor(doc as unknown as Parameters<typeof headerToneFor>[0]),
+  };
 }

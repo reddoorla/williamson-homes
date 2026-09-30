@@ -7,17 +7,11 @@
   import Seo from "$lib/components/Seo.svelte";
   import { composeTitle, DEFAULT_OG_IMAGE, isNoindexPath, NOINDEX_ENFORCED } from "$lib/seo";
   import TransitionOverlay from "$lib/components/TransitionOverlay.svelte";
-  import Nav from "$lib/components/Nav.svelte";
-  import Footer from "$lib/components/Footer.svelte";
-  import { loadSiteConfig, footerColumns } from "$lib/site-config";
+  import SiteHeader from "$lib/components/SiteHeader.svelte";
+  import SiteFooter from "$lib/components/SiteFooter.svelte";
   import { disableSmoothScroll, restoreSmoothScroll } from "$lib/utils/instantNavScroll";
 
   let { data, children } = $props();
-
-  // Site chrome from src/lib/site-config.json (empty stub → logo-only Nav +
-  // placeholder Footer). A route's own page data takes precedence in each
-  // chrome component.
-  const siteConfig = loadSiteConfig();
 
   // Kit's own post-nav scroll (top / hash anchor / popstate restore) runs
   // instantly instead of gliding under app.css's smooth-scroll. See the util.
@@ -42,22 +36,14 @@
 >
   Skip to main content
 </a>
-<!-- Chrome renders from page data when a route supplies navLinks/footerColumns,
-     else from the site-config stub. Each component applies its own
-     page-data-over-config precedence. -->
-<div class="flex flex-col min-h-screen">
-  <Nav navLinks={page.data.navLinks} items={siteConfig.nav.items} logo={siteConfig.nav.logo} />
+<div class="flex min-h-screen flex-col">
+  <SiteHeader tone={page.data.headerTone ?? "dark"} />
 
   <main id="main-content" tabindex="-1" class="flex-1">
     {@render children?.()}
   </main>
 
-  <Footer
-    columns={footerColumns(page.data.footerColumns, siteConfig)}
-    socials={siteConfig.footer.socials}
-    owner={siteConfig.footer.owner}
-    text={siteConfig.footer.text}
-  />
+  <SiteFooter />
 </div>
 <TransitionOverlay />
 {#if data.isPreviewSession}
