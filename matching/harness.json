@@ -1,0 +1,27 @@
+{
+  "ref": "https://www.williamson-homes.com",
+  "cand": "http://localhost:5173",
+  "matrix": [
+    1440,
+    834,
+    390
+  ],
+  "threshold": 0.1,
+  "maxHeightDelta": 0.05,
+  "refMark": "data-wf-site=\"645ec08251dadc9000a072e5\"",
+  "candMark": "_app/immutable",
+  "selfHosts": [
+    "williamson-homes.netlify.app"
+  ],
+  "pages": {
+    "home": {
+      "uid": "home",
+      "ref": "/",
+      "cand": "/dev/match/home",
+      "published": "/",
+      "anchors": [],
+      "spec": "home",
+      "group": "nav"
+    }
+  }
+}
