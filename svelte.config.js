@@ -113,6 +113,7 @@ const config = {
         "script-src": [
           "self",
           "https://static.cdn.prismic.io",
+          "https://prismic.io",
           "https://player.vimeo.com",
           // Svelte 5 server-renders `onload="this.__e=event"` (and onerror) on
           // every element carrying an attribute spread — i.e. every
@@ -164,6 +165,7 @@ const config = {
         "media-src": ["self", "https://*.vimeocdn.com", "https://*.prismic.io"],
         "frame-src": [
           "self",
+          "https://*.prismic.io",
           "https://player.vimeo.com",
           // Cloudflare Turnstile renders its challenge in an iframe from this host.
           "https://challenges.cloudflare.com",

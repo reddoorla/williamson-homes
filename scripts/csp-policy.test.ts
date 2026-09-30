@@ -48,3 +48,15 @@ describe("the template's Content-Security-Policy", () => {
     expect(source).not.toContain(SVELTE_EVENT_REPLAY_HASH);
   });
 });
+
+describe("the Prismic toolbar under this site's policy", () => {
+  const directives = config.kit?.csp?.directives ?? {};
+
+  it("lets the toolbar script load from prismic.io", () => {
+    expect(directives["script-src"]).toContain("https://prismic.io");
+  });
+
+  it("lets the toolbar's repository iframe load from *.prismic.io", () => {
+    expect(directives["frame-src"]).toContain("https://*.prismic.io");
+  });
+});
