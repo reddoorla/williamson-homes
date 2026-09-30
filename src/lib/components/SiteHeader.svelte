@@ -9,9 +9,10 @@
   let { tone = "dark" }: Props = $props();
 
   let menuOpen = $state(false);
+  let pastTop = $state(false);
   let scrolledUp = $state(false);
   let focusWithin = $state(false);
-  const sidekick = $derived(scrolledUp || focusWithin);
+  const sidekick = $derived(pastTop && (scrolledUp || focusWithin));
   let lastY = 0;
   let menuButton = $state<HTMLButtonElement>();
 
@@ -20,7 +21,8 @@
 
   function onScroll() {
     const y = window.scrollY;
-    scrolledUp = y > 120 && y < lastY;
+    pastTop = y > 120;
+    scrolledUp = pastTop && y < lastY;
     lastY = y;
   }
 
