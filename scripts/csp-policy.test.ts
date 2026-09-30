@@ -6,6 +6,7 @@
 // incorrectly false", a cross-realm Uint8Array). Asserting against the actual
 // exported config is the whole point; a hand-copied policy would prove nothing.
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { SVELTE_EVENT_REPLAY_HASH } from "@reddoorla/maintenance/configs/svelte";
 
 // The served policy is asserted where it is authored. Svelte 5 server-renders
@@ -46,5 +47,28 @@ describe("the template's Content-Security-Policy", () => {
     );
     expect(source).toContain("SVELTE_EVENT_REPLAY_HASH");
     expect(source).not.toContain(SVELTE_EVENT_REPLAY_HASH);
+  });
+});
+
+describe("the Prismic toolbar under this site's policy", () => {
+  const directives = config.kit?.csp?.directives ?? {};
+  const slicemachine = JSON.parse(
+    readFileSync(new URL("../slicemachine.config.json", import.meta.url), "utf8"),
+  ) as { repositoryName: string };
+
+  it("lets the toolbar scripts load from prismic.io's toolbar path, and nothing else there", () => {
+    expect(directives["script-src"]).toContain("https://prismic.io/prismic-toolbar/");
+    expect(directives["script-src"]).not.toContain("https://prismic.io");
+  });
+
+  it("lets the toolbar's Share button load html2canvas, and only that file", () => {
+    expect(directives["script-src"]).toContain(
+      "https://html2canvas.hertzen.com/dist/html2canvas.min.js",
+    );
+  });
+
+  it("frames only this site's own Prismic repository", () => {
+    expect(directives["frame-src"]).toContain(`https://${slicemachine.repositoryName}.prismic.io`);
+    expect(directives["frame-src"]).not.toContain("https://*.prismic.io");
   });
 });

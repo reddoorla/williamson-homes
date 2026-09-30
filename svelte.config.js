@@ -7,8 +7,8 @@ const slicemachine = JSON.parse(
   readFileSync(new URL("./slicemachine.config.json", import.meta.url), "utf-8"),
 );
 const PLACEHOLDER_SENTINEL = "your-prismic-repo-name";
-const isPlaceholderRepo =
-  (process.env.VITE_PRISMIC_ENVIRONMENT || slicemachine.repositoryName) === PLACEHOLDER_SENTINEL;
+const prismicRepository = process.env.VITE_PRISMIC_ENVIRONMENT || slicemachine.repositoryName;
+const isPlaceholderRepo = prismicRepository === PLACEHOLDER_SENTINEL;
 
 // The env-var route to the sentinel is a LOCAL-ONLY hatch (#120). Set in CI
 // or on Netlify it makes `entries()` return [] so `/` is never prerendered,
@@ -113,6 +113,8 @@ const config = {
         "script-src": [
           "self",
           "https://static.cdn.prismic.io",
+          "https://prismic.io/prismic-toolbar/",
+          "https://html2canvas.hertzen.com/dist/html2canvas.min.js",
           "https://player.vimeo.com",
           // Svelte 5 server-renders `onload="this.__e=event"` (and onerror) on
           // every element carrying an attribute spread — i.e. every
@@ -164,6 +166,7 @@ const config = {
         "media-src": ["self", "https://*.vimeocdn.com", "https://*.prismic.io"],
         "frame-src": [
           "self",
+          `https://${prismicRepository}.prismic.io`,
           "https://player.vimeo.com",
           // Cloudflare Turnstile renders its challenge in an iframe from this host.
           "https://challenges.cloudflare.com",
