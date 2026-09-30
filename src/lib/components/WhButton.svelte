@@ -23,7 +23,7 @@
 
 <a
   {href}
-  class="wh-button inline-block border-b px-2.5 py-2 text-[0.8rem] uppercase tracking-[2px] transition-colors duration-200 hover:bg-secondary/10 {toneClass} {passedClasses}"
+  class="wh-button inline-block border-b px-2.5 py-2 text-[0.8rem] uppercase tracking-[2px] transition-colors duration-200 hover:bg-secondary/4 {toneClass} {passedClasses}"
 >
   {@render children()}
 </a>
