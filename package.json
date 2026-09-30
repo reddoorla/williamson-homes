@@ -20,7 +20,13 @@
     "slicemachine": "start-slicemachine"
   },
   "reddoor": {
-    "a11yRoutes": []
+    "a11yRoutes": [
+      "/",
+      "/projects",
+      "/about-us",
+      "/contact",
+      "/projects/palos-verdes-cove"
+    ]
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
