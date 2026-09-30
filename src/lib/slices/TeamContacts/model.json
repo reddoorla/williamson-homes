@@ -1,0 +1,63 @@
+{
+  "id": "team_contacts",
+  "type": "SharedSlice",
+  "name": "TeamContacts",
+  "description": "TeamContacts",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "People to contact, with photo, role, email and phone",
+      "imageUrl": "",
+      "primary": {
+        "heading": {
+          "type": "Text",
+          "config": {
+            "label": "heading",
+            "placeholder": ""
+          }
+        }
+      },
+      "items": {
+        "photo": {
+          "type": "Image",
+          "config": {
+            "label": "photo",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "name": {
+          "type": "Text",
+          "config": {
+            "label": "name",
+            "placeholder": ""
+          }
+        },
+        "role": {
+          "type": "Text",
+          "config": {
+            "label": "role",
+            "placeholder": ""
+          }
+        },
+        "email": {
+          "type": "Text",
+          "config": {
+            "label": "email",
+            "placeholder": ""
+          }
+        },
+        "phone": {
+          "type": "Text",
+          "config": {
+            "label": "phone",
+            "placeholder": ""
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "id": "statement",
+  "type": "SharedSlice",
+  "name": "Statement",
+  "description": "Statement",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Centred statement: eyebrow, headline, paragraphs, the W mark and buttons",
+      "imageUrl": "",
+      "primary": {
+        "section_id": {
+          "type": "Text",
+          "config": {
+            "label": "section id (anchor)",
+            "placeholder": ""
+          }
+        },
+        "eyebrow": {
+          "type": "Text",
+          "config": {
+            "label": "eyebrow",
+            "placeholder": ""
+          }
+        },
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "heading",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading2"
+          }
+        },
+        "body": {
+          "type": "StructuredText",
+          "config": {
+            "label": "body",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        },
+        "show_mark": {
+          "type": "Boolean",
+          "config": {
+            "label": "show the W mark",
+            "default_value": false,
+            "placeholder_true": "yes",
+            "placeholder_false": "no"
+          }
+        },
+        "ground": {
+          "type": "Select",
+          "config": {
+            "label": "ground",
+            "options": ["white", "light"],
+            "default_value": "white"
+          }
+        }
+      },
+      "items": {
+        "button_label": {
+          "type": "Text",
+          "config": {
+            "label": "button label",
+            "placeholder": ""
+          }
+        },
+        "button_link": {
+          "type": "Link",
+          "config": {
+            "label": "button link",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "select": null
+          }
+        },
+        "button_tone": {
+          "type": "Select",
+          "config": {
+            "label": "button tone",
+            "options": ["secondary", "primary"],
+            "default_value": "secondary"
+          }
+        }
+      }
+    }
+  ]
+}

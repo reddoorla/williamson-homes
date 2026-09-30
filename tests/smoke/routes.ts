@@ -52,16 +52,26 @@ if (
   );
 }
 
-export const smokeRoutes: SmokeRoute[] = [
+const SITE_PATHS: Array<[string, string]> = [
+  ["/", "home"],
+  ["/projects", "projects"],
+  ["/about-us", "about us"],
+  ["/contact", "contact"],
+  ["/projects/palos-verdes-cove", "project: palos verdes cove"],
+  ["/projects/pv-malaga-cove", "project: malaga cove"],
+  ["/projects/manhattan-beach", "project: manhattan beach"],
+  ["/projects/hermosa-home-gym", "project: hermosa home gym"],
+  ["/projects/palos-verdes-north", "project: palos verdes north"],
+  ["/projects/palos-verdes-west", "project: palos verdes west"],
+];
+
+export const smokeRoutes: SmokeRoute[] = SITE_PATHS.map(([path, name]) =>
   isPlaceholderRepo
-    ? // Bare starter: home intentionally 404s until Prismic is wired (see the
-      // NOTE above). Surface that in the test title so a green run can't be
-      // mistaken for a wired-up 200.
-      {
-        path: "/",
-        name: "home — placeholder repo, expecting 404",
+    ? {
+        path,
+        name: `${name} — placeholder repo, expecting 404`,
         hydrationMarker: "footer",
         expectStatus: 404,
       }
-    : { path: "/", name: "home", hydrationMarker: "footer" },
-];
+    : { path, name, hydrationMarker: "footer" },
+);

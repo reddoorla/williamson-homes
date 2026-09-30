@@ -30,26 +30,12 @@ const AA_NORMAL_TEXT = 4.5;
 /** Tokens the template renders as text on a LIGHT ground. */
 const LIGHT_GROUND_TEXT = ["secondary", "primary", "dark", "black"] as const;
 /** The light grounds those land on. */
-const LIGHT_GROUNDS = ["background", "white"] as const;
+const LIGHT_GROUNDS = ["background", "white", "light"] as const;
 
 /** Tokens the template renders as text on a DARK ground. */
 const DARK_GROUND_TEXT = ["white"] as const;
 /** The dark grounds those land on. */
-const DARK_GROUNDS = ["primary", "dark", "black"] as const;
-
-/**
- * `bg-light` is deliberately NOT in LIGHT_GROUNDS. It is a ground the template
- * uses (17 occurrences), but no component currently puts a `text-*` token
- * inside one — in the only file where both appear, `/dev/animate-in`, they are
- * siblings. Asserting the pair today would fail the template's own placeholder
- * palette, where `secondary` #6b7280 on `light` #e5e7eb measures 3.90:1.
- *
- * That measurement is the point of this comment rather than a reason to ignore
- * it: the pair is one nesting away from being real, and it is already below AA
- * in the shipped defaults. If you put secondary text on `bg-light`, add "light"
- * to LIGHT_GROUNDS and fix whichever value then fails.
- */
-const KNOWN_UNCOMPOSED_GROUND = "light";
+const DARK_GROUNDS = ["primary", "dark", "black", "secondary", "teal"] as const;
 
 type Rgb = [number, number, number];
 
@@ -206,6 +192,5 @@ describe("theme contrast", () => {
     ).toEqual([]);
     // Guard the guard: if this found nothing at all, the scan is broken.
     expect(found.size).toBeGreaterThan(0);
-    expect(KNOWN_UNCOMPOSED_GROUND).toBe("light");
   });
 });

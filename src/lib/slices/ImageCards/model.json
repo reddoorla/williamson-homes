@@ -1,0 +1,82 @@
+{
+  "id": "image_cards",
+  "type": "SharedSlice",
+  "name": "ImageCards",
+  "description": "ImageCards",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Grey panel: headline, logo, captioned photo cards and a button",
+      "imageUrl": "",
+      "primary": {
+        "section_id": {
+          "type": "Text",
+          "config": {
+            "label": "section id (anchor)",
+            "placeholder": ""
+          }
+        },
+        "eyebrow": {
+          "type": "Text",
+          "config": {
+            "label": "eyebrow",
+            "placeholder": ""
+          }
+        },
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "heading",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading2"
+          }
+        },
+        "logo": {
+          "type": "Image",
+          "config": {
+            "label": "logo",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "button_label": {
+          "type": "Text",
+          "config": {
+            "label": "button label",
+            "placeholder": ""
+          }
+        },
+        "button_link": {
+          "type": "Link",
+          "config": {
+            "label": "button link",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "select": null
+          }
+        }
+      },
+      "items": {
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "photo",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "label": {
+          "type": "Text",
+          "config": {
+            "label": "label",
+            "placeholder": ""
+          }
+        }
+      }
+    }
+  ]
+}

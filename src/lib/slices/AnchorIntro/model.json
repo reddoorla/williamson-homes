@@ -1,0 +1,50 @@
+{
+  "id": "anchor_intro",
+  "type": "SharedSlice",
+  "name": "AnchorIntro",
+  "description": "AnchorIntro",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Intro paragraph with numbered links to sections further down the page",
+      "imageUrl": "",
+      "primary": {
+        "heading": {
+          "type": "Text",
+          "config": {
+            "label": "heading",
+            "placeholder": ""
+          }
+        },
+        "body": {
+          "type": "StructuredText",
+          "config": {
+            "label": "body",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        }
+      },
+      "items": {
+        "label": {
+          "type": "Text",
+          "config": {
+            "label": "label",
+            "placeholder": ""
+          }
+        },
+        "anchor": {
+          "type": "Text",
+          "config": {
+            "label": "section id it links to",
+            "placeholder": ""
+          }
+        }
+      }
+    }
+  ]
+}

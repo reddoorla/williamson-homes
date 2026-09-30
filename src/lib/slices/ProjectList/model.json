@@ -1,0 +1,35 @@
+{
+  "id": "project_list",
+  "type": "SharedSlice",
+  "name": "ProjectList",
+  "description": "ProjectList",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Every project, alternating left and right; lists all projects when none are chosen",
+      "imageUrl": "",
+      "primary": {
+        "heading": {
+          "type": "Text",
+          "config": {
+            "label": "heading",
+            "placeholder": ""
+          }
+        }
+      },
+      "items": {
+        "project": {
+          "type": "Link",
+          "config": {
+            "label": "project",
+            "select": "document",
+            "customtypes": ["project"]
+          }
+        }
+      }
+    }
+  ]
+}

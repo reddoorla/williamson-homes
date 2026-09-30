@@ -19,6 +19,7 @@ declare global {
             }
         )[];
       }[];
+      headerTone?: "light" | "dark";
     }
     // interface Platform {}
   }
