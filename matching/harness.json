@@ -8,9 +8,11 @@
   ],
   "threshold": 0.1,
   "maxHeightDelta": 0.05,
-  "refMark": "",
+  "refMark": "data-wf-site=\"645ec08251dadc9000a072e5\"",
   "candMark": "_app/immutable",
-  "selfHosts": [],
+  "selfHosts": [
+    "williamson-homes.netlify.app"
+  ],
   "pages": {
     "home": {
       "uid": "home",

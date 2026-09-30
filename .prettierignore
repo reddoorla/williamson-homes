@@ -50,3 +50,6 @@ src/routes/dev/match/\[uid\]/+page.svelte
 src/lib/site-pages.test.ts
 
 # end reddoor-maint match-harness
+
+# The Webflow reference capture: byte-for-byte third-party HTML/CSS/JS.
+matching/spec/
