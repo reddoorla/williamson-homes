@@ -102,5 +102,7 @@ describe("round-1 and round-2 review fixes stay fixed", () => {
     const active = doc.activeElement as HTMLElement;
     expect(active.getAttribute("href")).toBe("/about-us");
     expect(active.closest("header")).not.toBeNull();
+    await scrollTo(600);
+    expect(bar.getAttribute("aria-hidden")).toBe("true");
   });
 });

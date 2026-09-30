@@ -24,7 +24,9 @@
 <section
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="wh-hero relative flex min-h-[50vh] items-end overflow-hidden {groundClass}"
+  class="wh-hero relative flex items-end overflow-hidden {slice.primary.ken_burns
+    ? 'min-h-[90vh]'
+    : 'min-h-[50vh]'} {groundClass}"
 >
   {#if hasPhoto}
     <PrismicImage
