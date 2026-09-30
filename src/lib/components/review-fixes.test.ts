@@ -84,4 +84,23 @@ describe("round-1 and round-2 review fixes stay fixed", () => {
     await scrollTo(0);
     expect(bar.getAttribute("aria-hidden")).toBe("true");
   });
+
+  it("hands focus to the same link in the main header when the sticky bar hides at the top", async () => {
+    const { container } = render(SiteHeader, { props: { tone: "dark" } });
+    const doc = container.ownerDocument;
+    const bar = doc.querySelector(".wh-sidekick") as HTMLElement;
+    const scrollTo = async (y: number) => {
+      Object.defineProperty(window, "scrollY", { value: y, configurable: true });
+      await fireEvent.scroll(window);
+    };
+    await scrollTo(600);
+    await scrollTo(400);
+    const stickyLink = bar.querySelector('a[href="/about-us"]') as HTMLAnchorElement;
+    stickyLink.focus();
+    await fireEvent.focusIn(stickyLink);
+    await scrollTo(0);
+    const active = doc.activeElement as HTMLElement;
+    expect(active.getAttribute("href")).toBe("/about-us");
+    expect(active.closest("header")).not.toBeNull();
+  });
 });
