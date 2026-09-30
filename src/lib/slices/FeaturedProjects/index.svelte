@@ -12,13 +12,13 @@
 <section
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="px-4 py-16"
+  class="px-4 pt-16"
 >
   <div class="mx-auto max-w-[1280px]">
     {#if slice.primary.heading}
       <h2 class="wh-h3 text-center text-primary">{slice.primary.heading}</h2>
     {/if}
-    <ul class="mt-16 grid gap-8 md:grid-cols-3">
+    <ul class="mt-16 grid gap-5 md:grid-cols-3">
       {#each projects as project (project.id)}
         <li>
           <a href={projectHref(project.uid)} class="group block">

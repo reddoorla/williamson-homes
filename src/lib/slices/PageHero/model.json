@@ -61,6 +61,13 @@
             "placeholder_true": "yes",
             "placeholder_false": "no"
           }
+        },
+        "height": {
+          "type": "Select",
+          "config": {
+            "label": "height (blank: tall with slow zoom, short without)",
+            "options": ["tall", "short"]
+          }
         }
       },
       "items": {

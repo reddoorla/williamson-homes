@@ -9,7 +9,7 @@
 <section
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="relative overflow-hidden bg-primary px-4 py-64"
+  class="relative overflow-hidden bg-primary px-4 pt-64 pb-96"
 >
   {#if isFilled.image(slice.primary.background_image)}
     <PrismicImage
