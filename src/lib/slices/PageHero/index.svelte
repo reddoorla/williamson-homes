@@ -51,7 +51,7 @@
     {/if}
     {#if buttons.length > 0}
       <div class="mt-8 flex justify-center gap-12">
-        {#each buttons as button (button.href)}
+        {#each buttons as button, i (i)}
           <WhButton href={button.href} tone={dark ? "primary" : "light"}>{button.label}</WhButton>
         {/each}
       </div>

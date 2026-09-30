@@ -9,7 +9,9 @@
   let { tone = "dark" }: Props = $props();
 
   let menuOpen = $state(false);
-  let sidekick = $state(false);
+  let scrolledUp = $state(false);
+  let focusWithin = $state(false);
+  const sidekick = $derived(scrolledUp || focusWithin);
   let lastY = 0;
   let menuButton = $state<HTMLButtonElement>();
 
@@ -18,7 +20,7 @@
 
   function onScroll() {
     const y = window.scrollY;
-    sidekick = y > 120 && y < lastY;
+    scrolledUp = y > 120 && y < lastY;
     lastY = y;
   }
 
@@ -56,7 +58,7 @@
       type="button"
       class="p-2 md:hidden {tone === 'light' ? 'text-white' : 'text-primary'}"
       aria-label="Open menu"
-      aria-controls="wh-menu"
+      aria-controls={menuOpen ? "wh-menu" : undefined}
       aria-expanded={menuOpen}
       onclick={() => (menuOpen = true)}
     >
@@ -70,18 +72,29 @@
   class:-translate-y-full={!sidekick}
   aria-hidden={!sidekick}
   inert={!sidekick}
+  onfocusin={() => (focusWithin = true)}
+  onfocusout={(event) => {
+    const next = event.relatedTarget as Node | null;
+    if (!next || !event.currentTarget.contains(next)) focusWithin = false;
+  }}
 >
   <div class="mx-auto flex h-[120px] max-w-[1280px] items-center justify-between px-4">
     <a href="/" class="block" aria-label="Williamson Homes, home">
       <img src="/images/williamson-homes-logo.svg" alt="" class="wh-filter-white h-12 pr-8" />
     </a>
-    <ul class="flex gap-4">
-      {#each NAV_LINKS as link (link.href)}
-        <li>
-          <a href={link.href} class="p-2 text-base whitespace-nowrap text-white">{link.label}</a>
-        </li>
-      {/each}
-    </ul>
+    <nav aria-label="Main, sticky">
+      <ul class="flex gap-4">
+        {#each NAV_LINKS as link (link.href)}
+          <li>
+            <a
+              href={link.href}
+              aria-current={isCurrent(link.href) ? "page" : undefined}
+              class="p-2 text-base whitespace-nowrap text-white">{link.label}</a
+            >
+          </li>
+        {/each}
+      </ul>
+    </nav>
   </div>
 </div>
 
@@ -103,7 +116,12 @@
       <X aria-hidden="true" />
     </button>
     {#each NAV_LINKS as link (link.href)}
-      <a href={link.href} class="text-2xl text-white" onclick={closeMenu}>{link.label}</a>
+      <a
+        href={link.href}
+        aria-current={isCurrent(link.href) ? "page" : undefined}
+        class="text-2xl text-white"
+        onclick={closeMenu}>{link.label}</a
+      >
     {/each}
   </div>
 {/if}

@@ -1,28 +1,19 @@
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { extname, join, relative } from "node:path";
+import { existsSync } from "node:fs";
+import { relative } from "node:path";
 
-const ROOTS = process.argv.slice(2).length ? process.argv.slice(2) : ["build", ".netlify"];
-const TEXT = new Set([".html", ".js", ".mjs", ".cjs", ".css", ".json", ".svg", ".xml", ".txt"]);
-const FORBIDDEN = /website-files\.com|webflow\.(?:com|io)|githack\.com/i;
+import { scanForWebflow } from "./webflow-hosts.mjs";
 
-function walk(dir) {
-  return readdirSync(dir).flatMap((name) => {
-    const path = join(dir, name);
-    if (statSync(path).isDirectory()) return walk(path);
-    return TEXT.has(extname(name)) ? [path] : [];
-  });
-}
-
-const roots = ROOTS.filter((root) => existsSync(root));
-if (roots.length === 0) {
-  console.error(`check-no-webflow: none of ${ROOTS.join(", ")} exists; build first`);
+const roots = process.argv.slice(2).length ? process.argv.slice(2) : ["build", ".netlify"];
+const missing = roots.filter((root) => !existsSync(root));
+if (missing.length > 0) {
+  console.error(`check-no-webflow: ${missing.join(", ")} does not exist; build first`);
   process.exit(1);
 }
-const files = roots.flatMap(walk);
-const hits = files.filter((file) => FORBIDDEN.test(readFileSync(file, "utf8")));
+
+const { scanned, hits } = scanForWebflow(roots);
 if (hits.length > 0) {
   console.error("check-no-webflow: built output still references Webflow or githack:");
   for (const file of hits) console.error(`  ${relative(process.cwd(), file)}`);
   process.exit(1);
 }
-console.log(`check-no-webflow: ${files.length} built files, no Webflow or githack host`);
+console.log(`check-no-webflow: ${scanned} built text files, no Webflow or githack host`);

@@ -25,7 +25,7 @@
     {/if}
     <div class="relative flex h-full flex-col items-center justify-center p-4 text-center">
       {#if slice.primary.heading}
-        <h2 class="wh-h2 text-secondary opacity-75">{slice.primary.heading}</h2>
+        <h2 class="wh-h2 text-secondary">{slice.primary.heading}</h2>
       {/if}
       {#if href && slice.primary.button_label}
         <WhButton {href} tone="primary" class="mt-8">{slice.primary.button_label}</WhButton>

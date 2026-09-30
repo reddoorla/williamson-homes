@@ -35,7 +35,7 @@
     {/if}
     {#if buttons.length > 0}
       <div class="mt-16 flex justify-center gap-12">
-        {#each buttons as button (button.href)}
+        {#each buttons as button, i (i)}
           <WhButton
             href={button.href}
             tone={button.item.button_tone === "primary" ? "primary" : "secondary"}

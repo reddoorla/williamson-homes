@@ -66,6 +66,20 @@ describe("loadProject", () => {
     await expect(loadProject(client, "palos-verdes-cove")).rejects.toThrow("ECONNRESET");
   });
 
+  it("prefers the SEO image over the hero for the share card", async () => {
+    const client = clientFor(async (uid) => {
+      const project = doc(uid, "Palos Verdes Cove");
+      (project.data as { meta_image: unknown }).meta_image = {
+        url: "https://images.prismic.io/x/share-card.jpg",
+        alt: "Share card",
+      };
+      return project;
+    });
+    const result = await loadProject(client, "palos-verdes-cove");
+    expect(result.meta_image).toBe("https://images.prismic.io/x/share-card.jpg");
+    expect(result.meta_image_alt).toBe("Share card");
+  });
+
   it("returns the document and its head payload for a known slug", async () => {
     const client = clientFor(async (uid) => doc(uid, "Palos Verdes Cove"));
     const result = await loadProject(client, "palos-verdes-cove");

@@ -39,6 +39,13 @@ describe("ProjectView", () => {
     expect(getByRole("link", { name: "Call Us" }).getAttribute("href")).toBe("tel:3105707278");
   });
 
+  it("paints the hero photo as a decorative background", () => {
+    const { container } = render(ProjectView, { props: { project } });
+    const hero = container.querySelector("section img");
+    expect(hero?.getAttribute("src")).toContain("/hero.jpg");
+    expect(hero?.getAttribute("alt")).toBe("");
+  });
+
   it("shows the credits and every filled gallery image, keeping editor alt text", () => {
     const { container, getByText } = render(ProjectView, { props: { project } });
     expect(getByText("Photographer: Elizabeth Nielsen")).toBeTruthy();

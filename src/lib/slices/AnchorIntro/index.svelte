@@ -23,7 +23,7 @@
       </div>
     {/if}
     <ol class="mt-16 grid gap-8 md:grid-cols-3">
-      {#each links as link, i (link.anchor)}
+      {#each links as link, i (i)}
         <li>
           <a href="#{link.anchor}" class="group flex flex-col items-center gap-2">
             <span

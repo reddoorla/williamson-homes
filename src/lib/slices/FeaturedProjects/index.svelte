@@ -32,7 +32,7 @@
                 />
               {/if}
             </div>
-            <h3 class="wh-eyebrow mt-8 pb-6 text-center opacity-75">{project.title}</h3>
+            <h3 class="wh-eyebrow mt-8 pb-6 text-center">{project.title}</h3>
           </a>
         </li>
       {/each}
