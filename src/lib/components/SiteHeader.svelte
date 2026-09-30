@@ -9,18 +9,33 @@
   let { tone = "dark" }: Props = $props();
 
   let menuOpen = $state(false);
+  let pastTop = $state(false);
   let scrolledUp = $state(false);
   let focusWithin = $state(false);
-  const sidekick = $derived(scrolledUp || focusWithin);
+  const sidekick = $derived(pastTop && (scrolledUp || focusWithin));
   let lastY = 0;
   let menuButton = $state<HTMLButtonElement>();
+  let headerEl = $state<HTMLElement>();
+  let sidekickEl = $state<HTMLElement>();
 
   const isCurrent = (href: string) =>
     page.url.pathname === href || page.url.pathname.startsWith(`${href}/`);
 
+  function handFocusToHeader() {
+    const active = document.activeElement;
+    if (!(active instanceof HTMLAnchorElement) || !sidekickEl?.contains(active)) return;
+    const href = active.getAttribute("href");
+    const target = [...(headerEl?.querySelectorAll("a") ?? [])].find(
+      (a) => a.getAttribute("href") === href,
+    );
+    target?.focus();
+  }
+
   function onScroll() {
     const y = window.scrollY;
-    scrolledUp = y > 120 && y < lastY;
+    if (y <= 120 && pastTop && focusWithin) handFocusToHeader();
+    pastTop = y > 120;
+    scrolledUp = pastTop && y < lastY;
     lastY = y;
   }
 
@@ -29,7 +44,7 @@
 
 <svelte:window onscroll={onScroll} />
 
-<header class="wh-header absolute inset-x-0 top-0 z-50" data-tone={tone}>
+<header bind:this={headerEl} class="wh-header absolute inset-x-0 top-0 z-50" data-tone={tone}>
   <div class="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-4 md:h-[120px]">
     <a href="/" class="block" aria-label="Williamson Homes, home">
       <img
@@ -68,6 +83,7 @@
 </header>
 
 <div
+  bind:this={sidekickEl}
   class="wh-sidekick fixed inset-x-0 top-0 z-40 hidden bg-primary transition-transform duration-200 md:block"
   class:-translate-y-full={!sidekick}
   aria-hidden={!sidekick}

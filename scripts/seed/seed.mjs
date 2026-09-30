@@ -4,6 +4,7 @@ import * as prismic from "@prismicio/client";
 
 import { captureFileFor, collectImageKeys } from "../../src/lib/capture-files.js";
 import { documents, lang } from "../../src/lib/site-pages.js";
+import { makeRelink } from "./relink.mjs";
 
 const SPEC = "matching/spec";
 const dryRun = process.argv.includes("--dry-run");
@@ -39,23 +40,7 @@ const img = (key) => {
 
 const docs = documents(img);
 const created = new Map();
-const relink = (value) => {
-  if (Array.isArray(value)) return value.map(relink);
-  if (value && typeof value === "object") {
-    if (value.link_type === "Document" && value.uid) {
-      const target = `${value.type}:${value.uid}`;
-      return () => {
-        const doc = created.get(target);
-        if (!doc)
-          throw new Error(`seed: a link points at ${target}, which the seed does not create`);
-        return doc;
-      };
-    }
-    if (value.constructor !== Object) return value;
-    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, relink(v)]));
-  }
-  return value;
-};
+const relink = makeRelink(created);
 
 for (const doc of docs) {
   created.set(
