@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy } from "svelte";
+  import { afterNavigate } from "$app/navigation";
   import { isFilled, type Content } from "@prismicio/client";
   import RichTextBody from "$lib/components/RichTextBody.svelte";
 
@@ -13,7 +14,10 @@
 
   const isActive = (i: number) => !revealing || i < reached;
 
-  onMount(() => {
+  let observer: IntersectionObserver | undefined;
+
+  afterNavigate(() => {
+    if (observer) return;
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduced || typeof IntersectionObserver === "undefined") return;
     const onScreen = stepEls.filter(
@@ -21,7 +25,7 @@
     );
     reached = Math.max(1, ...onScreen.map((el) => stepEls.indexOf(el) + 1));
     revealing = true;
-    const observer = new IntersectionObserver(
+    observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
@@ -32,8 +36,9 @@
       { rootMargin: "0px 0px -40% 0px" },
     );
     for (const el of stepEls) if (el) observer.observe(el);
-    return () => observer.disconnect();
   });
+
+  onDestroy(() => observer?.disconnect());
 </script>
 
 <section
