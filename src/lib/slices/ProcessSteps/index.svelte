@@ -42,7 +42,7 @@
               ? 'md:text-left'
               : 'md:text-right'}"
           >
-            <span class="sr-only">Step {i + 1}: </span>{step.title}
+            <span class="sr-only">{`Step ${i + 1}: `}</span>{step.title}
           </h3>
           {#if isFilled.richText(step.body)}
             <div class="wh-prose mt-2 text-secondary">
