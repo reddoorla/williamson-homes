@@ -1,5 +1,6 @@
 /* Tailwind CSS v4 configuration */
 @import "tailwindcss";
+@source not "../matching/spec";
 
 @theme {
   --screen-sm: 560px;
