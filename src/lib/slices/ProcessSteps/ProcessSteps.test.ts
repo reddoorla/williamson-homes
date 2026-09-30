@@ -19,6 +19,8 @@ const slice = {
 type Callback = (entries: Array<{ isIntersecting: boolean; target: Element }>) => void;
 let observed: Element[] = [];
 let fire: Callback = () => {};
+let disconnected = 0;
+let tops: number[] = [];
 
 function setMotion(reduced: boolean) {
   vi.stubGlobal("matchMedia", (query: string) => ({
@@ -28,6 +30,14 @@ function setMotion(reduced: boolean) {
 
 beforeEach(() => {
   observed = [];
+  disconnected = 0;
+  tops = [0, 1000, 2000, 3000];
+  vi.spyOn(HTMLLIElement.prototype, "getBoundingClientRect").mockImplementation(function (
+    this: HTMLLIElement,
+  ) {
+    const index = [...(this.parentElement?.children ?? [])].indexOf(this);
+    return { top: tops[index] ?? 0 } as DOMRect;
+  });
   vi.stubGlobal(
     "IntersectionObserver",
     class {
@@ -37,7 +47,9 @@ beforeEach(() => {
       observe(el: Element) {
         observed.push(el);
       }
-      disconnect() {}
+      disconnect() {
+        disconnected++;
+      }
     },
   );
   setMotion(false);
@@ -46,6 +58,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 const active = (container: HTMLElement) =>
@@ -71,6 +84,35 @@ describe("ProcessSteps reveal", () => {
     fire([{ isIntersecting: true, target: observed[0] }]);
     await tick();
     expect(active(container)).toEqual([true, true, true, false]);
+  });
+
+  it("never dims a step that is already on screen when it mounts", async () => {
+    tops = [-500, 200, 700, 1600];
+    const { container } = render(ProcessSteps, { props: { slice } });
+    await tick();
+    expect(active(container)).toEqual([true, true, true, false]);
+  });
+
+  it("ignores an entry that is leaving the viewport", async () => {
+    const { container } = render(ProcessSteps, { props: { slice } });
+    await tick();
+    fire([{ isIntersecting: false, target: observed[3] }]);
+    await tick();
+    expect(active(container)).toEqual([true, false, false, false]);
+  });
+
+  it("lights every step when there is no IntersectionObserver", async () => {
+    vi.stubGlobal("IntersectionObserver", undefined);
+    const { container } = render(ProcessSteps, { props: { slice } });
+    await tick();
+    expect(active(container)).toEqual([true, true, true, true]);
+  });
+
+  it("stops observing when it unmounts", async () => {
+    const { unmount } = render(ProcessSteps, { props: { slice } });
+    await tick();
+    unmount();
+    expect(disconnected).toBe(1);
   });
 
   it("shows every step at once under reduced motion", async () => {

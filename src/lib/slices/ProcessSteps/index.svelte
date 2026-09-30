@@ -16,8 +16,11 @@
   onMount(() => {
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduced || typeof IntersectionObserver === "undefined") return;
+    const onScreen = stepEls.filter(
+      (el) => el && el.getBoundingClientRect().top < window.innerHeight,
+    );
+    reached = Math.max(1, ...onScreen.map((el) => stepEls.indexOf(el) + 1));
     revealing = true;
-    reached = 1;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {

@@ -1121,6 +1121,16 @@ export interface PageHeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   ken_burns: prismic.BooleanField;
+
+  /**
+   * height (blank: tall with slow zoom, short without) field in *PageHero → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page_hero.default.primary.height
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  height: prismic.SelectField<"tall" | "short">;
 }
 
 /**

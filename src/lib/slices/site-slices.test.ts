@@ -106,6 +106,20 @@ describe("PageHero", () => {
     expect(container.querySelector("img.wh-ken-burns")).toBeNull();
   });
 
+  it.each([
+    [{ ken_burns: true, height: null }, "min-h-[90vh]"],
+    [{ ken_burns: false, height: null }, "min-h-[50vh]"],
+    [{ ken_burns: true, height: "short" }, "min-h-[50vh]"],
+    [{ ken_burns: false, height: "tall" }, "min-h-[90vh]"],
+  ])("sizes the hero from its height field, falling back to slow zoom (%o)", (fields, cls) => {
+    const { container } = render(PageHero, {
+      props: { slice: slice("page_hero", { ...base, ...fields }) },
+    });
+    const className = container.querySelector("section")?.className ?? "";
+    expect(className).toContain(cls);
+    expect(className).not.toContain(cls === "min-h-[90vh]" ? "min-h-[50vh]" : "min-h-[90vh]");
+  });
+
   it("drops a button with no label or no link", () => {
     const { container } = render(PageHero, {
       props: {

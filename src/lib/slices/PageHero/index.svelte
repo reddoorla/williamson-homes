@@ -19,12 +19,15 @@
       isFilled.image(slice.primary.background_image),
   );
   const buttons = $derived(buttonsOf(slice.items));
+  const tall = $derived(
+    (slice.primary.height ?? (slice.primary.ken_burns ? "tall" : "short")) === "tall",
+  );
 </script>
 
 <section
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="wh-hero relative flex items-end overflow-hidden {slice.primary.ken_burns
+  class="wh-hero relative flex items-end overflow-hidden {tall
     ? 'min-h-[90vh]'
     : 'min-h-[50vh]'} {groundClass}"
 >
