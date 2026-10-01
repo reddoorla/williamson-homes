@@ -603,3 +603,58 @@ What was not done:
 - about-us is specced but not gated; its baseline failed every region.
 - The live about-us document needs `step_height: tall` set in Prismic.
 - The click IX (menu slide) and the project gallery's IX are not ported.
+
+## 2026-10-01 — The steps become a pinned stage, and Finish Your Dream Home sticks and solidifies (#11)
+
+The operator watched the counters port on the live preview and asked for
+"Finish Your Dream Home" to stick and solidify, adding "don't worry about
+matching webflow any more, just make it good"; then "same issue on about us,
+we want to nail this effect, it's the main thing of interest on the site".
+
+What was wrong with the port, measured at 1440×900 before touching it: each
+`li` was its own `position: sticky`, so the four steps pinned independently
+under a separately sticky heading. When step 4 arrived, step 3's ghost was
+still visible beside it and step 3's circle peeked out above circle 4. Then,
+the moment the last step pinned, the list ran out of track, and all four
+steps slid up under the still-pinned white heading and vanished, leaving the
+heading alone over an empty band. Nothing ever held on the last step.
+
+The rewrite is one sticky stage (heading plus steps), driven by a progress
+value computed from the track's scroll (`stage.ts`, pure, unit-tested).
+Steps sit absolutely in one spot and rise by `rise × gap` into the circle.
+Per-step scroll is 0.6 viewport (0.85 tall), with a 15% dwell at each end,
+so every step reads still before the next moves. The last step gets a
+0.8-viewport hold, and fills secondary → primary over the first half, with
+a CSS ring that fires once on `data-solid`. The rail's length is the
+distance to the last circle, so it retracts to nothing as that step
+arrives.
+
+Defects found on the way, each one visible only in a screenshot:
+
+- `flex flex-col` on the stage made the `mx-auto` list shrink to its content
+  width, which is zero when every child is absolute. Each step was measured
+  at 672–828px tall, and the stage pinned 140px above the viewport. `w-full`
+  fixed it.
+- Centring with flex left a viewport-tall white band when the stage
+  released. The stage is now its content's height, centred by its sticky
+  offset.
+- The bottom fade mask also clips anything above the list's top edge. The
+  circles sat on that edge, so the last circle's 8% scale bump and its ring
+  were sliced. The operator saw it: "there's a moment where the top of the
+  last circle is clipped". The circles now sit 48px down inside the list.
+- Arriving circles faded as a whole, so the rail showed through their white
+  discs. The operator called it. They now keep an opaque disc and fade only
+  the ink.
+- The waiting step's title at 30% opacity failed `test:a11y` color-contrast
+  on `/` and `/about-us`. Any partially transparent text fails, so the
+  waiting step shows only its circle, and its title fades in as it rises.
+
+Mutations M1–M9 are in the PR body. M7 survived, and the line it removed was
+dead: once the last step is current, `f` is 0, so its text is already at 1.
+The new clip check was proven by moving the circles back to `top-0`: 2 red.
+The first run of that mutation used a `-g` filter that matched nothing and
+printed nothing, which proved nothing, so it was rerun unfiltered.
+
+The matching gate was not re-run for this section, by the operator's call;
+`matching/LEDGER.md` says so, and marks the older counters entries as
+describing the removed port.
