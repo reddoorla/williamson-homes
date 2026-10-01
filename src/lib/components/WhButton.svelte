@@ -10,9 +10,15 @@
 
   export const SINGLE_HOVER = {
     light: "hover:bg-secondary/35 hover:opacity-80",
-    primary: "hover:bg-secondary/35 hover:opacity-80",
+    primary: "hover:bg-secondary/10 hover:opacity-90",
     secondary: "hover:bg-secondary/4",
   } as const;
+
+  export const unfaded = (classes: string) =>
+    classes
+      .split(" ")
+      .filter((c) => !c.startsWith("hover:opacity-"))
+      .join(" ");
 </script>
 
 <script lang="ts">
@@ -23,6 +29,7 @@
     href: string;
     tone?: Tone;
     single?: boolean;
+    flat?: boolean;
     class?: string;
     children: Snippet;
   };
@@ -31,6 +38,7 @@
     href,
     tone = "light",
     single = false,
+    flat = false,
     class: passedClasses = "",
     children,
   }: Props = $props();
@@ -44,9 +52,10 @@
       } as const
     )[tone],
   );
-  const hoverClass = $derived(
-    `${single ? SINGLE_TRANSITION : PAIR_TRANSITION} ${(single ? SINGLE_HOVER : PAIR_HOVER)[tone]}`,
-  );
+  const hoverClass = $derived.by(() => {
+    const hover = (single ? SINGLE_HOVER : PAIR_HOVER)[tone];
+    return `${single ? SINGLE_TRANSITION : PAIR_TRANSITION} ${flat ? unfaded(hover) : hover}`;
+  });
 </script>
 
 <a

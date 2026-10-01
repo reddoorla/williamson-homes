@@ -50,7 +50,7 @@ object-fit: cover` (CSS:L6953). HEAD-STYLE animates `ken-burns` from
   - `spacer-8` (32).
   - Buttons: two `button-default mx-6`, 39 tall, at y=520.
   - `h-32`.
-- Phones: the h3 is 16px Montserrat 300 (CSS:L7022, plus the body weight)
+- Phones: the h3 is 16px Montserrat 300 (size CSS:L7022, weight 300 from the ≤991 rule CSS:L6830)
   and the column is 357 wide. The h3 is 20px at 834.
 
 ### 2. Featured Projects
@@ -115,7 +115,7 @@ cubic-bezier(.215,.61,.355,1)` (CSS:L6027). HEAD-STYLE offsets them
   - When the last step reaches 256, its "stick last" step hides steps 1–3,
     unpins the head and `scrollTo`s.
 - Measured live (`matching/probes/counters-live.mjs`, 2026-10-01):
-  - The phases and fades follow that description exactly, step by step, at
+  - Apart from phase one, which measures against 240 rather than 256, the phases and fades follow that description step by step, at
     1440 and 834.
   - The release step TRAPS the wheel. At 1440 the page stayed at y=3578 for
     52 consecutive 60px wheel steps, and for 25 consecutive 200px steps.

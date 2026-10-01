@@ -61,7 +61,7 @@ interaction data handed to `Webflow.require("ix2").init(...)` in
 holds two logos (`h-24`, and `h-16` with `filter-to-white`). The right column
 holds four right-aligned links (Home, About, Contact Us, Projects) between
 `spacer-16`s. Then the copyright `em.italic-text` (14px, `padding-left: 20px`,
-CSS:L6489), then `spacer-32`. On phones the link text is 14px/16.8px and the
+body 14px/20 CSS:L2063, padding-left CSS:L6489), then `spacer-32`. On phones the link text is 14px/16.8px and the
 copyright 8px.
 
 ### Global link and button rules
@@ -75,23 +75,23 @@ copyright 8px.
 
 ### Hover rules: all 15 `:hover` selectors in the stylesheet
 
-| #   | selector                                              | change on hover                                                                    | transition (base rule)                                   | where on the reference                    |
-| --- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------- |
-| 1   | `a:active, a:hover`                                   | `outline: 0`                                                                       | —                                                        | every link                                |
-| 2   | `.w-lightbox-control:hover` (≥768)                    | `opacity: 1`                                                                       | `all .3s`                                                | no lightbox on any captured page          |
-| 3   | `.w-lightbox-inactive:hover`                          | `opacity: 0`                                                                       | —                                                        | no lightbox on any captured page          |
-| 4   | `a:hover`                                             | `opacity: .8; background-color: transparent`                                       | `background-color .7s ease-in-out, opacity .35s ease-in` | every link not overridden below           |
-| 5   | `.text-color-secondary.mx-auto.max-width-600px:hover` | `color: var(--secondary)`, already its rest colour, so nothing visible changes     | `color .2s cubic-bezier(.215,.61,.355,1)`                | about-us, the Commercial Advantage h3     |
-| 6   | `.text-color-secondary.mx-auto.white-on-hover:hover`  | `color: #fff`                                                                      | `color .2s cubic-bezier(.215,.61,.355,1)`                | about-us, the 1/2/3 in the anchor circles |
-| 7   | `.button-default:hover`                               | `background-color: #6d6a6959` (rgba(109,106,105,.35)), plus opacity .8 from rule 4 | `background-color .2s ease-in, opacity .25s ease-in`     | home "Let's Talk"; about-us "Go To Site"  |
-| 8   | `.button-default.mx-6:hover`                          | `background-color: #6d6a6926` (rgba(109,106,105,.15)), plus opacity .8             | `background-color .25s ease-in, opacity .25s ease-in`    | the hero's Email Us / Call Us             |
-| 9   | `.button-default.mx-6.text-color-secondary:hover`     | as rule 8                                                                          | as rule 8                                                | the CTA band's "Email Us"                 |
-| 10  | `.button-default.mx-6.text-color-primary:hover`       | as rule 8                                                                          | as rule 8                                                | the CTA band's "Call Us"                  |
-| 11  | `.content-block.home-project-item-image:hover`        | `background-color: #005a7896` behind the inline photo, plus opacity .8             | `background-color .7s ease-in-out, opacity .35s ease-in` | home, the Featured Projects photos        |
-| 12  | `.filled-circle.mx-auto:hover`                        | `opacity: 1`, cancelling rule 4's .8                                               | from `a`                                                 | about-us anchor circles                   |
-| 13  | `.filled-circle.mx-auto.flex-align-center:hover`      | `background-color: var(--secondary)`                                               | `background-color .7s ease-in-out`                       | about-us anchor circles                   |
-| 14  | `.hamburger.filter-to-white:hover` (≤479)             | `opacity: .66`                                                                     | `opacity .2s`                                            | every page at ≤479                        |
-| 15  | `.menu-close.filter-to-white:hover` (≤479)            | `opacity: .66`                                                                     | `opacity .2s`                                            | every page at ≤479, in the open menu      |
+| #   | selector                                              | change on hover                                                                    | transition (base rule)                                                  | where on the reference                                             |
+| --- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1   | `a:active, a:hover`                                   | `outline: 0`                                                                       | —                                                                       | every link                                                         |
+| 2   | `.w-lightbox-control:hover` (≥768)                    | `opacity: 1`                                                                       | `all .3s`                                                               | no lightbox on any captured page                                   |
+| 3   | `.w-lightbox-inactive:hover`                          | `opacity: 0`                                                                       | —                                                                       | no lightbox on any captured page                                   |
+| 4   | `a:hover`                                             | `opacity: .8; background-color: transparent`                                       | `background-color .7s ease-in-out, opacity .35s ease-in`                | every link not overridden below                                    |
+| 5   | `.text-color-secondary.mx-auto.max-width-600px:hover` | `color: var(--secondary)`, already its rest colour, so nothing visible changes     | `color, background-color .2s cubic-bezier(.215,.61,.355,1)` (CSS:L5713) | about-us, the Commercial Advantage h3                              |
+| 6   | `.text-color-secondary.mx-auto.white-on-hover:hover`  | `color: #fff`                                                                      | `color, background-color .2s cubic-bezier(.215,.61,.355,1)` (CSS:L5713) | about-us, the 1/2/3 in the anchor circles                          |
+| 7   | `.button-default:hover`                               | `background-color: #6d6a6959` (rgba(109,106,105,.35)), plus opacity .8 from rule 4 | `background-color .2s ease-in, opacity .25s ease-in`                    | home "Let's Talk"; about-us "Go To Site"                           |
+| 8   | `.button-default.mx-6:hover`                          | `background-color: #6d6a6926` (rgba(109,106,105,.15)), plus opacity .8             | `background-color .25s ease-in, opacity .25s ease-in`                   | the home hero's Email Us / Call Us; the about-us hero's "About Us" |
+| 9   | `.button-default.mx-6.text-color-secondary:hover`     | as rule 8                                                                          | as rule 8                                                               | the CTA band's "Email Us"                                          |
+| 10  | `.button-default.mx-6.text-color-primary:hover`       | as rule 8                                                                          | as rule 8                                                               | the CTA band's "Call Us"                                           |
+| 11  | `.content-block.home-project-item-image:hover`        | `background-color: #005a7896` behind the inline photo, plus opacity .8             | `background-color .7s ease-in-out, opacity .35s ease-in`                | home, the Featured Projects photos                                 |
+| 12  | `.filled-circle.mx-auto:hover`                        | `opacity: 1`, cancelling rule 4's .8                                               | from `a`                                                                | about-us anchor circles                                            |
+| 13  | `.filled-circle.mx-auto.flex-align-center:hover`      | `background-color: var(--secondary)`                                               | `background-color .7s ease-in-out`                                      | about-us anchor circles                                            |
+| 14  | `.hamburger.filter-to-white:hover` (≤479)             | `opacity: .66`                                                                     | `opacity .2s`                                                           | every page at ≤479                                                 |
+| 15  | `.menu-close.filter-to-white:hover` (≤479)            | `opacity: .66`                                                                     | `opacity .2s`                                                           | every page at ≤479, in the open menu                               |
 
 The changes were read live with a real hover on 2026-10-01
 (`matching/probes/hover.mjs`, local). `src/hover-rules.test.ts` names every
@@ -170,7 +170,7 @@ object-fit: cover` (CSS:L6953). HEAD-STYLE animates `ken-burns` from
   - `spacer-8` (32).
   - Buttons: two `button-default mx-6`, 39 tall, at y=520.
   - `h-32`.
-- Phones: the h3 is 16px Montserrat 300 (CSS:L7022, plus the body weight)
+- Phones: the h3 is 16px Montserrat 300 (size CSS:L7022, weight 300 from the ≤991 rule CSS:L6830)
   and the column is 357 wide. The h3 is 20px at 834.
 
 ### 2. Featured Projects
@@ -235,7 +235,7 @@ cubic-bezier(.215,.61,.355,1)` (CSS:L6027). HEAD-STYLE offsets them
   - When the last step reaches 256, its "stick last" step hides steps 1–3,
     unpins the head and `scrollTo`s.
 - Measured live (`matching/probes/counters-live.mjs`, 2026-10-01):
-  - The phases and fades follow that description exactly, step by step, at
+  - Apart from phase one, which measures against 240 rather than 256, the phases and fades follow that description step by step, at
     1440 and 834.
   - The release step TRAPS the wheel. At 1440 the page stayed at y=3578 for
     52 consecutive 60px wheel steps, and for 25 consecutive 200px steps.

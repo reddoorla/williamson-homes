@@ -240,6 +240,10 @@ main > section.hero-band:first-child {
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+    @media (min-width: 768px) {
+      scroll-padding-top: 120px;
+    }
   }
 
   body {

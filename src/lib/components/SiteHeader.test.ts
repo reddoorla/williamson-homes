@@ -65,13 +65,13 @@ describe("the header's IX2 scroll interactions", () => {
   it("turns the phone bar --primary past the hero and back to transparent over it (a-12/a-13, e-25/e-26)", async () => {
     const { container } = render(SiteHeader, { props: { tone: "light" } });
     const { header } = parts(container);
-    expect(header.className).not.toMatch(/max-\[479px\]:bg-primary/);
+    expect(header.className).not.toMatch(/max-md:bg-primary/);
     await scrollTo(HERO_HEIGHT + 400);
-    expect(header.className).toMatch(/max-\[479px\]:bg-primary/);
+    expect(header.className).toMatch(/max-md:bg-primary/);
     expect(header.className).toMatch(/duration-500/);
     expect(header.className).toMatch(/ease-out/);
     await scrollTo(0);
-    expect(header.className).not.toMatch(/max-\[479px\]:bg-primary/);
+    expect(header.className).not.toMatch(/max-md:bg-primary/);
   });
 
   it("whitens the hamburger over the teal bar even on a dark-toned page", async () => {

@@ -6,6 +6,7 @@ import {
   PAIR_TRANSITION,
   SINGLE_HOVER,
   SINGLE_TRANSITION,
+  unfaded,
 } from "$lib/components/WhButton.svelte";
 
 const root = resolve(__dirname, "..");
@@ -126,23 +127,39 @@ describe("the reference's 15 :hover rules", () => {
     expect(contrast(WHITE, secondary)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it("7. `.button-default:hover` (single): rgba(109,106,105,.35), background .2s and opacity .25s ease-in", () => {
+  it("7. `.button-default:hover` (single): .2s/.25s ease-in; .35 + .8 on photos, clamped on the accent ground", () => {
     expect(SINGLE_TRANSITION).toBe(
       "[transition:background-color_.2s_ease-in,opacity_.25s_ease-in]",
     );
-    expect(tintOf(SINGLE_HOVER.primary)).toBe(0.35);
-    expect(opacityOf(SINGLE_HOVER.primary)).toBe(0.8);
     expect(tintOf(SINGLE_HOVER.light)).toBe(0.35);
-    expect(read("src/lib/slices/LetsTalk/index.svelte")).toMatch(/<WhButton[^>]*\bsingle\b/);
+    expect(opacityOf(SINGLE_HOVER.light)).toBe(0.8);
+    const accent = hex("accent");
+    expect(read("src/lib/slices/LetsTalk/index.svelte")).toMatch(/bg-accent/);
+    expect(read("src/lib/slices/LetsTalk/index.svelte")).toMatch(
+      /<WhButton[^>]*tone="primary"[^>]*\bsingle\b/,
+    );
+    expect(hoverContrast(primary, accent, 0.35, 0.8)).toBeLessThan(4.5);
+    const tint = tintOf(SINGLE_HOVER.primary);
+    const fade = opacityOf(SINGLE_HOVER.primary);
+    expect([tint, fade]).toEqual([0.1, 0.9]);
+    expect(hoverContrast(primary, accent, tint, fade)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it("8. `.button-default.mx-6:hover` (paired, light): rgba(109,106,105,.15), .25s ease-in, opacity .8", () => {
+  it("8. `.button-default.mx-6:hover` (paired, light): .15 + .8 on the primary ground, unfaded on teal", () => {
     expect(PAIR_TRANSITION).toBe("[transition:background-color_.25s_ease-in,opacity_.25s_ease-in]");
     expect(tintOf(PAIR_HOVER.light)).toBe(0.15);
     expect(opacityOf(PAIR_HOVER.light)).toBe(0.8);
+    expect(hoverContrast(WHITE, primary, 0.15, 0.8)).toBeGreaterThanOrEqual(4.5);
+    const teal = hex("teal");
+    expect(hoverContrast(WHITE, teal, 0.15, 0.8)).toBeLessThan(4.5);
+    expect(unfaded(PAIR_HOVER.light)).toBe("hover:bg-secondary/15");
+    expect(hoverContrast(WHITE, teal, 0.15, 1)).toBeGreaterThanOrEqual(4.5);
+    expect(read("src/lib/slices/PageHero/index.svelte")).toMatch(
+      /flat=\{slice\.primary\.background === "teal"\}/,
+    );
   });
 
-  it("9. `.mx-6.text-color-secondary:hover`: tint clamped to 4% with no fade, the most of .15 that holds AA", () => {
+  it("9. `.mx-6.text-color-secondary:hover`: tint clamped to 4% with no fade, the most that holds AA on white and on --color-light", () => {
     expect(hoverContrast(secondary, WHITE, 0.15, 0.8)).toBeLessThan(4.5);
     expect(hoverContrast(secondary, WHITE, 0, 0.8)).toBeLessThan(4.5);
     expect(opacityOf(PAIR_HOVER.secondary)).toBe(1);
@@ -165,6 +182,11 @@ describe("the reference's 15 :hover rules", () => {
   it("11. `.content-block.home-project-item-image:hover`: #005a7896 behind the photo, faded to .8", () => {
     const featured = read("src/lib/slices/FeaturedProjects/index.svelte");
     expect(featured).toMatch(/wh-featured-photo wh-hover-fade[^"]*hover:bg-\[#005a7896\]/);
+    const ground = featured.slice(0, featured.indexOf("wh-featured-photo"));
+    expect(
+      ground.slice(ground.lastIndexOf("<div")),
+      "the faded photo sits on the teal ratio-box",
+    ).toMatch(/bg-primary/);
     expect(featured).not.toMatch(/group-hover:scale/);
   });
 

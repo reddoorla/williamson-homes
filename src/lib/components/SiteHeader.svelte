@@ -70,7 +70,7 @@
 <header
   bind:this={headerEl}
   class="wh-header fixed inset-x-0 top-0 z-50 h-20 transition-colors duration-500 ease-out md:h-[120px] {heroOut
-    ? 'max-[479px]:bg-primary'
+    ? 'max-md:bg-primary'
     : ''}"
   data-tone={tone}
   data-hero-out={heroOut ? "" : undefined}
@@ -139,7 +139,10 @@
     if (!next || !event.currentTarget.contains(next)) focusWithin = false;
   }}
 >
-  <div class="mx-auto flex h-[120px] max-w-[1280px] items-start justify-between px-2.5">
+  <nav
+    aria-label="Main, sticky"
+    class="mx-auto flex h-[120px] max-w-[1280px] items-start justify-between px-2.5"
+  >
     <a href="/" class="wh-hover-fade block py-8" aria-label="Williamson Homes, home">
       <img
         src="/images/williamson-homes-logo.svg"
@@ -148,7 +151,7 @@
         class="wh-filter-white h-12 w-[180px] pr-8"
       />
     </a>
-    <nav aria-label="Main, sticky" class="py-8 pl-8">
+    <div class="py-8 pl-8">
       <ul class="flex">
         {#each NAV_LINKS as link, i (link.href)}
           <li>
@@ -163,8 +166,8 @@
           </li>
         {/each}
       </ul>
-    </nav>
-  </div>
+    </div>
+  </nav>
 </div>
 
 {#if menuOpen}
@@ -184,6 +187,14 @@
     >
       <img src="/images/menu-close.png" alt="" class="wh-filter-white block h-8 w-8" />
     </button>
+    <a href="/" class="block" aria-label="Williamson Homes, home" onclick={closeMenu}>
+      <img
+        src="/images/williamson-homes-logo.svg"
+        alt=""
+        width="180"
+        class="wh-filter-white h-12 w-[180px] pr-8"
+      />
+    </a>
     {#each NAV_LINKS as link (link.href)}
       <a
         href={link.href}
