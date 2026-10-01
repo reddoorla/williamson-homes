@@ -230,3 +230,14 @@ regression, now fixed:
   browser). Both tests went red on the round-1 code before the fix.
 - Wording: "teal ground" in the round-1 entry on rule 11 means `--primary`
   (#005a78, CSS:L5906's `.ratio-box`), not `--color-teal` (#407f82).
+
+### 2026-10-01 — operator decisions (BACKLOG 53)
+
+- [ACK] Hover fidelity versus AA: **accessibility wins**. The clamps above
+  stand as the shipped design, not a pending question.
+- [ACK] The 17 census rows (a)–(d) are **accepted**. They are declared in
+  `matching/census-deviations.mjs`. Each declaration matches its own labels
+  and allows only the field that differs, colour or transform. Negative
+  control: a copy of the 1440 log with a declared footer link's size changed
+  to 18px counts 1 real mismatch. `census.sh home` exits 0: 0 undeclared, 17
+  declared, 7 ambiguous rows that need no fix.
