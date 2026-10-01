@@ -45,6 +45,37 @@ const stageTop = (page: Page) =>
     SECTION,
   );
 
+const circleBox = (page: Page, i: number) =>
+  page.evaluate(
+    ([sel, i]) => {
+      const n = document.querySelectorAll(`${sel} .wh-step-number`)[Number(i)] as HTMLElement;
+      const li = n.closest("li") as HTMLElement;
+      const ol = li.parentElement as HTMLElement;
+      const a = ol.getBoundingClientRect();
+      const b = li.getBoundingClientRect();
+      return {
+        top: Math.round(b.top - a.top),
+        centre: Math.round(
+          (n.getBoundingClientRect().left + n.getBoundingClientRect().right) / 2 - a.left,
+        ),
+      };
+    },
+    [SECTION, i] as const,
+  );
+
+const unclipped = (page: Page, i: number) =>
+  page.evaluate(
+    ([sel, i]) => {
+      const n = document.querySelectorAll(`${sel} .wh-step-number`)[Number(i)] as HTMLElement;
+      const ol = n.closest("ol") as HTMLElement;
+      const reach = [n, ...n.querySelectorAll<HTMLElement>(".wh-step-halo")].map(
+        (el) => el.getBoundingClientRect().top,
+      );
+      return Math.min(...reach) >= ol.getBoundingClientRect().top;
+    },
+    [SECTION, i] as const,
+  );
+
 const lit = (page: Page) =>
   page
     .locator(`${SECTION} li`)
@@ -67,6 +98,7 @@ for (const path of ["/dev/match/home", "/dev/match/about-us"]) {
       const hold = await page.evaluate(() => Math.round(window.innerHeight * 0.8));
       await scrollIntoStage(page, 0);
       expect(await stageTop(page)).toBe(pin);
+      const restingCircle = await circleBox(page, 0);
       expect(await lit(page)).toEqual([true, false, false, false]);
 
       await scrollIntoStage(page, len / 2);
@@ -84,6 +116,14 @@ for (const path of ["/dev/match/home", "/dev/match/about-us"]) {
       const last = page.locator(`${SECTION} li`).last();
       await expect(last).toHaveCSS("opacity", "1");
       await expect(last.locator(".wh-prose")).toHaveCSS("opacity", "1");
+
+      for (const into of [0.1, 0.25, 0.4]) {
+        await scrollIntoStage(page, 3 * len + into * hold);
+        const box = await circleBox(page, 3);
+        expect(box.top).toBe(restingCircle.top);
+        expect(box.centre).toBe(restingCircle.centre);
+        expect(await unclipped(page, 3)).toBe(true);
+      }
 
       await scrollIntoStage(page, 3 * len + 0.8 * hold);
       expect(await stageTop(page)).toBe(pin);

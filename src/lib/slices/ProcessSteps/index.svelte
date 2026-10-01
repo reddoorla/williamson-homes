@@ -17,6 +17,7 @@
   const steps = $derived(slice.items.filter((item) => item.title));
   const tall = $derived(slice.primary.step_height === "tall");
   const gap = $derived(tall ? 360 : 240);
+  const HEADROOM = 48;
 
   let pinning = $state(false);
   let at: Progress = $state({ t: 0, solid: 0 });
@@ -40,7 +41,7 @@
   function size() {
     const viewport = window.innerHeight;
     const tallest = Math.max(0, ...stepEls.filter(Boolean).map((el) => el.offsetHeight));
-    areaHeight = Math.max(tallest + 64, gap + 80);
+    areaHeight = HEADROOM + Math.max(tallest + 64, gap + 80);
     const content = (headEl?.offsetHeight ?? 0) + areaHeight + 96;
     stageHeight = content;
     stageTop = content <= viewport ? Math.round((viewport - content) / 2) : viewport - content;
@@ -137,14 +138,14 @@
       </div>
       <ol
         class="wh-steps relative mx-auto mt-16 w-full max-w-[800px] md:max-w-none {pinning
-          ? 'md:mt-14 [mask-image:linear-gradient(to_bottom,#000_calc(100%-6rem),transparent)]'
+          ? 'md:mt-2 [mask-image:linear-gradient(to_bottom,#000_calc(100%-6rem),transparent)]'
           : 'md:before:absolute md:before:top-0 md:before:left-1/2 md:before:w-px md:before:-translate-x-1/2 md:before:bg-secondary md:mt-0 ' +
             (tall ? 'md:before:bottom-[36rem]' : 'md:before:bottom-[13.5rem]')}"
         style:height={pinning && areaHeight ? `${areaHeight}px` : undefined}
       >
         {#if pinning}
           <span
-            class="wh-steps-rail absolute top-20 left-1/2 w-px -translate-x-1/2 bg-secondary"
+            class="wh-steps-rail absolute top-32 left-1/2 w-px -translate-x-1/2 bg-secondary"
             style:height="{Math.max(0, rail * gap - 80)}px"
             aria-hidden="true"
           ></span>
@@ -160,7 +161,7 @@
             style:transform={pinning ? `translate3d(0, ${look.rise * gap}px, 0)` : undefined}
             style:z-index={pinning ? i + 1 : undefined}
             class="wh-step relative border-l border-secondary pb-8 pl-10 md:w-1/2 md:border-l-0 {pinning
-              ? 'md:absolute md:top-0'
+              ? 'md:absolute md:top-12'
               : tall
                 ? 'md:min-h-[40rem]'
                 : 'md:min-h-[15rem]'} {i % 2 === 0

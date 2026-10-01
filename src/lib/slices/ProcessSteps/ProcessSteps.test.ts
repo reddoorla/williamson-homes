@@ -52,7 +52,7 @@ function setMedia() {
 const VIEWPORT = 1000;
 const HEAD = 100;
 const STEP = 200;
-const AREA = 240 + 80;
+const AREA = 48 + 240 + 80;
 const CONTENT = HEAD + AREA + 96;
 const PIN = (VIEWPORT - CONTENT) / 2;
 const STEP_LEN = 600;
@@ -163,6 +163,14 @@ describe("ProcessSteps, the pinned steps stage", () => {
     expect(waiting.style.borderColor).toBe("color-mix(in srgb, var(--color-secondary) 30%, white)");
   });
 
+  it("sits the circles 48px below the list's top, so the solidify pulse is never clipped", async () => {
+    const { container } = await mount();
+    for (const li of steps(container)) expect(li.className).toMatch(/(^|\s)md:top-12(\s|$)/);
+    expect((container.querySelector(".wh-steps-rail") as HTMLElement).className).toMatch(
+      /(^|\s)top-32(\s|$)/,
+    );
+  });
+
   it("keeps an arriving circle's white disc solid, so the rail never shows through it", async () => {
     const { container } = await mount();
     for (const scrolled of [0, STEP_LEN / 3, STEP_LEN / 2, 2.4 * STEP_LEN]) {
@@ -227,7 +235,7 @@ describe("ProcessSteps, the pinned steps stage", () => {
   it("uses a longer gap and scroll per step when tall", async () => {
     const { container } = await mount("tall");
     expect(rises(container)[1]).toBe("translate3d(0, 360px, 0)");
-    const content = HEAD + 360 + 80 + 96;
+    const content = HEAD + 48 + 360 + 80 + 96;
     expect(track(container).style.height).toBe(`${content + 3 * 850 + HOLD}px`);
   });
 
