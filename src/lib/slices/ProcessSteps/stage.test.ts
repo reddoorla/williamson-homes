@@ -19,6 +19,7 @@ describe("the steps stage", () => {
     expect(s[0].opacity).toBe(1);
     expect(s[0].textOpacity).toBe(1);
     expect(s[1].opacity).toBeCloseTo(0.3, 5);
+    expect(s[1].titleOpacity).toBe(0);
     expect(s[1].textOpacity).toBe(0);
     expect(s.slice(2).map((x) => x.opacity)).toEqual([0, 0]);
   });
@@ -40,6 +41,14 @@ describe("the steps stage", () => {
     expect(late.map((x) => x.active)).toEqual([false, true, false, false]);
   });
 
+  it("never shows a title or body at a faint, unreadable opacity while the stage is at rest", () => {
+    for (const s of [0, L.step, 2 * L.step, 3 * L.step, 3 * L.step + L.hold]) {
+      for (const look of looks(s)) {
+        for (const o of [look.titleOpacity, look.textOpacity]) expect([0, 1]).toContain(o);
+      }
+    }
+  });
+
   it("keeps exactly one circle lit at every point of the scroll", () => {
     for (let s = 0; s <= 3 * L.step + L.hold; s += 7) {
       expect(looks(s).filter((x) => x.active)).toHaveLength(1);
@@ -49,6 +58,7 @@ describe("the steps stage", () => {
   it("parks the last step alone, fully opaque, with the rail drawn in behind it", () => {
     const s = looks(3 * L.step);
     expect(s.map((x) => x.opacity)).toEqual([0, 0, 0, 1]);
+    expect(s.map((x) => x.titleOpacity)).toEqual([0, 0, 0, 1]);
     expect(s[3].textOpacity).toBe(1);
     expect(s[3].rise).toBe(0);
     expect(s[3].active).toBe(true);

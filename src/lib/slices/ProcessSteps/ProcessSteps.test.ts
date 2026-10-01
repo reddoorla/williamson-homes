@@ -113,6 +113,9 @@ const steps = (c: HTMLElement) => [...c.querySelectorAll("li")];
 const active = (c: HTMLElement) => steps(c).map((li) => li.hasAttribute("data-active"));
 const opacity = (el: Element | null) => (el as HTMLElement | null)?.style.opacity ?? "";
 const bodies = (c: HTMLElement) => steps(c).map((li) => opacity(li.querySelector(".wh-prose")));
+const circles = (c: HTMLElement) =>
+  steps(c).map((li) => opacity(li.querySelector(".wh-step-number")));
+const titles = (c: HTMLElement) => steps(c).map((li) => opacity(li.querySelector("h3")));
 const rises = (c: HTMLElement) => steps(c).map((li) => li.style.transform);
 const stage = (c: HTMLElement) => c.querySelector(".wh-steps-stage") as HTMLElement;
 const track = (c: HTMLElement) => c.querySelector(".wh-steps-track") as HTMLElement;
@@ -154,6 +157,8 @@ describe("ProcessSteps, the pinned steps stage", () => {
       "translate3d(0, 720px, 0)",
     ]);
     expect(bodies(container)).toEqual(["1", "0", "0", "0"]);
+    expect(titles(container)).toEqual(["1", "0", "0", "0"]);
+    expect(Number(circles(container)[1])).toBeCloseTo(0.3, 5);
   });
 
   it("rises step 2 into the circle as the page scrolls, then hands it the circle", async () => {
@@ -164,14 +169,16 @@ describe("ProcessSteps, the pinned steps stage", () => {
     await scrollBy(STEP_LEN);
     expect(rises(container)[1]).toBe("translate3d(0, 0px, 0)");
     expect(active(container)).toEqual([false, true, false, false]);
-    expect(opacity(steps(container)[0])).toBe("0");
+    expect(circles(container)[0]).toBe("0");
+    expect(titles(container)[0]).toBe("0");
   });
 
   it("parks Finish Your Dream Home alone, then solidifies it in the primary colour", async () => {
     const { container } = await mount();
     await scrollBy(3 * STEP_LEN);
     const last = steps(container)[3];
-    expect(steps(container).map((li) => opacity(li))).toEqual(["0", "0", "0", "1"]);
+    expect(circles(container)).toEqual(["0", "0", "0", "1"]);
+    expect(titles(container)).toEqual(["0", "0", "0", "1"]);
     expect(active(container)).toEqual([false, false, false, true]);
     expect(container.querySelector("[data-solid]")).toBeNull();
     await scrollBy(3 * STEP_LEN + HOLD);

@@ -151,7 +151,6 @@
           <li
             bind:this={stepEls[i]}
             data-active={lit ? "" : undefined}
-            style:opacity={pinning ? look.opacity : undefined}
             style:transform={pinning ? `translate3d(0, ${look.rise * gap}px, 0)` : undefined}
             style:z-index={pinning ? i + 1 : undefined}
             class="wh-step relative border-l border-secondary pb-8 pl-10 md:w-1/2 md:border-l-0 {pinning
@@ -172,6 +171,7 @@
                 : ''} {i % 2 === 0
                 ? '-left-[18px] md:-left-10'
                 : '-left-[18px] md:right-[-40px] md:left-auto'}"
+              style:opacity={pinning ? look.opacity : undefined}
               style:background-color={solid > 0 ? mix(solid) : undefined}
               style:border-color={solid > 0 ? mix(solid) : undefined}
               style:transform={solid > 0
@@ -190,6 +190,7 @@
               class="wh-h3 pt-1 text-secondary md:pt-5 {i % 2 === 0
                 ? 'md:text-left'
                 : 'md:text-right'}"
+              style:opacity={pinning ? look.titleOpacity : undefined}
               style:color={solid > 0 ? mix(solid) : undefined}
             >
               <span class="sr-only">{`Step ${i + 1}: `}</span>{step.title}

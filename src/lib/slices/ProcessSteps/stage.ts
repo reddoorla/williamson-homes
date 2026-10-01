@@ -33,6 +33,7 @@ export function progress(scrolled: number, count: number, lengths: Lengths): Pro
 export type StepLook = {
   rise: number;
   opacity: number;
+  titleOpacity: number;
   textOpacity: number;
   active: boolean;
   solid: number;
@@ -46,13 +47,16 @@ export function stepLooks(count: number, { t, solid }: Progress): StepLook[] {
   return Array.from({ length: count }, (_, k) => {
     const d = k - t;
     let opacity = 0;
+    let titleOpacity = 0;
     let textOpacity = 0;
     if (k < base) opacity = 0;
     else if (k === base) {
       opacity = 1 - between(0.45, 1, f);
+      titleOpacity = opacity;
       textOpacity = 1 - between(0.15, 0.65, f);
     } else if (d <= 1) {
       opacity = 0.3 + 0.7 * smoothstep(1 - d);
+      titleOpacity = smoothstep(between(0.25, 0.9, 1 - d));
       textOpacity = smoothstep(between(0.4, 0.95, 1 - d));
     } else if (d <= 2) {
       opacity = 0.3 * (2 - d);
@@ -61,6 +65,7 @@ export function stepLooks(count: number, { t, solid }: Progress): StepLook[] {
     return {
       rise: Math.max(0, d),
       opacity,
+      titleOpacity,
       textOpacity,
       active,
       solid: k === last ? solid : 0,
