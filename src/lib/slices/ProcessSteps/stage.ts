@@ -61,7 +61,7 @@ export function stepLooks(count: number, { t, solid }: Progress): StepLook[] {
     return {
       rise: Math.max(0, d),
       opacity,
-      textOpacity: k === base && k === last ? 1 : textOpacity,
+      textOpacity,
       active,
       solid: k === last ? solid : 0,
     };
