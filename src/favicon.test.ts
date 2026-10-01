@@ -40,3 +40,28 @@ describe("favicons are the reference's files", () => {
     });
   }
 });
+
+const NETLIFY_DEFAULT_ICO = "e0dc6025";
+
+function icoSizes(path: string) {
+  const bytes = readFileSync(path);
+  expect([...bytes.subarray(0, 4)]).toEqual([0, 0, 1, 0]);
+  const count = bytes.readUInt16LE(4);
+  return Array.from({ length: count }, (_, i) => bytes[6 + 16 * i] || 256).sort((a, b) => a - b);
+}
+
+describe("/favicon.ico is ours, so Netlify never answers it with its own icon", () => {
+  const path = resolve(root, "static/favicon.ico");
+
+  it("ships a real ICO with 16, 32 and 48px images", () => {
+    expect(icoSizes(path)).toEqual([16, 32, 48]);
+    expect(md5(path).startsWith(NETLIFY_DEFAULT_ICO)).toBe(false);
+  });
+
+  it("is linked from app.html, after the reference's PNG", () => {
+    const links = [...html.matchAll(/<link\b[^>]*rel="icon"[^>]*>/g)].map((m) => m[0]);
+    expect(links[0]).toContain("favicon.png");
+    expect(links[1]).toContain('href="%sveltekit.assets%/favicon.ico"');
+    expect(links[1]).toContain('sizes="any"');
+  });
+});
