@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { flushSync } from "svelte";
   import { afterNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import { trapFocus } from "$lib/actions/trapFocus";
@@ -15,6 +16,8 @@
   let scrolledUp = $state(false);
   let focusWithin = $state(false);
   let heroOut = $state(false);
+  let headerFocus = $state(false);
+  const away = $derived(heroOut && !headerFocus);
   const sidekick = $derived(focusWithin ? pastTop || heroOut : pastTop && scrolledUp);
   let lastY = 0;
   let cachedBottom: number | null = null;
@@ -57,7 +60,10 @@
     pastTop = y > threshold;
     scrolledUp = pastTop && y < lastY;
     lastY = y;
-    if (focusWithin && !heroOut && !pastTop) handFocusToHeader();
+    if (focusWithin && !heroOut && !pastTop) {
+      flushSync();
+      handFocusToHeader();
+    }
   }
 
   afterNavigate(forgetHero);
@@ -76,8 +82,13 @@
   data-hero-out={heroOut ? "" : undefined}
 >
   <div
-    inert={heroOut}
-    class="wh-hero-header mx-auto flex max-w-[1280px] items-start justify-between px-2.5 transition-transform duration-500 ease-linear {heroOut
+    inert={away}
+    onfocusin={() => (headerFocus = true)}
+    onfocusout={(event) => {
+      const next = event.relatedTarget as Node | null;
+      if (!next || !event.currentTarget.contains(next)) headerFocus = false;
+    }}
+    class="wh-hero-header mx-auto flex max-w-[1280px] items-start justify-between px-2.5 transition-transform duration-500 ease-linear {away
       ? 'min-[480px]:-translate-y-[152px]'
       : 'min-[480px]:translate-y-px'}"
   >

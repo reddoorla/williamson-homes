@@ -213,3 +213,20 @@ New entries:
   was NOT MEASURED: `svelte-kit sync`, run by the build just before, reloaded
   the dev page mid-capture. The census is unchanged: 17 rows + 7 ambiguous,
   all of them the ACK-REQUIRED colour/transform rows above.
+
+### 2026-10-01 — review round 2
+
+Round 2 verified 13 of round 1's 14 fixes. Its one major was a round-1
+regression, now fixed:
+
+- [fixed] Making the hidden header `inert` broke the sticky bar's focus
+  handback: `focus()` ran before Svelte had removed `inert`, so focus fell to
+  `<body>`. jsdom ignores `inert` for focus, so the unit test passed for the
+  wrong reason. Fix: `flushSync()` before the handback.
+- [fixed] The mirror case (minor): a focused main-header link lost focus when
+  the header slid away. The header now stays shown, and not inert, while it
+  holds focus.
+- Both cases are pinned by `tests/interaction/header-focus.spec.ts` (a real
+  browser). Both tests went red on the round-1 code before the fix.
+- Wording: "teal ground" in the round-1 entry on rule 11 means `--primary`
+  (#005a78, CSS:L5906's `.ratio-box`), not `--color-teal` (#407f82).
