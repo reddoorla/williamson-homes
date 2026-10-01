@@ -8,7 +8,7 @@
   <div
     class="mx-auto flex max-w-[1280px] flex-col px-[30px] md:flex-row md:justify-between md:gap-8"
   >
-    <a href="/" class="block" aria-label="Williamson Homes, home">
+    <a href="/" class="wh-hover-fade block" aria-label="Williamson Homes, home">
       <img src="/images/williamson-w.svg" alt="" class="block h-24" />
       <img
         src="/images/williamson-homes-logo.svg"
@@ -19,12 +19,16 @@
     <nav aria-label="Footer">
       <ul class="flex flex-col gap-16 pb-16 text-right">
         {#each FOOTER_LINKS as link (link.href)}
-          <li><a href={link.href} class="text-white">{link.label}</a></li>
+          <li>
+            <a href={link.href} class="wh-link wh-hover-fade text-white [--wh-hover-opacity:.87]"
+              >{link.label}</a
+            >
+          </li>
         {/each}
       </ul>
     </nav>
   </div>
-  <p class="mx-auto max-w-[1280px] px-5 text-xs text-white italic">
+  <p class="mx-auto max-w-[1280px] px-5 text-xs text-white italic md:text-[14px] md:leading-5">
     © Williamson Homes {year}, All Rights Reserved
   </p>
 </footer>

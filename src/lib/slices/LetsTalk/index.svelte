@@ -28,7 +28,7 @@
         <h2 class="wh-h2 text-secondary">{slice.primary.heading}</h2>
       {/if}
       {#if href && slice.primary.button_label}
-        <WhButton {href} tone="primary" class="mt-8">{slice.primary.button_label}</WhButton>
+        <WhButton {href} tone="primary" single class="mt-8">{slice.primary.button_label}</WhButton>
       {/if}
     </div>
   </div>

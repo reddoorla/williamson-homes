@@ -15,7 +15,7 @@
 </script>
 
 <article data-project={project.uid}>
-  <section class="relative flex min-h-[50vh] items-end overflow-hidden bg-primary">
+  <section data-wh-hero class="relative flex min-h-[50vh] items-end overflow-hidden bg-primary">
     {#if isFilled.image(project.data.hero_image)}
       <PrismicImage
         field={project.data.hero_image}

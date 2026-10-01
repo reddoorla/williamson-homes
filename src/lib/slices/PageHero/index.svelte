@@ -25,9 +25,10 @@
 </script>
 
 <section
+  data-wh-hero
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="wh-hero relative flex items-end overflow-hidden {tall
+  class="wh-hero relative flex items-start overflow-hidden {tall
     ? 'min-h-[90vh]'
     : 'min-h-[50vh]'} {groundClass}"
 >
@@ -47,7 +48,7 @@
     {/if}
     {#if isFilled.richText(slice.primary.heading)}
       <div
-        class="wh-hero-heading mx-auto mt-16 max-w-[340px] text-[22px] leading-9 {dark
+        class="wh-hero-heading wh-h3 mx-auto mt-16 max-w-[450px] px-8 {dark
           ? 'text-primary'
           : 'text-white'}"
       >
@@ -57,7 +58,11 @@
     {#if buttons.length > 0}
       <div class="mt-8 flex justify-center gap-12">
         {#each buttons as button, i (i)}
-          <WhButton href={button.href} tone={dark ? "primary" : "light"}>{button.label}</WhButton>
+          <WhButton
+            href={button.href}
+            tone={dark ? "primary" : "light"}
+            flat={slice.primary.background === "teal"}>{button.label}</WhButton
+          >
         {/each}
       </div>
     {/if}

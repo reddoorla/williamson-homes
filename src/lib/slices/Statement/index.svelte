@@ -21,7 +21,7 @@
       <WMark variant="black" class="mb-8 w-16" />
     {/if}
     {#if slice.primary.eyebrow}
-      <p class="wh-eyebrow mb-8">{slice.primary.eyebrow}</p>
+      <p class="wh-eyebrow mb-8 max-[479px]:text-[15px]">{slice.primary.eyebrow}</p>
     {/if}
     {#if isFilled.richText(slice.primary.heading)}
       <div class="wh-statement-heading mx-auto max-w-[620px] text-secondary">
@@ -29,7 +29,9 @@
       </div>
     {/if}
     {#if isFilled.richText(slice.primary.body)}
-      <div class="wh-prose mx-auto mt-8 max-w-[620px] text-secondary">
+      <div
+        class="wh-prose mx-auto mt-8 max-w-[620px] text-secondary [&_p]:mb-2.5 [&_p+p]:mt-[42px]"
+      >
         <RichTextBody field={slice.primary.body} />
       </div>
     {/if}

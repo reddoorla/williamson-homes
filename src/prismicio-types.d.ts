@@ -1218,6 +1218,16 @@ export interface ProcessStepsSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   intro: prismic.RichTextField;
+
+  /**
+   * step height (blank: short, 15rem; tall is 40rem, for long step text) field in *ProcessSteps → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: process_steps.default.primary.step_height
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  step_height: prismic.SelectField<"short" | "tall">;
 }
 
 /**

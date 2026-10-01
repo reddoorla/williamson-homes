@@ -9,31 +9,37 @@
   const projects = $derived(pickProjects(slice.items, context?.projects ?? []));
 </script>
 
-<section
-  data-slice-type={slice.slice_type}
-  data-slice-variation={slice.variation}
-  class="px-4 pt-16"
->
-  <div class="mx-auto max-w-[1280px]">
+<section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="pt-16">
+  <div class="mx-auto max-w-[1280px] px-4">
     {#if slice.primary.heading}
       <h2 class="wh-h3 text-center text-primary">{slice.primary.heading}</h2>
     {/if}
-    <ul class="mt-16 grid gap-5 md:grid-cols-3">
+    <ul class="mt-16 grid gap-x-5 md:grid-cols-3">
       {#each projects as project (project.id)}
-        <li>
-          <a href={projectHref(project.uid)} class="group block">
-            <div class="relative aspect-square overflow-hidden bg-primary">
+        <li class="max-md:px-2.5">
+          <div class="relative aspect-square overflow-hidden bg-primary">
+            <a
+              href={projectHref(project.uid)}
+              tabindex="-1"
+              aria-hidden="true"
+              class="wh-featured-photo wh-hover-fade absolute inset-0 block hover:bg-[#005a7896]"
+            >
               {#if isFilled.image(project.image)}
                 <PrismicImage
                   field={project.image}
                   alt=""
-                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                  class="absolute inset-0 h-full w-full object-cover"
                   imgixParams={{ w: 900 }}
                 />
               {/if}
-            </div>
-            <h3 class="wh-eyebrow mt-8 pb-6 text-center">{project.title}</h3>
-          </a>
+            </a>
+          </div>
+          <h3 class="wh-eyebrow mt-8 pb-6 text-center max-[479px]:text-[15px]">
+            <a
+              href={projectHref(project.uid)}
+              class="wh-hover-fade inline-block [--wh-hover-opacity:.92]">{project.title}</a
+            >
+          </h3>
         </li>
       {/each}
     </ul>

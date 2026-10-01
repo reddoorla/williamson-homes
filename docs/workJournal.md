@@ -538,3 +538,68 @@ It still refuses a `none` hue. With the fix, the same probe passes both
 steps (15 tests), and the probe was removed. This is the first part of #152.
 Field's `red-600` failing AA off white, the issue's second part, is not
 touched here.
+
+## 2026-10-01 — Homes fidelity (OD7-P1b): counters, header scroll interactions, hovers, and a home gate that passes in the cloud (#10)
+
+The brief called the reference's 20 IX2 scroll events "scroll-in". None of
+them reveals content. All 20 drive the header:
+
+- the hero leaving the viewport slides `.hero-header` up 152px over 500ms;
+- the hero coming back puts it at `translateY(1px)`;
+- at ≤479 the bar turns teal past the hero.
+
+Reading the IX2 JSON, not counting event names, is what showed this. The
+header is now fixed and runs those interactions, keyed off an explicit
+`data-wh-hero`. The first version guessed the hero from
+`#main-content`'s first child. On a project page that child is a 14331px
+`<article>`, so the fixed header never hid; review caught it.
+
+The sticky counters (`countersAnim.js`) are ported as a pure function of the
+step tops, `counters.ts`. Against the live site's trace at 1440 the port
+reads 0.65 and 0.23 where the live page reads 0.65 and 0.22. The script's
+last step is a defect, not a design. It hides steps 1–3 and `scrollTo`s the
+heading, its own upscroll listener undoes that, and the wheel is pinned at
+y=3578 for as long as you scroll (50+ steps measured at 1440). At 834 it
+jumps back 700px instead. The port releases by the sticky block ending. A
+second defect surfaced only on the live CMS document: about-us's intro is
+284–316px tall, so a fixed 16rem heading put it over the pinned steps. The
+pin is now the measured heading height.
+
+The matching gate had never run: `matching/SPEC.md` did not exist, so
+`gate.sh` refused every page. It now runs in the cloud with
+`MATCHING_SKILL_DIR` pointed at a claude-skills clone. The instrument was
+proven before any of its FAILs were trusted. The live reference, proxied in
+as the candidate (`matching/probes/ref-as-cand.mjs`, local), scored 0.0% in
+all 33 regions on two pages; the real candidate, the same hour, failed 6 of
+18 on home.
+
+Rounds r1–r7 took home to PASS at 0.10 with no masks. Two of the
+round-1-to-pass fixes were the expensive kind:
+
+- **The font file was the wrong build.** Glyph widths differed even though
+  the CSS was identical and the captured woff2 had the same md5 as ours.
+  Google served the capture tool the unhinted v31 latin file; a headless
+  Chromium gets the hinted one (`…Wlhyw.woff2`). "WILLIAMSON HOMES" at 300
+  14px is 161px with ours and 152px with the served file, and that 6% is
+  what wrapped Construction Partner's paragraph onto a fourth line at 834.
+  The lesson: a captured asset is what the capture tool was served, which is
+  not necessarily what a browser gets.
+- **The reference has a tablet type ladder the utilities did not.** At ≤991,
+  h2/h3 are 20px weight 300, and p and a are 14px (CSS:L6830, L6835). It
+  showed up at 834 as 3 failing regions.
+
+Hovers: the reference's 15 rules mostly fail AA on hover, because `a:hover`
+fades everything to .8 on top of a gray tint. Secondary text on white drops
+to 3.02:1, and Let's Talk to 2.91:1. Properties and transitions are the
+reference's. Values are clamped only where a flat ground makes the
+arithmetic possible, each clamp is computed in `src/hover-rules.test.ts`,
+and the fidelity-versus-AA question is with the operator.
+
+The census still has 17 colour/transform rows, all ACK-REQUIRED in the
+LEDGER, including the reference's own invisible footer links.
+
+What was not done:
+
+- about-us is specced but not gated; its baseline failed every region.
+- The live about-us document needs `step_height: tall` set in Prismic.
+- The click IX (menu slide) and the project gallery's IX are not ported.

@@ -31,14 +31,18 @@ function contrast(a: number[], b: number[]): number {
 
 describe("round-1 and round-2 review fixes stay fixed", () => {
   it("keeps secondary button text AA on its hover tint over white and light", () => {
-    const alpha =
-      Number(read("src/lib/components/WhButton.svelte").match(/hover:bg-secondary\/(\d+)/)?.[1]) /
-      100;
-    expect(alpha).toBeGreaterThan(0);
+    const source = read("src/lib/components/WhButton.svelte");
+    const alphas = [...source.matchAll(/secondary:\s*"[^"]*hover:bg-secondary\/(\d+)[^"]*"/g)].map(
+      (m) => Number(m[1]) / 100,
+    );
+    expect(alphas).toHaveLength(2);
     const secondary = token("secondary");
-    for (const ground of [[255, 255, 255], token("light")]) {
-      const tint = ground.map((g, i) => alpha * secondary[i] + (1 - alpha) * g);
-      expect(contrast(secondary, tint)).toBeGreaterThanOrEqual(4.5);
+    for (const alpha of alphas) {
+      expect(alpha).toBeGreaterThan(0);
+      for (const ground of [[255, 255, 255], token("light")]) {
+        const tint = ground.map((g, i) => alpha * secondary[i] + (1 - alpha) * g);
+        expect(contrast(secondary, tint)).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 

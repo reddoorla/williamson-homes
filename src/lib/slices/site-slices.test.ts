@@ -45,7 +45,16 @@ describe("FeaturedProjects", () => {
         context: { projects: cards },
       },
     });
-    expect(hrefs(container)).toEqual(["/projects/manhattan-beach", "/projects/palos-verdes-cove"]);
+    const named = [...container.querySelectorAll("a:not([aria-hidden='true'])")];
+    expect(named.map((a) => a.getAttribute("href"))).toEqual([
+      "/projects/manhattan-beach",
+      "/projects/palos-verdes-cove",
+    ]);
+    const photos = [...container.querySelectorAll("a[aria-hidden='true']")];
+    expect(photos.map((a) => [a.getAttribute("href"), a.getAttribute("tabindex")])).toEqual([
+      ["/projects/manhattan-beach", "-1"],
+      ["/projects/palos-verdes-cove", "-1"],
+    ]);
     expect(container.querySelector("h2")?.textContent).toBe("Featured Projects");
   });
 });
