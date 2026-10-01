@@ -10,6 +10,7 @@ beforeEach(() => {
   main = document.createElement("main");
   main.id = "main-content";
   const hero = document.createElement("section");
+  hero.setAttribute("data-wh-hero", "");
   main.append(hero);
   document.body.append(main);
   vi.spyOn(hero, "getBoundingClientRect").mockImplementation(
@@ -89,6 +90,58 @@ describe("the header's IX2 scroll interactions", () => {
     expect(bar.getAttribute("aria-hidden")).toBe("true");
     await scrollTo(HERO_HEIGHT + 600);
     await scrollTo(HERO_HEIGHT + 300);
+    expect(bar.getAttribute("aria-hidden")).toBe("false");
+  });
+
+  it("makes the slid-away header inert, so Tab never lands on a link off-screen", async () => {
+    const { container } = render(SiteHeader, { props: { tone: "light" } });
+    const { hero } = parts(container);
+    const inert = () => hero.inert || hero.hasAttribute("inert");
+    expect(inert()).toBe(false);
+    await scrollTo(HERO_HEIGHT + 50);
+    expect(inert()).toBe(true);
+    await scrollTo(0);
+    expect(inert()).toBe(false);
+  });
+
+  it("keeps the sticky bar up while it holds focus and the header is away", async () => {
+    const { container } = render(SiteHeader, { props: { tone: "light" } });
+    const { bar } = parts(container);
+    await scrollTo(HERO_HEIGHT + 900);
+    await scrollTo(HERO_HEIGHT + 600);
+    await fireEvent.focusIn(bar);
+    await scrollTo(HERO_HEIGHT + 100);
+    expect(bar.getAttribute("aria-hidden")).toBe("false");
+  });
+
+  it("hands focus back to the header only once the header is showing again", async () => {
+    const { container } = render(SiteHeader, { props: { tone: "light" } });
+    const doc = container.ownerDocument;
+    const { bar } = parts(container);
+    await scrollTo(HERO_HEIGHT + 900);
+    await scrollTo(HERO_HEIGHT + 600);
+    const sticky = bar.querySelector('a[href="/projects"]') as HTMLAnchorElement;
+    sticky.focus();
+    await fireEvent.focusIn(sticky);
+    await scrollTo(HERO_HEIGHT + 100);
+    expect(doc.activeElement).toBe(sticky);
+    await scrollTo(HERO_HEIGHT - 300);
+    const active = doc.activeElement as HTMLElement;
+    expect(active.closest(".wh-hero-header")).not.toBeNull();
+    expect(active.getAttribute("href")).toBe("/projects");
+  });
+});
+
+describe("a page whose first block is not a hero", () => {
+  it("ignores an unmarked first child and treats the header's own 120px as the hero", async () => {
+    main.querySelector("section")?.removeAttribute("data-wh-hero");
+    const { container } = render(SiteHeader, { props: { tone: "dark" } });
+    const { header, bar } = parts(container);
+    await scrollTo(119);
+    expect(header.hasAttribute("data-hero-out")).toBe(false);
+    await scrollTo(400);
+    expect(header.hasAttribute("data-hero-out")).toBe(true);
+    await scrollTo(300);
     expect(bar.getAttribute("aria-hidden")).toBe("false");
   });
 });

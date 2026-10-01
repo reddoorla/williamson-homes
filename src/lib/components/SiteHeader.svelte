@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { afterNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import { trapFocus } from "$lib/actions/trapFocus";
   import { NAV_LINKS } from "$lib/contact";
@@ -7,13 +8,16 @@
 
   let { tone = "dark" }: Props = $props();
 
+  const NO_HERO_BOTTOM = 120;
+
   let menuOpen = $state(false);
   let pastTop = $state(false);
   let scrolledUp = $state(false);
   let focusWithin = $state(false);
   let heroOut = $state(false);
-  const sidekick = $derived(pastTop && (scrolledUp || focusWithin));
+  const sidekick = $derived(focusWithin ? pastTop || heroOut : pastTop && scrolledUp);
   let lastY = 0;
+  let cachedBottom: number | null = null;
   let menuButton = $state<HTMLButtonElement>();
   let headerEl = $state<HTMLElement>();
   let sidekickEl = $state<HTMLElement>();
@@ -22,9 +26,17 @@
     page.url.pathname === href || page.url.pathname.startsWith(`${href}/`);
 
   function heroBottom() {
-    const hero = document.querySelector("#main-content > :first-child");
-    if (!(hero instanceof HTMLElement)) return 0;
-    return hero.getBoundingClientRect().bottom + window.scrollY;
+    if (cachedBottom !== null) return cachedBottom;
+    const hero = document.querySelector("#main-content [data-wh-hero]");
+    cachedBottom =
+      hero instanceof HTMLElement
+        ? hero.getBoundingClientRect().bottom + window.scrollY
+        : NO_HERO_BOTTOM;
+    return cachedBottom;
+  }
+
+  function forgetHero() {
+    cachedBottom = null;
   }
 
   function handFocusToHeader() {
@@ -40,18 +52,20 @@
   function onScroll() {
     const y = window.scrollY;
     const bottom = heroBottom();
-    const threshold = bottom > 0 ? bottom + 200 : 120;
-    if (y <= threshold && pastTop && focusWithin) handFocusToHeader();
-    heroOut = bottom > 0 && y >= bottom;
+    const threshold = bottom === NO_HERO_BOTTOM ? NO_HERO_BOTTOM : bottom + 200;
+    heroOut = y >= bottom;
     pastTop = y > threshold;
     scrolledUp = pastTop && y < lastY;
     lastY = y;
+    if (focusWithin && !heroOut && !pastTop) handFocusToHeader();
   }
+
+  afterNavigate(forgetHero);
 
   const closeMenu = () => (menuOpen = false);
 </script>
 
-<svelte:window onscroll={onScroll} />
+<svelte:window onscroll={onScroll} onresize={forgetHero} />
 
 <header
   bind:this={headerEl}
@@ -62,7 +76,8 @@
   data-hero-out={heroOut ? "" : undefined}
 >
   <div
-    class="wh-hero-header mx-auto flex max-w-[1280px] items-start justify-between px-2.5 transition-transform duration-500 {heroOut
+    inert={heroOut}
+    class="wh-hero-header mx-auto flex max-w-[1280px] items-start justify-between px-2.5 transition-transform duration-500 ease-linear {heroOut
       ? 'min-[480px]:-translate-y-[152px]'
       : 'min-[480px]:translate-y-px'}"
   >
@@ -98,7 +113,7 @@
   <button
     bind:this={menuButton}
     type="button"
-    class="wh-hamburger absolute top-6 right-8 block h-8 w-8 transition-opacity duration-200 hover:opacity-[.66] md:hidden"
+    class="wh-hamburger absolute top-6 right-8 block h-8 w-8 transition-opacity duration-200 ease-[ease] hover:opacity-[.66] md:hidden"
     aria-label="Open menu"
     aria-controls={menuOpen ? "wh-menu" : undefined}
     aria-expanded={menuOpen}
@@ -163,7 +178,7 @@
   >
     <button
       type="button"
-      class="wh-menu-close absolute top-8 right-8 block h-8 w-8 transition-opacity duration-200 hover:opacity-[.66]"
+      class="wh-menu-close absolute top-8 right-8 block h-8 w-8 transition-opacity duration-200 ease-[ease] hover:opacity-[.66]"
       aria-label="Close menu"
       onclick={closeMenu}
     >

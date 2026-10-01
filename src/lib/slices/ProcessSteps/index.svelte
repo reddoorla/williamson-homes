@@ -3,7 +3,7 @@
   import { afterNavigate } from "$app/navigation";
   import { isFilled, type Content } from "@prismicio/client";
   import RichTextBody from "$lib/components/RichTextBody.svelte";
-  import { counterStates, restingStates, type StepState } from "./counters";
+  import { counterStates, PIN_TOP, restingStates, type StepState } from "./counters";
 
   let { slice }: { slice: Content.ProcessStepsSlice } = $props();
 
@@ -13,6 +13,9 @@
   let pinning = $state(false);
   let live: StepState[] | null = $state(null);
   let stepEls: HTMLLIElement[] = $state([]);
+  let sectionEl: HTMLElement | undefined = $state();
+  let headEl: HTMLElement | undefined = $state();
+  let pin = $state(PIN_TOP);
 
   const states = $derived(live ?? restingStates(steps.length));
 
@@ -23,10 +26,14 @@
   function measure() {
     frame = 0;
     if (!pinning) return;
+    const box = sectionEl?.getBoundingClientRect();
+    if (live && box && (box.bottom < 0 || box.top > window.innerHeight)) return;
+    pin = Math.max(PIN_TOP, headEl?.offsetHeight ?? PIN_TOP);
     const els = stepEls.filter(Boolean);
     live = counterStates(
       els.map((el) => el.getBoundingClientRect().top),
       els.map((el) => el.offsetHeight),
+      pin,
     );
   }
 
@@ -62,15 +69,18 @@
 </script>
 
 <section
+  bind:this={sectionEl}
   id={slice.primary.section_id || undefined}
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
   data-pinning={pinning ? "" : undefined}
+  style:--wh-pin={pinning ? `${pin}px` : undefined}
   class="px-4 {tall ? 'pt-16' : ''}"
 >
   <div class="mx-auto max-w-[948px]">
     <div
-      class="wh-steps-head bg-white md:h-64 {tall ? 'md:pt-8' : 'pt-16 md:pt-32'} {pinning
+      bind:this={headEl}
+      class="wh-steps-head bg-white md:min-h-64 {tall ? 'md:pt-8' : 'pt-16 md:pt-32'} {pinning
         ? 'md:sticky md:top-0 md:z-[4]'
         : ''}"
     >
@@ -95,7 +105,7 @@
           style:opacity={live ? states[i].opacity : undefined}
           class="wh-step relative border-l border-secondary pb-8 pl-10 md:w-1/2 md:border-l-0 {tall
             ? 'md:min-h-[40rem]'
-            : 'md:min-h-[15rem]'} {pinning ? 'md:sticky md:top-64' : ''} {i % 2 === 0
+            : 'md:min-h-[15rem]'} {pinning ? 'md:sticky md:top-(--wh-pin)' : ''} {i % 2 === 0
             ? 'md:ml-auto md:pl-16'
             : 'md:mr-auto md:pr-16 md:pl-0 md:text-right'}"
         >
@@ -107,6 +117,7 @@
               : ''} {i % 2 === 0
               ? '-left-[18px] md:-left-10'
               : '-left-[18px] md:right-[-40px] md:left-auto'}"
+            style:opacity={live ? states[i].titleOpacity : undefined}
             aria-hidden="true">{i + 1}</span
           >
           <h3

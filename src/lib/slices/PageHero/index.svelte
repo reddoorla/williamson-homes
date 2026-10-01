@@ -25,6 +25,7 @@
 </script>
 
 <section
+  data-wh-hero
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
   class="wh-hero relative flex items-start overflow-hidden {tall

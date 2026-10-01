@@ -117,8 +117,10 @@ describe("ProcessSteps counters (countersAnim.js)", () => {
     expect(head.className).toMatch(/(^|\s)md:top-0(\s|$)/);
     for (const li of steps(container)) {
       expect(li.className).toMatch(/(^|\s)md:sticky(\s|$)/);
-      expect(li.className).toMatch(/(^|\s)md:top-64(\s|$)/);
+      expect(li.className).toMatch(/(^|\s)md:top-\(--wh-pin\)(\s|$)/);
     }
+    const section = container.querySelector("section") as HTMLElement;
+    expect(section.style.getPropertyValue("--wh-pin")).toBe("256px");
     expect(PIN_TOP).toBe(16 * 16);
   });
 
@@ -181,13 +183,87 @@ describe("ProcessSteps counters (countersAnim.js)", () => {
     );
   });
 
-  it("removes its listeners when it unmounts", async () => {
+  it("removes exactly the listeners it added when it unmounts", async () => {
+    const add = vi.spyOn(window, "addEventListener");
     const remove = vi.spyOn(window, "removeEventListener");
     const { unmount } = await mount();
+    const added = add.mock.calls.filter((c) => c[0] === "scroll" || c[0] === "resize");
+    expect(added.map((c) => c[0]).sort()).toEqual(["resize", "scroll"]);
     unmount();
-    expect(remove.mock.calls.map((c) => c[0])).toEqual(
-      expect.arrayContaining(["scroll", "resize"]),
-    );
+    for (const [type, handler] of added) {
+      expect(remove.mock.calls.some((c) => c[0] === type && c[1] === handler)).toBe(true);
+    }
     expect([...listeners.values()].every((set) => set.size === 0)).toBe(true);
+  });
+
+  it("cancels a pending frame when it unmounts", async () => {
+    const cancel = vi.fn();
+    vi.stubGlobal("cancelAnimationFrame", cancel);
+    const { unmount } = await mount();
+    window.dispatchEvent(new Event("scroll"));
+    expect(frames).toHaveLength(1);
+    unmount();
+    expect(cancel).toHaveBeenCalled();
+  });
+
+  it("asks for one frame per burst of scroll events", async () => {
+    await mount();
+    for (let i = 0; i < 5; i++) window.dispatchEvent(new Event("scroll"));
+    expect(frames).toHaveLength(1);
+  });
+
+  it("re-measures on resize", async () => {
+    const { container } = await mount();
+    tops = [PIN_TOP, PIN_TOP, PIN_TOP + 100, PIN_TOP + 340];
+    window.dispatchEvent(new Event("resize"));
+    await flushFrames();
+    expect(active(container)).toEqual([false, true, false, false]);
+  });
+
+  it("stops pinning when the viewport narrows below md, and resumes when it widens", async () => {
+    const { container } = await mount();
+    const query = "(min-width: 768px)";
+    wide = false;
+    for (const fn of listeners.get(query) ?? []) fn();
+    await tick();
+    expect(container.querySelector("[data-pinning]")).toBeNull();
+    wide = true;
+    for (const fn of listeners.get(query) ?? []) fn();
+    await flushFrames();
+    expect(container.querySelector("[data-pinning]")).not.toBeNull();
+  });
+
+  it("pins below a heading taller than 16rem, never under it", async () => {
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      return this.classList.contains("wh-steps-head") ? 316 : 240;
+    });
+    const { container } = await mount();
+    const section = container.querySelector("section") as HTMLElement;
+    expect(section.style.getPropertyValue("--wh-pin")).toBe("316px");
+    await scrollTo([316, 300, 540, 780]);
+    expect(active(container)).toEqual([false, true, false, false]);
+  });
+
+  it("fades step 3's number with its title in the final approach, as .find('h3') does", async () => {
+    const { container } = await mount();
+    await scrollTo([PIN_TOP, PIN_TOP, PIN_TOP, PIN_TOP + 120]);
+    const third = steps(container)[2];
+    const number = third.querySelector(".wh-step-number") as HTMLElement;
+    const title = third.querySelector("h3") as HTMLElement;
+    expect(Number(number.style.opacity)).toBeCloseTo(1 - 0.5 ** 3, 5);
+    expect(number.style.opacity).toBe(title.style.opacity);
+  });
+
+  it("skips the work while the section is off-screen", async () => {
+    const { container } = await mount();
+    const section = container.querySelector("section") as HTMLElement;
+    vi.spyOn(section, "getBoundingClientRect").mockReturnValue({
+      top: 5000,
+      bottom: 6200,
+    } as DOMRect);
+    await scrollTo([PIN_TOP, PIN_TOP, PIN_TOP, PIN_TOP]);
+    expect(active(container)).toEqual([true, false, false, false]);
   });
 });
