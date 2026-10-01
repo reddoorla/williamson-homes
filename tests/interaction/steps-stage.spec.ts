@@ -173,11 +173,44 @@ test.describe("the steps stay a plain list under reduced motion", () => {
   });
 });
 
-test.describe("the steps stay a plain list on a phone", () => {
+test.describe("the steps stage on a phone", () => {
   test.use({ viewport: { width: 390, height: 844 }, reducedMotion: "no-preference" });
 
-  test("no pinning, steps stacked in order", async ({ page }) => {
+  test("home pins, advances in one column, and parks the last step solid", async ({ page }) => {
     await page.goto("/dev/match/home");
+    await expect(page.locator(`${SECTION}[data-pinning]`)).toHaveCount(1);
+    const pin = Math.round(await pinTop(page));
+    const len = await page.evaluate(() => Math.round(window.innerHeight * 0.6));
+    const hold = await page.evaluate(() => Math.round(window.innerHeight * 0.8));
+    await scrollIntoStage(page, 0);
+    const resting = await circleBox(page, 0);
+    expect(await lit(page)).toEqual([true, false, false, false]);
+    await expect(page.locator(`${SECTION} li`).first().locator(".wh-step-number")).toHaveCSS(
+      "background-color",
+      "rgb(109, 106, 105)",
+    );
+    await scrollIntoStage(page, 3 * len + 0.8 * hold);
+    expect(await stageTop(page)).toBe(pin);
+    expect(await lit(page)).toEqual([false, false, false, true]);
+    const box = await circleBox(page, 3);
+    expect(box.top).toBe(resting.top);
+    expect(box.centre).toBe(resting.centre);
+    expect(await unclipped(page, 3)).toBe(true);
+    await expect(page.locator(`${SECTION}[data-solid]`)).toHaveCount(1);
+    const left = await page
+      .locator(`${SECTION} li`)
+      .last()
+      .locator(".wh-step-number")
+      .evaluate((n) => n.getBoundingClientRect().left);
+    expect(left).toBeGreaterThanOrEqual(0);
+  });
+});
+
+test.describe("a phone screen too short for the stage", () => {
+  test.use({ viewport: { width: 390, height: 664 }, reducedMotion: "no-preference" });
+
+  test("about-us keeps the plain list, steps stacked in order", async ({ page }) => {
+    await page.goto("/dev/match/about-us");
     await page.waitForLoadState("networkidle");
     await expect(page.locator(`${SECTION}[data-pinning]`)).toHaveCount(0);
     const tops = await page

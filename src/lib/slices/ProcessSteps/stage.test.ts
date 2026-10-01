@@ -91,4 +91,21 @@ describe("the steps stage", () => {
     expect(s[0].opacity).toBe(1);
     expect(s[0].solid).toBe(1);
   });
+
+  it("stacked (phone): the outgoing step's text is gone before the incoming title appears beneath it", () => {
+    for (let t = 0; t < 3; t += 0.01) {
+      const s = stepLooks(4, { t, solid: 0 }, true);
+      const base = Math.floor(t);
+      const out = s[base];
+      const incoming = s[base + 1];
+      if (incoming.titleOpacity > 0) expect(out.textOpacity).toBe(0);
+      expect(Math.min(out.titleOpacity, incoming.titleOpacity)).toBeLessThan(0.15);
+    }
+  });
+
+  it("side by side (desktop) keeps the slower crossfade, where the columns never overlap", () => {
+    const s = stepLooks(4, { t: 0.5, solid: 0 });
+    expect(s[0].textOpacity).toBeGreaterThan(0);
+    expect(s[1].titleOpacity).toBeGreaterThan(0);
+  });
 });

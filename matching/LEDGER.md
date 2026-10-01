@@ -283,3 +283,13 @@ regression, now fixed:
   `/about-us` until it was split out. Phones and reduced motion keep the
   plain list. The home gate was not re-run against the reference for this
   section, by the operator's call.
+
+## 2026-10-01 — the steps stage on phones
+
+- [deviation] steps section below md: the stage now pins on phones whenever it
+  fits the screen, in one column on the left rail (gap 200px, 300px tall,
+  36px circles that fill when lit), and keeps the plain list when it does not
+  (about-us at 390×664). In a single column the incoming title would rise
+  through the outgoing paragraph, so the stacked handover clears the outgoing
+  text by 40% of the step and brings the incoming title in from 55%
+  (`stage.ts` STACKED). Reduced motion is still the plain list everywhere.

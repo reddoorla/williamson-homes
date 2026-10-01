@@ -39,7 +39,16 @@ export type StepLook = {
   solid: number;
 };
 
-export function stepLooks(count: number, { t, solid }: Progress): StepLook[] {
+const SIDE_BY_SIDE = {
+  out: [0.45, 1],
+  outText: [0.15, 0.65],
+  inTitle: [0.25, 0.9],
+  inText: [0.4, 0.95],
+};
+const STACKED = { out: [0.2, 0.6], outText: [0, 0.4], inTitle: [0.55, 1], inText: [0.65, 1] };
+
+export function stepLooks(count: number, { t, solid }: Progress, stacked = false): StepLook[] {
+  const fade = stacked ? STACKED : SIDE_BY_SIDE;
   const last = count - 1;
   const base = Math.min(Math.floor(t), last);
   const f = t - base;
@@ -51,13 +60,13 @@ export function stepLooks(count: number, { t, solid }: Progress): StepLook[] {
     let textOpacity = 0;
     if (k < base) opacity = 0;
     else if (k === base) {
-      opacity = 1 - between(0.45, 1, f);
+      opacity = 1 - between(fade.out[0], fade.out[1], f);
       titleOpacity = opacity;
-      textOpacity = 1 - between(0.15, 0.65, f);
+      textOpacity = 1 - between(fade.outText[0], fade.outText[1], f);
     } else if (d <= 1) {
       opacity = 0.3 + 0.7 * smoothstep(1 - d);
-      titleOpacity = smoothstep(between(0.25, 0.9, 1 - d));
-      textOpacity = smoothstep(between(0.4, 0.95, 1 - d));
+      titleOpacity = smoothstep(between(fade.inTitle[0], fade.inTitle[1], 1 - d));
+      textOpacity = smoothstep(between(fade.inText[0], fade.inText[1], 1 - d));
     } else if (d <= 2) {
       opacity = 0.3 * (2 - d);
     }

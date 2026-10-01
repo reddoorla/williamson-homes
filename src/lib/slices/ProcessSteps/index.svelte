@@ -16,10 +16,12 @@
 
   const steps = $derived(slice.items.filter((item) => item.title));
   const tall = $derived(slice.primary.step_height === "tall");
-  const gap = $derived(tall ? 360 : 240);
   const HEADROOM = 48;
 
   let pinning = $state(false);
+  let roomy = $state(true);
+  const gap = $derived(roomy ? (tall ? 360 : 240) : tall ? 300 : 200);
+  const circle = $derived(roomy ? 80 : 36);
   let at: Progress = $state({ t: 0, solid: 0 });
   let track = $state(0);
   let stageTop = $state(0);
@@ -30,7 +32,7 @@
   let headEl: HTMLElement | undefined = $state();
   let stepEls: HTMLLIElement[] = $state([]);
 
-  const looks = $derived(stepLooks(steps.length, at));
+  const looks = $derived(stepLooks(steps.length, at, !roomy));
   const rail = $derived(railLength(steps.length, at));
 
   let wide: MediaQueryList | undefined;
@@ -43,6 +45,11 @@
     const tallest = Math.max(0, ...stepEls.filter(Boolean).map((el) => el.offsetHeight));
     areaHeight = HEADROOM + Math.max(tallest + 64, gap + 80);
     const content = (headEl?.offsetHeight ?? 0) + areaHeight + 96;
+    if (!roomy && content > viewport) {
+      pinning = false;
+      at = { t: 0, solid: 0 };
+      return;
+    }
     stageHeight = content;
     stageTop = content <= viewport ? Math.round((viewport - content) / 2) : viewport - content;
     track = trackHeight(stageHeight, steps.length, stageLengths(viewport, tall));
@@ -63,12 +70,15 @@
   }
 
   function resize() {
-    sized = false;
-    schedule();
+    if (roomy) {
+      sized = false;
+      schedule();
+    } else sync();
   }
 
   function sync() {
-    pinning = !!wide?.matches && !reduced?.matches;
+    roomy = !!wide?.matches;
+    pinning = !reduced?.matches;
     sized = false;
     if (!pinning) at = { t: 0, solid: 0 };
     else schedule();
@@ -145,8 +155,8 @@
       >
         {#if pinning}
           <span
-            class="wh-steps-rail absolute top-32 left-1/2 w-px -translate-x-1/2 bg-secondary"
-            style:height="{Math.max(0, rail * gap - 80)}px"
+            class="wh-steps-rail absolute top-[84px] left-5 w-px -translate-x-1/2 bg-secondary md:top-32 md:left-1/2"
+            style:height="{Math.max(0, rail * gap - circle)}px"
             aria-hidden="true"
           ></span>
         {/if}
@@ -160,22 +170,23 @@
             data-active={lit ? "" : undefined}
             style:transform={pinning ? `translate3d(0, ${look.rise * gap}px, 0)` : undefined}
             style:z-index={pinning ? i + 1 : undefined}
-            class="wh-step relative border-l border-secondary pb-8 pl-10 md:w-1/2 md:border-l-0 {pinning
-              ? 'md:absolute md:top-12'
-              : tall
-                ? 'md:min-h-[40rem]'
-                : 'md:min-h-[15rem]'} {i % 2 === 0
+            class="wh-step border-secondary pb-8 pl-10 md:w-1/2 {pinning
+              ? 'absolute top-12 right-0 left-5'
+              : 'relative border-l md:border-l-0 ' +
+                (tall ? 'md:min-h-[40rem]' : 'md:min-h-[15rem]')} {i % 2 === 0
               ? pinning
-                ? 'md:left-1/2 md:pl-16'
+                ? 'md:right-auto md:left-1/2 md:pl-16'
                 : 'md:ml-auto md:pl-16'
               : pinning
-                ? 'md:right-1/2 md:pr-16 md:pl-0 md:text-right'
+                ? 'md:right-1/2 md:left-auto md:pr-16 md:pl-0 md:text-right'
                 : 'md:mr-auto md:pr-16 md:pl-0 md:text-right'}"
           >
             <span
-              class="wh-step-number wh-h3 absolute top-0 flex h-9 w-9 items-center justify-center rounded-full border border-secondary bg-white text-secondary transition-colors duration-300 ease-[cubic-bezier(.215,.61,.355,1)] md:h-20 md:w-20 {lit
-                ? 'md:bg-secondary md:text-white'
-                : ''} {i % 2 === 0
+              class="wh-step-number wh-h3 absolute top-0 flex h-9 w-9 items-center justify-center rounded-full border border-secondary transition-colors duration-300 ease-[cubic-bezier(.215,.61,.355,1)] md:h-20 md:w-20 {lit
+                ? pinning
+                  ? 'bg-secondary text-white'
+                  : 'bg-white text-secondary md:bg-secondary md:text-white'
+                : 'bg-white text-secondary'} {i % 2 === 0
                 ? '-left-[18px] md:-left-10'
                 : '-left-[18px] md:right-[-40px] md:left-auto'}"
               style:opacity={pinning && !arriving ? look.opacity : undefined}
