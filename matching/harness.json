@@ -19,7 +19,13 @@
       "ref": "/",
       "cand": "/dev/match/home",
       "published": "/",
-      "anchors": [],
+      "anchors": [
+        "Featured Projects",
+        "Construction Partner",
+        "“I was kept in the loop",
+        "Let's get this project started!",
+        "Make your dream home a reality."
+      ],
       "spec": "home",
       "group": "nav"
     }
