@@ -37,7 +37,10 @@
     </div>
   </section>
 
-  <section class="mx-auto max-w-[1280px] px-4 py-32">
+  <section
+    class="mx-auto max-w-[1280px] px-4 py-32"
+    data-wh-header-show="(min-width: 992px), (min-width: 480px) and (max-width: 767px)"
+  >
     {#if isFilled.richText(project.data.credits)}
       <div class="wh-credits text-center text-secondary">
         <RichTextBody field={project.data.credits} />

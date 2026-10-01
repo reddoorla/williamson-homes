@@ -3,6 +3,7 @@
   import { afterNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import { trapFocus } from "$lib/actions/trapFocus";
+  import { ix2EaseIn, ix2EaseOut } from "$lib/easing";
   import { NAV_LINKS } from "$lib/contact";
 
   type Props = { tone?: "light" | "dark" };
@@ -17,7 +18,8 @@
   let focusWithin = $state(false);
   let heroOut = $state(false);
   let headerFocus = $state(false);
-  const away = $derived(heroOut && !headerFocus);
+  let showerInView = $state(false);
+  const away = $derived(heroOut && !showerInView && !headerFocus);
   const sidekick = $derived(focusWithin ? pastTop || heroOut : pastTop && scrolledUp);
   let lastY = 0;
   let cachedBottom: number | null = null;
@@ -52,8 +54,39 @@
     target?.focus();
   }
 
+  function anyShowerInView() {
+    const view = window.innerHeight;
+    return [...document.querySelectorAll<HTMLElement>("#main-content [data-wh-header-show]")].some(
+      (el) => {
+        const query = el.dataset.whHeaderShow;
+        if (query && typeof window.matchMedia === "function" && !window.matchMedia(query).matches)
+          return false;
+        const box = el.getBoundingClientRect();
+        return box.top < view && box.bottom > 0;
+      },
+    );
+  }
+
+  const MENU_SLIDE_MS = 500;
+
+  function reducedMotion() {
+    return (
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
+  }
+
+  function menuSlide(_node: Element, { easing }: { easing: (t: number) => number }) {
+    return {
+      duration: reducedMotion() ? 0 : MENU_SLIDE_MS,
+      easing,
+      css: (t: number) => `transform: translateY(${((t - 1) * 100).toFixed(3)}vh)`,
+    };
+  }
+
   function onScroll() {
     const y = window.scrollY;
+    showerInView = anyShowerInView();
     const bottom = heroBottom();
     const threshold = bottom === NO_HERO_BOTTOM ? NO_HERO_BOTTOM : bottom + 200;
     heroOut = y >= bottom;
@@ -184,6 +217,8 @@
 {#if menuOpen}
   <div
     id="wh-menu"
+    in:menuSlide={{ easing: ix2EaseIn }}
+    out:menuSlide={{ easing: ix2EaseOut }}
     class="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-8 bg-primary md:hidden"
     role="dialog"
     aria-modal="true"

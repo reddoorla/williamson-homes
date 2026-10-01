@@ -293,3 +293,20 @@ regression, now fixed:
   through the outgoing paragraph, so the stacked handover clears the outgoing
   text by 40% of the step and brings the incoming title in from 55%
   (`stage.ts` STACKED). Reduced motion is still the plain list everywhere.
+
+## 2026-10-01 — the click and gallery interactions (closes two "not ported" lines above)
+
+- [fixed] menu: IX2 e-17/e-21 (a-6/a-10, translateY 0 → 100vh, 500ms
+  `easeIn`) and e-19/e-23 (a-7/a-11, back to 0, 500ms `easeOut`) now drive
+  the phone menu: it drops from above on open and lifts away on close, with
+  IX2's curves as cubic-beziers (`src/lib/easing.ts`, .42,0,1,1 and
+  0,0,.58,1). Reduced motion opens and closes in place.
+- [deviation] menu at 480–767: the reference slides only at ≤479 (`tiny`);
+  the candidate's hamburger shows up to 767, so it slides there too.
+- [fixed] project gallery: IX2 e-35/e-36 (`.gallery-section`, a-5/a-4) now
+  bring the hero header back while the gallery is on screen, at ≥992 and
+  480–767 (`data-wh-header-show` on ProjectView's credits+gallery section,
+  carrying that media query). On the reference and here the gallery starts
+  where the hero ends, so at those widths the header never leaves a project
+  page until the gallery does, and the gallery runs to the footer. Only the
+  slide follows it; the phone bar's colour still follows the hero.
