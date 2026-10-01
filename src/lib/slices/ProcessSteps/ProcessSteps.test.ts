@@ -158,7 +158,24 @@ describe("ProcessSteps, the pinned steps stage", () => {
     ]);
     expect(bodies(container)).toEqual(["1", "0", "0", "0"]);
     expect(titles(container)).toEqual(["1", "0", "0", "0"]);
-    expect(Number(circles(container)[1])).toBeCloseTo(0.3, 5);
+    const waiting = steps(container)[1].querySelector(".wh-step-number") as HTMLElement;
+    expect(waiting.style.opacity).toBe("");
+    expect(waiting.style.borderColor).toBe("color-mix(in srgb, var(--color-secondary) 30%, white)");
+  });
+
+  it("keeps an arriving circle's white disc solid, so the rail never shows through it", async () => {
+    const { container } = await mount();
+    for (const scrolled of [0, STEP_LEN / 3, STEP_LEN / 2, 2.4 * STEP_LEN]) {
+      await scrollBy(scrolled);
+      for (const li of steps(container)) {
+        const rise = li.style.transform.match(/, ([\d.]+)px/)?.[1];
+        if (!rise || Number(rise) === 0 || li.hasAttribute("data-active")) continue;
+        const number = li.querySelector(".wh-step-number") as HTMLElement;
+        expect(number.style.opacity).toBe("");
+        expect(number.style.backgroundColor).toBe("");
+        expect(number.className).toMatch(/(^|\s)bg-white(\s|$)/);
+      }
+    }
   });
 
   it("rises step 2 into the circle as the page scrolls, then hands it the circle", async () => {

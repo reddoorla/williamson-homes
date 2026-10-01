@@ -69,6 +69,11 @@ for (const path of ["/dev/match/home", "/dev/match/about-us"]) {
       expect(await stageTop(page)).toBe(pin);
       expect(await lit(page)).toEqual([true, false, false, false]);
 
+      await scrollIntoStage(page, len / 2);
+      const arriving = page.locator(`${SECTION} li`).nth(1).locator(".wh-step-number");
+      await expect(arriving).toHaveCSS("opacity", "1");
+      await expect(arriving).toHaveCSS("background-color", "rgb(255, 255, 255)");
+
       await scrollIntoStage(page, len);
       expect(await stageTop(page)).toBe(pin);
       expect(await lit(page)).toEqual([false, true, false, false]);

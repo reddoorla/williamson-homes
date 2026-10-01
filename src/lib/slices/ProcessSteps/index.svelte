@@ -97,6 +97,11 @@
     amount >= 1
       ? "var(--color-primary)"
       : `color-mix(in srgb, var(--color-primary) ${Math.round(amount * 100)}%, var(--color-secondary))`;
+
+  const ink = (amount: number) =>
+    amount >= 1
+      ? "var(--color-secondary)"
+      : `color-mix(in srgb, var(--color-secondary) ${Math.round(amount * 100)}%, white)`;
 </script>
 
 <section
@@ -148,6 +153,7 @@
           {@const look = looks[i]}
           {@const lit = !!look?.active}
           {@const solid = pinning ? (look?.solid ?? 0) : 0}
+          {@const arriving = pinning && !lit && (look?.rise ?? 0) > 0}
           <li
             bind:this={stepEls[i]}
             data-active={lit ? "" : undefined}
@@ -171,9 +177,10 @@
                 : ''} {i % 2 === 0
                 ? '-left-[18px] md:-left-10'
                 : '-left-[18px] md:right-[-40px] md:left-auto'}"
-              style:opacity={pinning ? look.opacity : undefined}
+              style:opacity={pinning && !arriving ? look.opacity : undefined}
               style:background-color={solid > 0 ? mix(solid) : undefined}
-              style:border-color={solid > 0 ? mix(solid) : undefined}
+              style:border-color={solid > 0 ? mix(solid) : arriving ? ink(look.opacity) : undefined}
+              style:color={arriving ? ink(look.opacity) : undefined}
               style:transform={solid > 0
                 ? `scale(${1 + 0.08 * Math.sin(Math.PI * solid)})`
                 : undefined}
