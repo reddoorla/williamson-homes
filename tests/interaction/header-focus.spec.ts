@@ -73,9 +73,13 @@ test.describe("header focus in a real browser (inert is honoured here, not in js
     await page.waitForLoadState("networkidle");
     await page.locator('.wh-hero-header a[href="/projects"]').click({ modifiers: ["Control"] });
     await scrollTo(page, 2500);
-    const top = await page.evaluate(
-      () => (document.querySelector(".wh-hero-header") as HTMLElement).getBoundingClientRect().top,
-    );
-    expect(top).toBeLessThan(0);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            (document.querySelector(".wh-hero-header") as HTMLElement).getBoundingClientRect().top,
+        ),
+      )
+      .toBeLessThan(0);
   });
 });

@@ -165,10 +165,49 @@ describe("ProcessSteps, the pinned steps stage", () => {
 
   it("sits the circles 48px below the list's top, so the solidify pulse is never clipped", async () => {
     const { container } = await mount();
-    for (const li of steps(container)) expect(li.className).toMatch(/(^|\s)md:top-12(\s|$)/);
-    expect((container.querySelector(".wh-steps-rail") as HTMLElement).className).toMatch(
-      /(^|\s)top-32(\s|$)/,
-    );
+    for (const li of steps(container)) expect(li.className).toMatch(/(^|\s)top-12(\s|$)/);
+    const rail = (container.querySelector(".wh-steps-rail") as HTMLElement).className;
+    expect(rail).toMatch(/(^|\s)top-\[84px\](\s|$)/);
+    expect(rail).toMatch(/(^|\s)md:top-32(\s|$)/);
+  });
+
+  it("pins on a phone too, with a shorter gap and filled phone-sized circles, when the stage fits", async () => {
+    wide = false;
+    const { container } = await mount();
+    expect(container.querySelector("[data-pinning]")).not.toBeNull();
+    await scrollBy(0);
+    expect(rises(container)[1]).toBe("translate3d(0, 200px, 0)");
+    const lit = steps(container)[0].querySelector(".wh-step-number") as HTMLElement;
+    expect(lit.className).toMatch(/(^|\s)bg-secondary(\s|$)/);
+    const rail = container.querySelector(".wh-steps-rail") as HTMLElement;
+    expect(rail.style.height).toBe(`${3 * 200 - 36}px`);
+    await scrollBy(STEP_LEN / 2);
+    expect(bodies(container)[0]).toBe("0");
+  });
+
+  it("keeps the plain list on a phone whose screen is shorter than the stage", async () => {
+    wide = false;
+    vi.stubGlobal("innerHeight", 400);
+    const { container } = await mount();
+    expect(container.querySelector("[data-pinning]")).toBeNull();
+    expect(track(container).style.height).toBe("");
+    expect(rises(container)).toEqual(["", "", "", ""]);
+    expect(steps(container)[0].className).toMatch(/(^|\s)border-l(\s|$)/);
+  });
+
+  it("re-fits when the viewport narrows below md, and back when it widens", async () => {
+    const { container } = await mount();
+    const query = "(min-width: 768px)";
+    wide = false;
+    for (const fn of listeners.get(query) ?? []) fn();
+    await flushFrames();
+    await scrollBy(0);
+    expect(rises(container)[1]).toBe("translate3d(0, 200px, 0)");
+    wide = true;
+    for (const fn of listeners.get(query) ?? []) fn();
+    await flushFrames();
+    await scrollBy(0);
+    expect(rises(container)[1]).toBe("translate3d(0, 240px, 0)");
   });
 
   it("keeps an arriving circle's white disc solid, so the rail never shows through it", async () => {
@@ -250,13 +289,6 @@ describe("ProcessSteps, the pinned steps stage", () => {
     expect(active(container)).toEqual([true, false, false, false]);
   });
 
-  it("does not pin below the md breakpoint, where the steps stack", async () => {
-    wide = false;
-    const { container } = await mount();
-    expect(container.querySelector("[data-pinning]")).toBeNull();
-    expect(track(container).style.height).toBe("");
-  });
-
   it("stops pinning when reduced motion is switched on mid-page", async () => {
     const { container } = await mount();
     await scrollBy(STEP_LEN);
@@ -266,19 +298,6 @@ describe("ProcessSteps, the pinned steps stage", () => {
     expect(container.querySelector("[data-pinning]")).toBeNull();
     expect(bodies(container)).toEqual(["", "", "", ""]);
     expect(active(container)).toEqual([true, false, false, false]);
-  });
-
-  it("stops pinning when the viewport narrows below md, and resumes when it widens", async () => {
-    const { container } = await mount();
-    const query = "(min-width: 768px)";
-    wide = false;
-    for (const fn of listeners.get(query) ?? []) fn();
-    await tick();
-    expect(container.querySelector("[data-pinning]")).toBeNull();
-    wide = true;
-    for (const fn of listeners.get(query) ?? []) fn();
-    await flushFrames();
-    expect(container.querySelector("[data-pinning]")).not.toBeNull();
   });
 
   it("re-sizes the stage on resize", async () => {
