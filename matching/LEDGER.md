@@ -265,3 +265,21 @@ regression, now fixed:
   - a header "projects" row with the footer's colours injected counts 1
     real mismatch.
 - [gate] r8 on the round-3 tree: `page-diff — PASS (threshold=0.1)`, 18 regions, no masks, worst "Featured Projects" @390 7.8% (unchanged); `census.sh home` exits 0.
+
+## 2026-10-01 — the steps stage replaces the counters port (operator: "don't worry about matching webflow any more, just make it good")
+
+- [deviation] steps section, home and about-us: the `countersAnim.js` port is
+  gone. The heading and steps now pin together as one stage, centred in the
+  viewport; each step rises one gap (240px, tall 360px) into the circle while
+  the current one fades, with a dwell at each end of every step's scroll
+  (0.6 viewport per step, tall 0.85). The last step parks alone and fills
+  from `--color-secondary` to `--color-primary` over the first half of a
+  0.8-viewport hold, with a one-shot ring, then the whole stage releases with
+  it. The entries above that cite `counters.ts` / `counters.test.ts` describe
+  the old port; `stage.ts`, `stage.test.ts`, `ProcessSteps.test.ts` and
+  `tests/interaction/steps-stage.spec.ts` cover the stage. The waiting step
+  shows only its outline circle, never faint text: the first version showed
+  its title at 30% and `test:a11y` failed color-contrast on `/` and
+  `/about-us` until it was split out. Phones and reduced motion keep the
+  plain list. The home gate was not re-run against the reference for this
+  section, by the operator's call.
