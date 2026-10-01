@@ -35,3 +35,28 @@ if (typeof window !== "undefined" && typeof window.IntersectionObserver !== "fun
   }
   window.IntersectionObserver = NoopIntersectionObserver as unknown as typeof IntersectionObserver;
 }
+
+// jsdom ships no Web Animations API. Svelte's `in:`/`out:` transitions call
+// `element.animate()` (the phone menu's IX2 slide), so a test that opens or
+// closes the menu would throw without it. This stand-in finishes at once, so a
+// transitioned element mounts and unmounts as if the transition were instant;
+// the real curve is checked in a browser (tests/interaction/menu-and-gallery).
+if (typeof Element !== "undefined" && typeof Element.prototype.animate !== "function") {
+  Element.prototype.animate = function () {
+    const animation = {
+      onfinish: null as null | (() => void),
+      oncancel: null,
+      currentTime: 0,
+      playState: "finished",
+      cancel() {},
+      finish() {},
+      pause() {},
+      play() {},
+      reverse() {},
+      finished: Promise.resolve(),
+      effect: null,
+    };
+    queueMicrotask(() => animation.onfinish?.());
+    return animation as unknown as Animation;
+  };
+}

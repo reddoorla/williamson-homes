@@ -49,7 +49,7 @@ source. It is the fastest way to recognise what a thing does.
 | [`ScreenWidthMedia.svelte`](../src/lib/components/ScreenWidthMedia.svelte) | `src`, `field`, `altText`, `vimeoId`, `darken`, `backdrop`, `percentHeight`, `children` | 11 |  |
 | [`Seo.svelte`](../src/lib/components/Seo.svelte) | `title`, `description`, `image`, `imageAlt`, `url`, `type`, `siteName`, `locale`, `noindex`, `jsonLd` | 14 | The page title — used verbatim for <title> and og/twitter:title |
 | [`SiteFooter.svelte`](../src/lib/components/SiteFooter.svelte) | — | — |  |
-| [`SiteHeader.svelte`](../src/lib/components/SiteHeader.svelte) | `tone` | 9 |  |
+| [`SiteHeader.svelte`](../src/lib/components/SiteHeader.svelte) | `tone` | 11 |  |
 | [`SkeletonLoader.svelte`](../src/lib/components/SkeletonLoader.svelte) | `lines`, `circle`, `height`, `width` | — |  |
 | [`Slider.svelte`](../src/lib/components/Slider.svelte) | `itemCount`, `label`, `children`, `cardsPerView`, `gap`, `mobileGap`, `mode`, `loop`, `autoplay`, `showDots`, `showArrows`, `transitionClass`, `navigationClass`, `arrowClass`, `pauseClass`, `dotClass`, `activeDotClass` | 23 | Accessible name for the carousel region — say what's inside ("Customer testimonials"), not "Slider" |
 | [`TransitionOverlay.svelte`](../src/lib/components/TransitionOverlay.svelte) | `visibleDuration`, `fadeInDuration`, `fadeOutDuration`, `so` | 9 | ms the cover holds once the incoming route has arrived |
@@ -58,6 +58,7 @@ source. It is the fastest way to recognise what a thing does.
 | [`WMark.svelte`](../src/lib/components/WMark.svelte) | `variant` | — |  |
 | [`WhButton.svelte`](../src/lib/components/WhButton.svelte) | `href`, `tone`, `single`, `flat`, `children` | — |  |
 | [`contact.ts`](../src/lib/contact.ts) | `CONTACT_EMAIL`, `CONTACT_PHONE_DISPLAY`, `CONTACT_EMAIL_HREF`, `CONTACT_PHONE_HREF`, `NAV_LINKS`, `FOOTER_LINKS`, `telHref` | — |  |
+| [`easing.ts`](../src/lib/easing.ts) | `cubicBezier`, `ix2EaseIn`, `ix2EaseOut` | 3 |  |
 | [`header-tone.ts`](../src/lib/header-tone.ts) | `headerToneFor` | 4 |  |
 | [`index.ts`](../src/lib/index.ts) | — | — | place files you want to import through the `$lib` alias in this folder |
 | [`indexability.ts`](../src/lib/indexability.ts) | `MIRROR_ROBOTS_TAG`, `isNetlifyMirrorHost` | 6 | Which HOST a request arrived on decides whether it may be indexed (#140) |
@@ -81,4 +82,4 @@ source. It is the fastest way to recognise what a thing does.
 | [`richTextHeadings.ts`](../src/lib/utils/richTextHeadings.ts) | `RT_HEADING_CTX`, `defaultLevel`, `buildHeadingLevelMap` | 9 | Editors author arbitrary heading levels inside Prismic rich-text bodies (heading1–6 are all enabled in the slice models) |
 | [`vimeo.ts`](../src/lib/utils/vimeo.ts) | `checkVimeoVideo` | 5 | True when the Vimeo video exists and is embeddable (oEmbed responds 200) |
 
-60 modules, 376 tests behind them.
+61 modules, 381 tests behind them.

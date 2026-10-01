@@ -132,6 +132,52 @@ describe("the header's IX2 scroll interactions", () => {
   });
 });
 
+describe("the project gallery brings the header back (IX2 e-35/e-36)", () => {
+  let gallery: HTMLElement;
+  const galleryTop = 2000;
+
+  beforeEach(() => {
+    gallery = document.createElement("section");
+    gallery.dataset.whHeaderShow = "(min-width: 992px)";
+    main.append(gallery);
+    Object.defineProperty(window, "innerHeight", { value: 900, configurable: true });
+    vi.spyOn(gallery, "getBoundingClientRect").mockImplementation(
+      () =>
+        ({
+          top: galleryTop - window.scrollY,
+          bottom: galleryTop + 3000 - window.scrollY,
+        }) as DOMRect,
+    );
+  });
+
+  const wideEnough = (matches: boolean) =>
+    vi.stubGlobal("matchMedia", (query: string) => ({ matches, media: query }));
+
+  it("shows the header while the gallery is on screen past the hero, and hides it once the gallery leaves", async () => {
+    wideEnough(true);
+    const { container } = render(SiteHeader, { props: { tone: "light" } });
+    const { hero, header } = parts(container);
+    await scrollTo(HERO_HEIGHT + 100);
+    expect(hero.className).toMatch(/-translate-y-\[152px\]/);
+    await scrollTo(galleryTop - 400);
+    expect(hero.className).toMatch(/min-\[480px\]:translate-y-px/);
+    expect(hero.inert || hero.hasAttribute("inert")).toBe(false);
+    expect(header.hasAttribute("data-hero-out")).toBe(true);
+    await scrollTo(galleryTop + 3000 + 10);
+    expect(hero.className).toMatch(/-translate-y-\[152px\]/);
+    vi.unstubAllGlobals();
+  });
+
+  it("ignores the gallery where its media query does not match (768-991 on the reference)", async () => {
+    wideEnough(false);
+    const { container } = render(SiteHeader, { props: { tone: "light" } });
+    const { hero } = parts(container);
+    await scrollTo(galleryTop - 400);
+    expect(hero.className).toMatch(/-translate-y-\[152px\]/);
+    vi.unstubAllGlobals();
+  });
+});
+
 describe("a page whose first block is not a hero", () => {
   it("ignores an unmarked first child and treats the header's own 120px as the hero", async () => {
     main.querySelector("section")?.removeAttribute("data-wh-hero");
