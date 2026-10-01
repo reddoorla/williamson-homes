@@ -48,4 +48,34 @@ test.describe("header focus in a real browser (inert is honoured here, not in js
     expect(now.href).toBe("/projects");
     expect(now.top).toBeGreaterThanOrEqual(0);
   });
+
+  test("a mouse click on a sticky-bar link navigates (nothing covers the bar)", async ({
+    page,
+  }) => {
+    await page.goto(PAGE);
+    await page.waitForLoadState("networkidle");
+    await scrollTo(page, 2600);
+    await scrollTo(page, 2300);
+    const sticky = page.locator('.wh-sidekick a[href="/projects"]');
+    await expect(sticky).toBeVisible();
+    const box = (await sticky.boundingBox())!;
+    const hit = await page.evaluate(
+      ([x, y]) => document.elementFromPoint(x, y)?.closest("a")?.closest(".wh-sidekick") !== null,
+      [box.x + box.width / 2, box.y + box.height / 2],
+    );
+    expect(hit).toBe(true);
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(page).toHaveURL(/\/projects$/);
+  });
+
+  test("a pointer-focused header link (ctrl-click) does not pin the header", async ({ page }) => {
+    await page.goto(PAGE);
+    await page.waitForLoadState("networkidle");
+    await page.locator('.wh-hero-header a[href="/projects"]').click({ modifiers: ["Control"] });
+    await scrollTo(page, 2500);
+    const top = await page.evaluate(
+      () => (document.querySelector(".wh-hero-header") as HTMLElement).getBoundingClientRect().top,
+    );
+    expect(top).toBeLessThan(0);
+  });
 });

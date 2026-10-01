@@ -75,20 +75,20 @@
 
 <header
   bind:this={headerEl}
-  class="wh-header fixed inset-x-0 top-0 z-50 h-20 transition-colors duration-500 ease-out md:h-[120px] {heroOut
-    ? 'max-md:bg-primary'
+  class="wh-header pointer-events-none fixed inset-x-0 top-0 z-50 h-20 transition-colors duration-500 ease-out md:h-[120px] {heroOut
+    ? 'max-md:pointer-events-auto max-md:bg-primary'
     : ''}"
   data-tone={tone}
   data-hero-out={heroOut ? "" : undefined}
 >
   <div
     inert={away}
-    onfocusin={() => (headerFocus = true)}
+    onfocusin={(event) => (headerFocus = (event.target as Element).matches(":focus-visible"))}
     onfocusout={(event) => {
       const next = event.relatedTarget as Node | null;
       if (!next || !event.currentTarget.contains(next)) headerFocus = false;
     }}
-    class="wh-hero-header mx-auto flex max-w-[1280px] items-start justify-between px-2.5 transition-transform duration-500 ease-linear {away
+    class="wh-hero-header pointer-events-auto mx-auto flex max-w-[1280px] items-start justify-between px-2.5 transition-transform duration-500 ease-linear {away
       ? 'min-[480px]:-translate-y-[152px]'
       : 'min-[480px]:translate-y-px'}"
   >
@@ -124,7 +124,7 @@
   <button
     bind:this={menuButton}
     type="button"
-    class="wh-hamburger absolute top-6 right-8 block h-8 w-8 transition-opacity duration-200 ease-[ease] hover:opacity-[.66] md:hidden"
+    class="wh-hamburger pointer-events-auto absolute top-6 right-8 block h-8 w-8 transition-opacity duration-200 ease-[ease] hover:opacity-[.66] md:hidden"
     aria-label="Open menu"
     aria-controls={menuOpen ? "wh-menu" : undefined}
     aria-expanded={menuOpen}

@@ -241,3 +241,27 @@ regression, now fixed:
   control: a copy of the 1440 log with a declared footer link's size changed
   to 18px counts 1 real mismatch. `census.sh home` exits 0: 0 undeclared, 17
   declared, 7 ambiguous rows that need no fix.
+
+### 2026-10-01 — review round 3 (asked for by the operator): DIRTY, fixed
+
+- [fixed, blocker] The fixed `<header>` box stayed in place, 120px tall, full
+  width and transparent, at z-50, after its content slid away. It covered
+  the sticky bar, so a mouse could not click a sidekick link, and the top
+  120px of the page could not be clicked. The tests had reached the bar only
+  through `locator.focus()`, which does no hit-testing. Now the box is
+  `pointer-events: none`, and only its visible parts take pointer events:
+  the hero header, the hamburger, and the bar background below md once it
+  shows. A spec clicks a sidekick link with the mouse and asserts the
+  navigation; it went red before the fix.
+- [fixed, minor] Pointer focus pinned the header. Ctrl-click (or a
+  right-click, then Escape) left focus on a header link, so the header
+  never hid. Header focus now pins only when it is `:focus-visible`, i.e.
+  keyboard focus. A spec covers the Ctrl-click case; it went red first.
+- [fixed, minor] The census declarations are now exact rows: the label and
+  both full tuples must match. A label-only match could have absorbed a
+  regression on the header's "projects" link. Negative controls on a copied
+  1440 log:
+  - a declared footer link with its size changed counts 1 real mismatch;
+  - a header "projects" row with the footer's colours injected counts 1
+    real mismatch.
+- [gate] r8 on the round-3 tree: `page-diff — PASS (threshold=0.1)`, 18 regions, no masks, worst "Featured Projects" @390 7.8% (unchanged); `census.sh home` exits 0.
