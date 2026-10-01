@@ -212,7 +212,7 @@
               style:opacity={pinning ? look.titleOpacity : undefined}
               style:color={solid > 0 ? mix(solid) : undefined}
             >
-              <span class="sr-only">{`Step ${i + 1}: `}</span>{step.title}
+              {step.title}
             </h3>
             {#if isFilled.richText(step.body)}
               <div
