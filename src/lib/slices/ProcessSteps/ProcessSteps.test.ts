@@ -8,7 +8,6 @@ vi.mock("$app/navigation", () => ({
 }));
 
 import ProcessSteps from "./index.svelte";
-import { PIN_TOP } from "./counters";
 
 const makeSlice = (step_height: "short" | "tall" | null = null) =>
   ({
@@ -25,7 +24,7 @@ const makeSlice = (step_height: "short" | "tall" | null = null) =>
 
 let wide = true;
 let reduced = false;
-let tops: number[] = [];
+let trackTop = 2000;
 let frames: FrameRequestCallback[] = [];
 
 async function flushFrames() {
@@ -50,23 +49,39 @@ function setMedia() {
   });
 }
 
+const VIEWPORT = 1000;
+const HEAD = 100;
+const STEP = 200;
+const AREA = 240 + 80;
+const CONTENT = HEAD + AREA + 96;
+const PIN = (VIEWPORT - CONTENT) / 2;
+const STEP_LEN = 600;
+const HOLD = 800;
+
 beforeEach(() => {
   navigated.callbacks = [];
   listeners.clear();
   wide = true;
   reduced = false;
-  tops = [900, 1140, 1380, 1620];
+  trackTop = 2000;
   setMedia();
   frames = [];
   vi.stubGlobal("requestAnimationFrame", (fn: FrameRequestCallback) => frames.push(fn));
   vi.stubGlobal("cancelAnimationFrame", () => {});
-  vi.spyOn(HTMLLIElement.prototype, "getBoundingClientRect").mockImplementation(function (
-    this: HTMLLIElement,
+  vi.stubGlobal("innerHeight", VIEWPORT);
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
+    this: HTMLElement,
   ) {
-    const index = [...(this.parentElement?.children ?? [])].indexOf(this);
-    return { top: tops[index] ?? 0 } as DOMRect;
+    if (this.classList.contains("wh-steps-track")) {
+      return { top: trackTop, bottom: trackTop + 3000 } as DOMRect;
+    }
+    return { top: 0, bottom: 0 } as DOMRect;
   });
-  vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(240);
+  vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    return this.classList.contains("wh-steps-head") ? HEAD : STEP;
+  });
 });
 
 afterEach(() => {
@@ -88,8 +103,8 @@ async function mount(step_height: "short" | "tall" | null = null) {
   return result;
 }
 
-async function scrollTo(next: number[]) {
-  tops = next;
+async function scrollBy(scrolled: number) {
+  trackTop = PIN - scrolled;
   window.dispatchEvent(new Event("scroll"));
   await flushFrames();
 }
@@ -98,60 +113,108 @@ const steps = (c: HTMLElement) => [...c.querySelectorAll("li")];
 const active = (c: HTMLElement) => steps(c).map((li) => li.hasAttribute("data-active"));
 const opacity = (el: Element | null) => (el as HTMLElement | null)?.style.opacity ?? "";
 const bodies = (c: HTMLElement) => steps(c).map((li) => opacity(li.querySelector(".wh-prose")));
+const rises = (c: HTMLElement) => steps(c).map((li) => li.style.transform);
+const stage = (c: HTMLElement) => c.querySelector(".wh-steps-stage") as HTMLElement;
+const track = (c: HTMLElement) => c.querySelector(".wh-steps-track") as HTMLElement;
 
-describe("ProcessSteps counters (countersAnim.js)", () => {
-  it("server-renders every step's text, step 1 lit, nothing pinned", () => {
+describe("ProcessSteps, the pinned steps stage", () => {
+  it("server-renders every step's text as a plain list, step 1 lit, nothing pinned", () => {
     const { container } = render(ProcessSteps, { props: { slice: makeSlice() } });
     expect(active(container)).toEqual([true, false, false, false]);
     expect(bodies(container)).toEqual(["", "", "", ""]);
     expect(container.querySelector("[data-pinning]")).toBeNull();
-    expect(steps(container).some((li) => li.className.includes("md:sticky"))).toBe(false);
+    expect(stage(container).className).not.toMatch(/(^|\s)sticky(\s|$)/);
     expect(container.textContent).toContain("Finish Your Dream Home body");
   });
 
-  it("pins the heading at top 0 and every step at top 256px once it runs", async () => {
+  it("pins the heading and steps together, centred in the viewport", async () => {
     const { container } = await mount();
     expect(container.querySelector("[data-pinning]")).not.toBeNull();
-    const head = container.querySelector(".wh-steps-head") as HTMLElement;
-    expect(head.className).toMatch(/(^|\s)md:sticky(\s|$)/);
-    expect(head.className).toMatch(/(^|\s)md:top-0(\s|$)/);
-    for (const li of steps(container)) {
-      expect(li.className).toMatch(/(^|\s)md:sticky(\s|$)/);
-      expect(li.className).toMatch(/(^|\s)md:top-\(--wh-pin\)(\s|$)/);
-    }
-    const section = container.querySelector("section") as HTMLElement;
-    expect(section.style.getPropertyValue("--wh-pin")).toBe("256px");
-    expect(PIN_TOP).toBe(16 * 16);
+    expect(stage(container).className).toMatch(/(^|\s)sticky(\s|$)/);
+    expect(stage(container).contains(container.querySelector(".wh-steps-head"))).toBe(true);
+    expect(stage(container).style.top).toBe(`${PIN}px`);
+    expect(stage(container).style.height).toBe(`${CONTENT}px`);
+    expect(track(container).style.height).toBe(`${CONTENT + 3 * STEP_LEN + HOLD}px`);
   });
 
-  it("hides the later steps' text until they approach, as the reference does at rest", async () => {
+  it("pins from the bottom edge when the stage is taller than the viewport", async () => {
+    vi.stubGlobal("innerHeight", 400);
     const { container } = await mount();
-    expect(bodies(container)).toEqual(["1", "0", "0", "0"]);
+    expect(stage(container).style.top).toBe(`${400 - CONTENT}px`);
+  });
+
+  it("rests on step 1 with step 2 waiting one gap below", async () => {
+    const { container } = await mount();
+    await scrollBy(0);
     expect(active(container)).toEqual([true, false, false, false]);
+    expect(rises(container)).toEqual([
+      "translate3d(0, 0px, 0)",
+      "translate3d(0, 240px, 0)",
+      "translate3d(0, 480px, 0)",
+      "translate3d(0, 720px, 0)",
+    ]);
+    expect(bodies(container)).toEqual(["1", "0", "0", "0"]);
   });
 
-  it("advances on scroll: step 2 pinned lights circle 2 and fades step 1", async () => {
+  it("rises step 2 into the circle as the page scrolls, then hands it the circle", async () => {
     const { container } = await mount();
-    await scrollTo([PIN_TOP, PIN_TOP, PIN_TOP + 220, PIN_TOP + 460]);
+    await scrollBy(STEP_LEN / 2);
+    expect(rises(container)[1]).toBe("translate3d(0, 120px, 0)");
+    expect(active(container)).toEqual([true, false, false, false]);
+    await scrollBy(STEP_LEN);
+    expect(rises(container)[1]).toBe("translate3d(0, 0px, 0)");
     expect(active(container)).toEqual([false, true, false, false]);
-    expect(Number(opacity(steps(container)[0]))).toBeCloseTo((220 / 240) ** 5, 5);
-    expect(Number(bodies(container)[2])).toBeCloseTo(1 - (220 / 240) ** 3, 5);
+    expect(opacity(steps(container)[0])).toBe("0");
   });
 
-  it("shows only the last step once it is pinned", async () => {
+  it("parks Finish Your Dream Home alone, then solidifies it in the primary colour", async () => {
     const { container } = await mount();
-    await scrollTo([PIN_TOP, PIN_TOP, PIN_TOP, PIN_TOP]);
+    await scrollBy(3 * STEP_LEN);
+    const last = steps(container)[3];
     expect(steps(container).map((li) => opacity(li))).toEqual(["0", "0", "0", "1"]);
     expect(active(container)).toEqual([false, false, false, true]);
+    expect(container.querySelector("[data-solid]")).toBeNull();
+    await scrollBy(3 * STEP_LEN + HOLD);
+    expect(container.querySelector("section")?.hasAttribute("data-solid")).toBe(true);
+    const number = last.querySelector(".wh-step-number") as HTMLElement;
+    expect(number.style.backgroundColor).toBe("var(--color-primary)");
+    expect((last.querySelector("h3") as HTMLElement).style.color).toBe("var(--color-primary)");
+    expect(last.querySelector(".wh-step-halo")).not.toBeNull();
+    expect(steps(container)[2].querySelector(".wh-step-halo")).toBeNull();
+  });
+
+  it("un-solidifies when the page scrolls back up", async () => {
+    const { container } = await mount();
+    await scrollBy(3 * STEP_LEN + HOLD);
+    await scrollBy(STEP_LEN);
+    expect(container.querySelector("[data-solid]")).toBeNull();
+    expect(active(container)).toEqual([false, true, false, false]);
+  });
+
+  it("draws the rail down to the last circle and retracts it as the last step arrives", async () => {
+    const { container } = await mount();
+    const rail = () => (container.querySelector(".wh-steps-rail") as HTMLElement).style.height;
+    await scrollBy(0);
+    expect(rail()).toBe(`${3 * 240 - 80}px`);
+    await scrollBy(3 * STEP_LEN);
+    expect(rail()).toBe("0px");
+  });
+
+  it("uses a longer gap and scroll per step when tall", async () => {
+    const { container } = await mount("tall");
+    expect(rises(container)[1]).toBe("translate3d(0, 360px, 0)");
+    const content = HEAD + 360 + 80 + 96;
+    expect(track(container).style.height).toBe(`${content + 3 * 850 + HOLD}px`);
   });
 
   it("does not pin or fade under reduced motion", async () => {
     reduced = true;
     const { container } = await mount();
     expect(container.querySelector("[data-pinning]")).toBeNull();
-    expect(steps(container).some((li) => li.className.includes("md:sticky"))).toBe(false);
-    await scrollTo([PIN_TOP, PIN_TOP, PIN_TOP, PIN_TOP]);
+    expect(container.querySelector(".wh-steps-rail")).toBeNull();
+    await scrollBy(3 * STEP_LEN + HOLD);
     expect(bodies(container)).toEqual(["", "", "", ""]);
+    expect(rises(container)).toEqual(["", "", "", ""]);
     expect(active(container)).toEqual([true, false, false, false]);
   });
 
@@ -159,28 +222,39 @@ describe("ProcessSteps counters (countersAnim.js)", () => {
     wide = false;
     const { container } = await mount();
     expect(container.querySelector("[data-pinning]")).toBeNull();
+    expect(track(container).style.height).toBe("");
   });
 
   it("stops pinning when reduced motion is switched on mid-page", async () => {
     const { container } = await mount();
+    await scrollBy(STEP_LEN);
     reduced = true;
     for (const fn of listeners.get("(prefers-reduced-motion: reduce)") ?? []) fn();
     await tick();
     expect(container.querySelector("[data-pinning]")).toBeNull();
     expect(bodies(container)).toEqual(["", "", "", ""]);
+    expect(active(container)).toEqual([true, false, false, false]);
   });
 
-  it("spaces steps 15rem apart by default and 40rem when tall", async () => {
-    const short = await mount();
-    expect(steps(short.container).every((li) => li.className.includes("md:min-h-[15rem]"))).toBe(
-      true,
-    );
-    cleanup();
-    navigated.callbacks = [];
-    const tall = await mount("tall");
-    expect(steps(tall.container).every((li) => li.className.includes("md:min-h-[40rem]"))).toBe(
-      true,
-    );
+  it("stops pinning when the viewport narrows below md, and resumes when it widens", async () => {
+    const { container } = await mount();
+    const query = "(min-width: 768px)";
+    wide = false;
+    for (const fn of listeners.get(query) ?? []) fn();
+    await tick();
+    expect(container.querySelector("[data-pinning]")).toBeNull();
+    wide = true;
+    for (const fn of listeners.get(query) ?? []) fn();
+    await flushFrames();
+    expect(container.querySelector("[data-pinning]")).not.toBeNull();
+  });
+
+  it("re-sizes the stage on resize", async () => {
+    const { container } = await mount();
+    vi.stubGlobal("innerHeight", 1200);
+    window.dispatchEvent(new Event("resize"));
+    await flushFrames();
+    expect(stage(container).style.top).toBe(`${(1200 - CONTENT) / 2}px`);
   });
 
   it("removes exactly the listeners it added when it unmounts", async () => {
@@ -212,58 +286,13 @@ describe("ProcessSteps counters (countersAnim.js)", () => {
     expect(frames).toHaveLength(1);
   });
 
-  it("re-measures on resize", async () => {
+  it("skips the work while the section is far off-screen", async () => {
     const { container } = await mount();
-    tops = [PIN_TOP, PIN_TOP, PIN_TOP + 100, PIN_TOP + 340];
-    window.dispatchEvent(new Event("resize"));
+    await scrollBy(3 * STEP_LEN);
+    expect(active(container)).toEqual([false, false, false, true]);
+    trackTop = 9000;
+    window.dispatchEvent(new Event("scroll"));
     await flushFrames();
-    expect(active(container)).toEqual([false, true, false, false]);
-  });
-
-  it("stops pinning when the viewport narrows below md, and resumes when it widens", async () => {
-    const { container } = await mount();
-    const query = "(min-width: 768px)";
-    wide = false;
-    for (const fn of listeners.get(query) ?? []) fn();
-    await tick();
-    expect(container.querySelector("[data-pinning]")).toBeNull();
-    wide = true;
-    for (const fn of listeners.get(query) ?? []) fn();
-    await flushFrames();
-    expect(container.querySelector("[data-pinning]")).not.toBeNull();
-  });
-
-  it("pins below a heading taller than 16rem, never under it", async () => {
-    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (
-      this: HTMLElement,
-    ) {
-      return this.classList.contains("wh-steps-head") ? 316 : 240;
-    });
-    const { container } = await mount();
-    const section = container.querySelector("section") as HTMLElement;
-    expect(section.style.getPropertyValue("--wh-pin")).toBe("316px");
-    await scrollTo([316, 300, 540, 780]);
-    expect(active(container)).toEqual([false, true, false, false]);
-  });
-
-  it("fades step 3's number with its title in the final approach, as .find('h3') does", async () => {
-    const { container } = await mount();
-    await scrollTo([PIN_TOP, PIN_TOP, PIN_TOP, PIN_TOP + 120]);
-    const third = steps(container)[2];
-    const number = third.querySelector(".wh-step-number") as HTMLElement;
-    const title = third.querySelector("h3") as HTMLElement;
-    expect(Number(number.style.opacity)).toBeCloseTo(1 - 0.5 ** 3, 5);
-    expect(number.style.opacity).toBe(title.style.opacity);
-  });
-
-  it("skips the work while the section is off-screen", async () => {
-    const { container } = await mount();
-    const section = container.querySelector("section") as HTMLElement;
-    vi.spyOn(section, "getBoundingClientRect").mockReturnValue({
-      top: 5000,
-      bottom: 6200,
-    } as DOMRect);
-    await scrollTo([PIN_TOP, PIN_TOP, PIN_TOP, PIN_TOP]);
-    expect(active(container)).toEqual([true, false, false, false]);
+    expect(active(container)).toEqual([false, false, false, true]);
   });
 });
