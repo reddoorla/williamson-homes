@@ -21,11 +21,11 @@
   {/if}
   <figure class="relative mx-auto max-w-[940px] text-center text-white">
     <WMark class="w-32" />
-    <blockquote class="wh-quote mt-16 text-[22px] leading-9">
+    <blockquote class="wh-quote wh-h3 mt-16">
       <PrismicRichText field={slice.primary.quote} />
     </blockquote>
     {#if slice.primary.attribution}
-      <figcaption class="mt-8 uppercase">{slice.primary.attribution}</figcaption>
+      <figcaption class="wh-p mt-8 mb-2.5 uppercase">{slice.primary.attribution}</figcaption>
     {/if}
   </figure>
 </section>

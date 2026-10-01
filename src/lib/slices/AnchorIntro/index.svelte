@@ -25,9 +25,12 @@
     <ol class="mt-16 grid gap-8 md:grid-cols-3">
       {#each links as link, i (i)}
         <li>
-          <a href="#{link.anchor}" class="group flex flex-col items-center gap-2">
+          <a
+            href="#{link.anchor}"
+            class="wh-anchor-circle group wh-hover-fade flex flex-col items-center gap-2 [--wh-hover-opacity:1]"
+          >
             <span
-              class="flex h-20 w-20 items-center justify-center rounded-full border border-secondary bg-secondary text-[22px] text-white transition-colors group-hover:bg-white group-hover:text-secondary"
+              class="wh-h3 flex h-20 w-20 items-center justify-center rounded-full border border-secondary bg-transparent text-secondary [transition:background-color_.7s_ease-in-out,color_.2s_cubic-bezier(.215,.61,.355,1)] group-hover:bg-secondary group-hover:text-white"
               aria-hidden="true">{i + 1}</span
             >
             <span class="wh-eyebrow p-2">{link.label}</span>

@@ -425,6 +425,7 @@ export function documents(img) {
           {
             section_id: "collab",
             heading: "Collaborative approach",
+            step_height: "tall",
             intro: paras(
               "We're not just your contractor. Our approach is collaborative at every step. From initial call, to project completion; we are there working with your team, mapping out costs, and overseeing every aspect of building your dream home",
             ),

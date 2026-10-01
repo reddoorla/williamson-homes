@@ -8,16 +8,16 @@ read so far.
 
 ### Census (live, 1440 × 900, 2026-10-01)
 
-| #   | section                                       | y @1440 | h @1440 |
-| --- | --------------------------------------------- | ------- | ------- |
-| 1   | `hero-section` (`surfers` photo)              | 0       | 623     |
-| 2   | `about-us-section` (three anchor circles)     | 623     | 442     |
-| 3   | `builders-section` (timeline, `-resp-rep` ≤479) | 1065  | 1592    |
-| 4   | `cta-section` "We treat our clients like family" | 2657 | 573     |
-| 5   | `commercial-advantage-section`                | 3230    | 907     |
-| 6   | `collab-count` (counters, `-resp-rep` ≤479)   | 4137    | 3008    |
-| 7   | `cta-section` "Let's get this project started!" | 7145  | 395     |
-| 8   | `footer`                                      | 7540    | 612     |
+| #   | section                                          | y @1440 | h @1440 |
+| --- | ------------------------------------------------ | ------- | ------- |
+| 1   | `hero-section` (`surfers` photo)                 | 0       | 623     |
+| 2   | `about-us-section` (three anchor circles)        | 623     | 442     |
+| 3   | `builders-section` (timeline, `-resp-rep` ≤479)  | 1065    | 1592    |
+| 4   | `cta-section` "We treat our clients like family" | 2657    | 573     |
+| 5   | `commercial-advantage-section`                   | 3230    | 907     |
+| 6   | `collab-count` (counters, `-resp-rep` ≤479)      | 4137    | 3008    |
+| 7   | `cta-section` "Let's get this project started!"  | 7145    | 395     |
+| 8   | `footer`                                         | 7540    | 612     |
 
 Anchor hazards for whoever gates this page:
 

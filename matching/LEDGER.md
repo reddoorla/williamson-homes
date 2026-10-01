@@ -15,10 +15,10 @@ has been quietly widened and nothing records who widened it, or why.
 
 - [instrument] `gate.sh` proven on a known-good input before any of its FAILs
   were trusted. `MATCH_CAND=http://localhost:5174 SPEC_OPTIONAL=1 bash
-  matching/gate.sh ctrl0` used a local proxy (`matching/probes/ref-as-cand.mjs`)
+matching/gate.sh ctrl0` used a local proxy (`matching/probes/ref-as-cand.mjs`)
   that serves the LIVE reference at the candidate's paths, with a `<base>`
   pointing at the live host. Result: `ALL DONE (ctrl0) — 2 of 2 page(s)
-  measured`, every region `mm=0.0% dE=0.0` at 1440/834/390, 18 home regions
+measured`, every region `mm=0.0% dE=0.0` at 1440/834/390, 18 home regions
   and 15 about-us regions, threshold 0.1, no masks, clock frozen. The baseline
   against the real candidate, run the same hour (`base0`), FAILed 6 home and
   15 about-us regions, so the same gate can also fail.
@@ -43,3 +43,93 @@ has been quietly widened and nothing records who widened it, or why.
   gate table. Its `base0` baseline FAILed every region (hero mm=82.4% at 1440;
   Δh 12–23.5% on three regions). Matching it is a separate geometry item, so
   OD7-P1b's gate is home's.
+- [deviation] counters release: the reference's "stick last" step (`countersAnim.js`
+  `countersAnimation`, final `if`) hides steps 1–3, unpins the head and
+  `scrollTo`s. Its upscroll listener then immediately undoes this. Measured live
+  2026-10-01: at 1440 the page stayed at y=3578 for 52 consecutive 60px wheel
+  steps and 25 consecutive 200px steps; at 834 it jumped back 700px once, then
+  stayed at y=3756. The port releases instead by the sticky containing block
+  ending: the last step reaches 256 just as the list ends, every step is at
+  opacity 0 except step 4, and the section scrolls away
+  (`matching/probes/counters-cand.mjs`). Everything before the release follows
+  the script's phases (src/lib/slices/ProcessSteps/counters.test.ts pins the
+  live trace's 0.65 and 0.23).
+- [deviation] counters phase one: the script measures `prog` against 240 in
+  phase one and 256 in the later phases. The port uses 256 throughout, so step
+  2's text fades in 16px later than the reference's (measured live: 0.60 where
+  the port reads 0.70 at the same scroll).
+- [a11y] counters at rest: under reduced motion, without JS, and below `md`,
+  every step's text shows. The reference hides texts 2–4 at rest
+  (`.counter-subtext { opacity: 0 }`, CSS:L4319, L4360) and reveals them only by
+  script. Step 1's circle is lit at md+, as on the reference at rest; on phones
+  no circle is lit, as in `-resp-rep`. In the pixel gate this sits inside region
+  "“I was kept in the loop": r5 0.4% / 0.5% / 1.8%.
+- [deviation] fonts: `static/fonts/montserrat-latin.woff2` is replaced by the
+  file the live reference actually loads in headless Chromium,
+  `fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2` (37956 B,
+  md5 311d352d…), and `montserrat-latin-italic.woff2` is added from
+  `…/JTUQjIg1_i6t8kCHKm459WxRyS7m.woff2` (39632 B, md5 7921052e…). The capture
+  (and the old file, md5 c154477b…) holds the unhinted build Google gave the
+  capture tool, and its advance widths differ: "WILLIAMSON HOMES" at 300 14px
+  is 161px with it and 152px with the served file, which equals the
+  reference's 152. That difference made Construction Partner's first paragraph
+  wrap to 3 lines instead of 4 at 834 (Δh 11.3% in r1). macOS ignores hinting,
+  so every platform renders what the reference serves it. The italic replaces
+  a synthesized oblique in the footer.
+- [a11y] `.opacity-75` (CSS:L4884) is not applied to the Featured Projects
+  titles or the Let's Talk heading: 0.75 × #6d6a69 on white is about 3.2:1.
+  This was already the repo's decision (`review-fixes.test.ts` "renders
+  featured project titles … at full opacity"); recorded here so the census
+  reader knows it is deliberate.
+- [a11y] hover clamps, where the reference's hover takes text below 4.5:1 on a
+  flat ground (`src/hover-rules.test.ts` computes each):
+  - Rule 1 (`a:hover { outline: 0 }`) is not adopted, so a hovered, focused
+    link keeps its focus ring.
+  - Rule 4 is .87 on the footer links (white on secondary: 4.11 at .8) and .92
+    on the Featured titles (secondary on white: 3.53 at .8). It is exactly .8
+    on the header links, logos and photo links.
+  - Rule 9 (secondary paired button) keeps #6's 4% tint with no fade (the
+    reference's .15 + .8 is 3.02).
+  - Rule 10 (primary paired button) keeps the .15 tint with a .85 fade
+    (4.09 at .8).
+  - Rules 7 and 8 on photo grounds (Let's Talk, hero) are exact: contrast on a
+    photo has no flat ground to clamp against.
+  - ACK-REQUIRED as a class: fidelity or AA on hover is a product call (see
+    BACKLOG Operator decisions).
+- [a11y] the CTA "Email Us" (`.button-default.mx-6.text-color-secondary`,
+  CSS:L5858) is #939393 on white on the reference, 3.07:1. The candidate keeps
+  `--color-secondary`. This is census row "email us" (ambiguous) at every
+  viewport.
+- [deviation, ACK-REQUIRED] census rows left after r5, none of them a size,
+  weight or line-height:
+  - (a) "—tim holmes, homeowner": uppercase comes from CSS on the candidate and
+    is typed into the reference's text. The glyphs are identical.
+  - (b) counter numbers "1" and "3": their colour depends on how far the
+    reference's script had run when the census captured it. It lit circle 3 /
+    unlit circle 1 mid-scroll.
+  - (c) "let's get this project started!": the reference is #333 (an h3 with
+    no colour class, body colour CSS:L2063) above 479 and secondary at ≤479
+    (CSS:L7265). Statement has no heading-tone field, so the candidate is
+    secondary everywhere. Matching it needs a model field.
+  - (d) footer links "home/about/contact us/projects": the reference computes
+    rgb(109,106,105) on a background of the same colour, so its links are
+    invisible. The candidate keeps them white. This is a reference defect.
+- [deviation] header:
+  - It is now `position: fixed` and runs IX2 e-9…e-16 and e-25…e-32 (shared
+    chrome table), keyed off `#main-content`'s first child, i.e. the hero.
+  - At ≤479 the logo is hidden and the 2rem hamburger (the reference's
+    `menu.svg`) sits at top 24 / right 32, as live.
+  - The open menu is still the starter's dialog: the click IX (e-17…e-23
+    slide) is outside OD7-P1b.
+  - The hamburger's .66 hover applies below `md` (768), not only at ≤479,
+    because the candidate shows the hamburger up to 767.
+  - The sidekick now waits until hero bottom + 200px, as the page script does,
+    but still shows on any upscroll. The script's 100–1000px delta window is
+    not ported.
+- [a11y] footer copyright is 14px/20 from md up (CSS:L6489) and 12px below,
+  where the reference inherits 8px (body ≤767, CSS:L7010). 8px is not legible.
+- [gate] r5, run on the working tree that this PR commits: `page-diff — PASS (threshold=0.1)`,
+  18 regions at 1440/834/390, no masks, worst "Featured Projects" @390
+  mm=7.8%. Strikes clear. The run history r1 → r5: r1 FAILed top/featured
+  on width and font; r2 FAILed Construction Partner Δh; r3 PASSed; r4 was NOT
+  MEASURED (svelte-kit sync reloaded the page mid-capture); r5 PASSed.

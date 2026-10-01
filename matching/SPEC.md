@@ -32,9 +32,9 @@ interaction data handed to `Webflow.require("ix2").init(...)` in
 ### Header (`section.headers`)
 
 - `.headers` (CSS:L6517): `position: fixed; top: 0; z-index: 99; height:
-  120px; margin-bottom: -120px`. At ≤479 it is `height: 80px` (CSS:L7467).
+120px; margin-bottom: -120px`. At ≤479 it is `height: 80px` (CSS:L7467).
 - `.hero-header.max-w-1280.m-auto` (CSS:L5653): `position: absolute; inset:
-  0 0 auto; height: 120px; width: 100%`, max-width 1280, centred.
+0 0 auto; height: 120px; width: 100%`, max-width 1280, centred.
   - Logo `<img width="180" class="h-12 pr-8">`: 48px tall, 180 wide including
     the 2rem right padding, so the SVG is letterboxed into 148×48. The file is
     byte-identical to `static/images/williamson-homes-logo.svg` (md5
@@ -51,7 +51,7 @@ interaction data handed to `Webflow.require("ix2").init(...)` in
   upscroll of 100–1000px. Below `hero height + 200`, or on any downscroll, it
   goes back to −120px. Hidden at ≤479 (CSS:L7471).
 - ≤479: the hamburger (`.hamburger.filter-to-white`, 2rem, fixed, `margin:
-  1.5rem 2rem 0 0`, CSS:L7507) opens `.hero-header`, which
+1.5rem 2rem 0 0`, CSS:L7507) opens `.hero-header`, which
   `.su-cover-portrait` turns into a full-screen teal menu panel (CSS:L7395).
   IX2 e-17 and e-21 slide it down; e-19 and e-23 slide it up.
 
@@ -67,7 +67,7 @@ copyright 8px.
 ### Global link and button rules
 
 - `a` (CSS:L2120): `transition: background-color .7s ease-in-out, opacity
-  .35s ease-in`.
+.35s ease-in`.
 - `.button-default` (CSS:L5836): 12.8px; `padding: 9px 15px` from `.w-button`
   (CSS:L265), with the sides overridden to 10px; a 1px white bottom border;
   `transition: background-color .2s ease-in, opacity .25s ease-in`. The
@@ -75,23 +75,23 @@ copyright 8px.
 
 ### Hover rules: all 15 `:hover` selectors in the stylesheet
 
-| #   | selector                                              | change on hover                                                                   | transition (base rule)                                   | where on the reference                       |
-| --- | ----------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------- |
-| 1   | `a:active, a:hover`                                   | `outline: 0`                                                                      | —                                                        | every link                                   |
-| 2   | `.w-lightbox-control:hover` (≥768)                    | `opacity: 1`                                                                      | `all .3s`                                                | no lightbox on any captured page             |
-| 3   | `.w-lightbox-inactive:hover`                          | `opacity: 0`                                                                      | —                                                        | no lightbox on any captured page             |
-| 4   | `a:hover`                                             | `opacity: .8; background-color: transparent`                                      | `background-color .7s ease-in-out, opacity .35s ease-in` | every link not overridden below              |
-| 5   | `.text-color-secondary.mx-auto.max-width-600px:hover` | `color: var(--secondary)`, already its rest colour, so nothing visible changes     | `color .2s cubic-bezier(.215,.61,.355,1)`                | about-us, the Commercial Advantage h3        |
-| 6   | `.text-color-secondary.mx-auto.white-on-hover:hover`  | `color: #fff`                                                                     | `color .2s cubic-bezier(.215,.61,.355,1)`                | about-us, the 1/2/3 in the anchor circles    |
-| 7   | `.button-default:hover`                               | `background-color: #6d6a6959` (rgba(109,106,105,.35)), plus opacity .8 from rule 4 | `background-color .2s ease-in, opacity .25s ease-in`     | home "Let's Talk"; about-us "Go To Site"     |
-| 8   | `.button-default.mx-6:hover`                          | `background-color: #6d6a6926` (rgba(109,106,105,.15)), plus opacity .8             | `background-color .25s ease-in, opacity .25s ease-in`    | the hero's Email Us / Call Us                |
-| 9   | `.button-default.mx-6.text-color-secondary:hover`     | as rule 8                                                                         | as rule 8                                                | the CTA band's "Email Us"                    |
-| 10  | `.button-default.mx-6.text-color-primary:hover`       | as rule 8                                                                         | as rule 8                                                | the CTA band's "Call Us"                     |
-| 11  | `.content-block.home-project-item-image:hover`        | `background-color: #005a7896` behind the inline photo, plus opacity .8            | `background-color .7s ease-in-out, opacity .35s ease-in` | home, the Featured Projects photos           |
-| 12  | `.filled-circle.mx-auto:hover`                        | `opacity: 1`, cancelling rule 4's .8                                              | from `a`                                                 | about-us anchor circles                      |
-| 13  | `.filled-circle.mx-auto.flex-align-center:hover`      | `background-color: var(--secondary)`                                              | `background-color .7s ease-in-out`                       | about-us anchor circles                      |
-| 14  | `.hamburger.filter-to-white:hover` (≤479)             | `opacity: .66`                                                                    | `opacity .2s`                                            | every page at ≤479                           |
-| 15  | `.menu-close.filter-to-white:hover` (≤479)            | `opacity: .66`                                                                    | `opacity .2s`                                            | every page at ≤479, in the open menu         |
+| #   | selector                                              | change on hover                                                                    | transition (base rule)                                   | where on the reference                    |
+| --- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------- |
+| 1   | `a:active, a:hover`                                   | `outline: 0`                                                                       | —                                                        | every link                                |
+| 2   | `.w-lightbox-control:hover` (≥768)                    | `opacity: 1`                                                                       | `all .3s`                                                | no lightbox on any captured page          |
+| 3   | `.w-lightbox-inactive:hover`                          | `opacity: 0`                                                                       | —                                                        | no lightbox on any captured page          |
+| 4   | `a:hover`                                             | `opacity: .8; background-color: transparent`                                       | `background-color .7s ease-in-out, opacity .35s ease-in` | every link not overridden below           |
+| 5   | `.text-color-secondary.mx-auto.max-width-600px:hover` | `color: var(--secondary)`, already its rest colour, so nothing visible changes     | `color .2s cubic-bezier(.215,.61,.355,1)`                | about-us, the Commercial Advantage h3     |
+| 6   | `.text-color-secondary.mx-auto.white-on-hover:hover`  | `color: #fff`                                                                      | `color .2s cubic-bezier(.215,.61,.355,1)`                | about-us, the 1/2/3 in the anchor circles |
+| 7   | `.button-default:hover`                               | `background-color: #6d6a6959` (rgba(109,106,105,.35)), plus opacity .8 from rule 4 | `background-color .2s ease-in, opacity .25s ease-in`     | home "Let's Talk"; about-us "Go To Site"  |
+| 8   | `.button-default.mx-6:hover`                          | `background-color: #6d6a6926` (rgba(109,106,105,.15)), plus opacity .8             | `background-color .25s ease-in, opacity .25s ease-in`    | the hero's Email Us / Call Us             |
+| 9   | `.button-default.mx-6.text-color-secondary:hover`     | as rule 8                                                                          | as rule 8                                                | the CTA band's "Email Us"                 |
+| 10  | `.button-default.mx-6.text-color-primary:hover`       | as rule 8                                                                          | as rule 8                                                | the CTA band's "Call Us"                  |
+| 11  | `.content-block.home-project-item-image:hover`        | `background-color: #005a7896` behind the inline photo, plus opacity .8             | `background-color .7s ease-in-out, opacity .35s ease-in` | home, the Featured Projects photos        |
+| 12  | `.filled-circle.mx-auto:hover`                        | `opacity: 1`, cancelling rule 4's .8                                               | from `a`                                                 | about-us anchor circles                   |
+| 13  | `.filled-circle.mx-auto.flex-align-center:hover`      | `background-color: var(--secondary)`                                               | `background-color .7s ease-in-out`                       | about-us anchor circles                   |
+| 14  | `.hamburger.filter-to-white:hover` (≤479)             | `opacity: .66`                                                                     | `opacity .2s`                                            | every page at ≤479                        |
+| 15  | `.menu-close.filter-to-white:hover` (≤479)            | `opacity: .66`                                                                     | `opacity .2s`                                            | every page at ≤479, in the open menu      |
 
 The changes were read live with a real hover on 2026-10-01
 (`matching/probes/hover.mjs`, local). `src/hover-rules.test.ts` names every
@@ -102,15 +102,15 @@ row.
 None of them reveals content. Every one targets a page's hero (or the project
 template's gallery) and drives the header:
 
-| events                                             | page                                 | media                       | action                                                                                                                      |
-| -------------------------------------------------- | ------------------------------------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| e-9 / e-10                                         | home (`645ec…72c4`)                  | all                         | hero into view → `a-5` show-hero-header (`translateY(1px)`, 500ms); out of view → `a-4` hide-hero-header (`translateY(-152px)`, 500ms) |
-| e-11 / e-12                                        | projects (`6462a10b…`)               | all                         | same                                                                                                                        |
-| e-13 / e-14                                        | about-us (`6462a11c…`)               | all                         | same                                                                                                                        |
-| e-15 / e-16                                        | contact (`6462a125…`)                | all                         | same                                                                                                                        |
-| e-33 / e-34                                        | project template (`6466599e…`), hero | main, medium, small (≥480)  | same                                                                                                                        |
-| e-35 / e-36                                        | project template, `.gallery-section` | main, small                 | same                                                                                                                        |
-| e-25 / e-26, e-27 / e-28, e-29 / e-30, e-31 / e-32 | home, projects, about-us, contact    | tiny (≤479)                 | hero into view → `a-13` `.headers` background to transparent; out of view → `a-12` to `--primary`, 500ms easeOut             |
+| events                                             | page                                 | media                      | action                                                                                                                                 |
+| -------------------------------------------------- | ------------------------------------ | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| e-9 / e-10                                         | home (`645ec…72c4`)                  | all                        | hero into view → `a-5` show-hero-header (`translateY(1px)`, 500ms); out of view → `a-4` hide-hero-header (`translateY(-152px)`, 500ms) |
+| e-11 / e-12                                        | projects (`6462a10b…`)               | all                        | same                                                                                                                                   |
+| e-13 / e-14                                        | about-us (`6462a11c…`)               | all                        | same                                                                                                                                   |
+| e-15 / e-16                                        | contact (`6462a125…`)                | all                        | same                                                                                                                                   |
+| e-33 / e-34                                        | project template (`6466599e…`), hero | main, medium, small (≥480) | same                                                                                                                                   |
+| e-35 / e-36                                        | project template, `.gallery-section` | main, small                | same                                                                                                                                   |
+| e-25 / e-26, e-27 / e-28, e-29 / e-30, e-31 / e-32 | home, projects, about-us, contact    | tiny (≤479)                | hero into view → `a-13` `.headers` background to transparent; out of view → `a-12` to `--primary`, 500ms easeOut                       |
 
 Measured live: at 1440 and y=1800 the hero header sits at `translateY(-152px)`.
 At 390 and y=1800, `.headers` is an 80px fixed teal bar holding only the
@@ -125,16 +125,16 @@ Citations use the forms set out in "shared chrome".
 
 ### Section census (live, 1440 × 900, 2026-10-01)
 
-| #   | section (reference class)         | anchor                              | y @1440 | h @1440                  | y @390                   |
-| --- | --------------------------------- | ----------------------------------- | ------- | ------------------------ | ------------------------ |
-| 1   | `hero-section` (+ fixed header)   | `top`                               | 0       | 810                      | 0                        |
-| 2   | `featured-projects`               | "Featured Projects"                 | 810     | 647                      | 810                      |
-| 3   | `construction-partner`            | "Construction Partner"              | 1457    | 492                      | 2225                     |
-| 4   | `home-image-quote-block`          | "“I was kept in the loop"           | 1949    | 934                      | 2701                     |
-| 5   | `dream-home-count` (≥480) / `dream-home-count-resp-rep` (≤479) | merged into 4, see below | 2882 | 1216 | 3699 |
-| 6   | `cta-section`                     | "Let's get this project started!"   | 4098    | 267                      | 4431                     |
-| 7   | `lets-talk-section`               | "Make your dream home a reality."   | 4365    | 830                      | 4698                     |
-| 8   | `footer`                          | merged into 7, see below            | 5195    | 612                      | 5027                     |
+| #   | section (reference class)                                      | anchor                            | y @1440 | h @1440 | y @390 |
+| --- | -------------------------------------------------------------- | --------------------------------- | ------- | ------- | ------ |
+| 1   | `hero-section` (+ fixed header)                                | `top`                             | 0       | 810     | 0      |
+| 2   | `featured-projects`                                            | "Featured Projects"               | 810     | 647     | 810    |
+| 3   | `construction-partner`                                         | "Construction Partner"            | 1457    | 492     | 2225   |
+| 4   | `home-image-quote-block`                                       | "“I was kept in the loop"         | 1949    | 934     | 2701   |
+| 5   | `dream-home-count` (≥480) / `dream-home-count-resp-rep` (≤479) | merged into 4, see below          | 2882    | 1216    | 3699   |
+| 6   | `cta-section`                                                  | "Let's get this project started!" | 4098    | 267     | 4431   |
+| 7   | `lets-talk-section`                                            | "Make your dream home a reality." | 4365    | 830     | 4698   |
+| 8   | `footer`                                                       | merged into 7, see below          | 5195    | 612     | 5027   |
 
 Page height: 5807 / 5376 / 5857 at 1440 / 834 / 390.
 
@@ -153,13 +153,13 @@ Two census sections have no anchor of their own, and the LEDGER records both:
 ### 1. Hero
 
 - `.hero-section` (CSS:L5749, L5754, L5776): `min-height: 90vh; max-height:
-  90vh`, so 810 at 900 tall. `--primary` ground, `overflow: hidden`,
+90vh`, so 810 at 900 tall. `--primary` ground, `overflow: hidden`,
   `display: flex; align-items: baseline`, so the content column sits at the
   TOP of the band.
 - Photo: `img.ken-burns-bg` (CSS:L6508): `position: absolute; top: 50%;
-  min-width: 100%; min-height: 100%`. A page script sets `margin-top:
-  -height/2`, which centres it. At ≤991 it is `height: 100%; width: auto;
-  object-fit: cover` (CSS:L6953). HEAD-STYLE animates `ken-burns` from
+min-width: 100%; min-height: 100%`. A page script sets `margin-top:
+-height/2`, which centres it. At ≤991 it is `height: 100%; width: auto;
+object-fit: cover` (CSS:L6953). HEAD-STYLE animates `ken-burns` from
   `scale(1)` to `scale(1.8)`, 60s, ease-in-out, infinite alternate.
 - Content: `.px-4.w-container` (max 940, CSS:L689), in this order:
   - `spacer-32` 8rem + `spacer-16` 4rem, so the W mark starts at y=192.
@@ -218,7 +218,7 @@ the W mark `_w-32` (8rem wide), `h-16`, the h3 quote in white with a `<br>`,
     left, and the section is 256 + 4 × 240 = 1216 tall.
 - Circles: 5rem, 1px secondary border, white. Active is `--secondary`
   (CSS:L6009, L6023), with `transition: background-color .2s
-  cubic-bezier(.215,.61,.355,1)` (CSS:L6027). HEAD-STYLE offsets them
+cubic-bezier(.215,.61,.355,1)` (CSS:L6027). HEAD-STYLE offsets them
   `left: calc(-4.5rem - 1px)` (odd) and `right: calc(-4.5rem - 1px)` (even).
   The number h3 turns white on `.active` (CSS:L5717).
 - Behaviour (`countersAnim.js`, loaded with `$.getScript` from raw.githack;

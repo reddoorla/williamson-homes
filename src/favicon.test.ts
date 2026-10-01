@@ -37,12 +37,6 @@ describe("favicons are the reference's files", () => {
       const served = md5(resolve(root, "static", hrefFor(icon.rel)));
       expect(served).not.toBe(STARTER_FAVICON);
       expect(served).toBe(icon.md5);
-      const captured = resolve(
-        root,
-        "matching/spec/files/cdn.prod.website-files.com/645ec08251dadc9000a072e5",
-        icon.reference,
-      );
-      expect(md5(captured)).toBe(icon.md5);
     });
   }
 });

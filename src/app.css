@@ -10,6 +10,14 @@
   src: url("/fonts/montserrat-latin.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: Montserrat;
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/montserrat-latin-italic.woff2") format("woff2");
+}
+
 @theme {
   --screen-sm: 560px;
   --screen-md: 768px;
@@ -232,7 +240,6 @@ main > section.hero-band:first-child {
 @layer base {
   html {
     scroll-behavior: smooth;
-    scrollbar-gutter: stable;
   }
 
   body {
@@ -376,9 +383,32 @@ main > section.hero-band:first-child {
   font-weight: 400;
   letter-spacing: 2px;
   text-transform: uppercase;
-  @media (max-width: 767px) {
-    font-size: 24px;
+  @media (max-width: 991px) {
+    font-weight: 300;
+  }
+  @media (max-width: 479px) {
+    font-size: 22px;
     line-height: 32px;
+  }
+}
+
+@utility wh-hover-fade {
+  transition:
+    background-color 0.7s ease-in-out,
+    opacity 0.35s ease-in;
+  &:hover {
+    opacity: var(--wh-hover-opacity, 0.8);
+  }
+}
+
+@utility wh-link {
+  font-size: 16px;
+  line-height: 20px;
+  @media (max-width: 991px) {
+    font-size: 14px;
+  }
+  @media (max-width: 767px) {
+    line-height: 1.2em;
   }
 }
 
@@ -386,9 +416,12 @@ main > section.hero-band:first-child {
   font-size: 22px;
   line-height: 36px;
   font-weight: 400;
-  @media (max-width: 479px) {
+  @media (max-width: 991px) {
+    font-size: 20px;
+    font-weight: 300;
+  }
+  @media (max-width: 767px) {
     font-size: 16px;
-    line-height: 28px;
   }
 }
 
@@ -407,7 +440,10 @@ main > section.hero-band:first-child {
 @utility wh-p {
   font-size: 17px;
   line-height: 32px;
-  @media (max-width: 479px) {
+  @media (max-width: 991px) {
+    font-size: 14px;
+  }
+  @media (max-width: 767px) {
     font-size: 12px;
     line-height: 24px;
   }
@@ -419,7 +455,10 @@ main > section.hero-band:first-child {
   & p + p {
     margin-top: 2rem;
   }
-  @media (max-width: 479px) {
+  @media (max-width: 991px) {
+    font-size: 14px;
+  }
+  @media (max-width: 767px) {
     font-size: 12px;
     line-height: 24px;
   }
@@ -429,9 +468,12 @@ main > section.hero-band:first-child {
   font-size: 22px;
   line-height: 36px;
   font-weight: 400;
-  @media (max-width: 479px) {
+  @media (max-width: 991px) {
+    font-size: 20px;
+    font-weight: 300;
+  }
+  @media (max-width: 767px) {
     font-size: 16px;
-    line-height: 28px;
   }
 }
 

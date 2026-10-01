@@ -34,6 +34,13 @@
             "allowTargetBlank": true,
             "multi": "paragraph,strong,em,hyperlink"
           }
+        },
+        "step_height": {
+          "type": "Select",
+          "config": {
+            "label": "step height (blank: short, 15rem; tall is 40rem, for long step text)",
+            "options": ["short", "tall"]
+          }
         }
       },
       "items": {

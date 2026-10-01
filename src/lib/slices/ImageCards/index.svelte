@@ -48,7 +48,7 @@
       {/each}
     </ul>
     {#if href && slice.primary.button_label}
-      <WhButton {href} tone="secondary">{slice.primary.button_label}</WhButton>
+      <WhButton {href} tone="secondary" single>{slice.primary.button_label}</WhButton>
     {/if}
   </div>
 </section>

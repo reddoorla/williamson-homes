@@ -5,16 +5,16 @@ Citations use the forms set out in "shared chrome".
 
 ### Section census (live, 1440 × 900, 2026-10-01)
 
-| #   | section (reference class)         | anchor                              | y @1440 | h @1440                  | y @390                   |
-| --- | --------------------------------- | ----------------------------------- | ------- | ------------------------ | ------------------------ |
-| 1   | `hero-section` (+ fixed header)   | `top`                               | 0       | 810                      | 0                        |
-| 2   | `featured-projects`               | "Featured Projects"                 | 810     | 647                      | 810                      |
-| 3   | `construction-partner`            | "Construction Partner"              | 1457    | 492                      | 2225                     |
-| 4   | `home-image-quote-block`          | "“I was kept in the loop"           | 1949    | 934                      | 2701                     |
-| 5   | `dream-home-count` (≥480) / `dream-home-count-resp-rep` (≤479) | merged into 4, see below | 2882 | 1216 | 3699 |
-| 6   | `cta-section`                     | "Let's get this project started!"   | 4098    | 267                      | 4431                     |
-| 7   | `lets-talk-section`               | "Make your dream home a reality."   | 4365    | 830                      | 4698                     |
-| 8   | `footer`                          | merged into 7, see below            | 5195    | 612                      | 5027                     |
+| #   | section (reference class)                                      | anchor                            | y @1440 | h @1440 | y @390 |
+| --- | -------------------------------------------------------------- | --------------------------------- | ------- | ------- | ------ |
+| 1   | `hero-section` (+ fixed header)                                | `top`                             | 0       | 810     | 0      |
+| 2   | `featured-projects`                                            | "Featured Projects"               | 810     | 647     | 810    |
+| 3   | `construction-partner`                                         | "Construction Partner"            | 1457    | 492     | 2225   |
+| 4   | `home-image-quote-block`                                       | "“I was kept in the loop"         | 1949    | 934     | 2701   |
+| 5   | `dream-home-count` (≥480) / `dream-home-count-resp-rep` (≤479) | merged into 4, see below          | 2882    | 1216    | 3699   |
+| 6   | `cta-section`                                                  | "Let's get this project started!" | 4098    | 267     | 4431   |
+| 7   | `lets-talk-section`                                            | "Make your dream home a reality." | 4365    | 830     | 4698   |
+| 8   | `footer`                                                       | merged into 7, see below          | 5195    | 612     | 5027   |
 
 Page height: 5807 / 5376 / 5857 at 1440 / 834 / 390.
 
@@ -33,13 +33,13 @@ Two census sections have no anchor of their own, and the LEDGER records both:
 ### 1. Hero
 
 - `.hero-section` (CSS:L5749, L5754, L5776): `min-height: 90vh; max-height:
-  90vh`, so 810 at 900 tall. `--primary` ground, `overflow: hidden`,
+90vh`, so 810 at 900 tall. `--primary` ground, `overflow: hidden`,
   `display: flex; align-items: baseline`, so the content column sits at the
   TOP of the band.
 - Photo: `img.ken-burns-bg` (CSS:L6508): `position: absolute; top: 50%;
-  min-width: 100%; min-height: 100%`. A page script sets `margin-top:
-  -height/2`, which centres it. At ≤991 it is `height: 100%; width: auto;
-  object-fit: cover` (CSS:L6953). HEAD-STYLE animates `ken-burns` from
+min-width: 100%; min-height: 100%`. A page script sets `margin-top:
+-height/2`, which centres it. At ≤991 it is `height: 100%; width: auto;
+object-fit: cover` (CSS:L6953). HEAD-STYLE animates `ken-burns` from
   `scale(1)` to `scale(1.8)`, 60s, ease-in-out, infinite alternate.
 - Content: `.px-4.w-container` (max 940, CSS:L689), in this order:
   - `spacer-32` 8rem + `spacer-16` 4rem, so the W mark starts at y=192.
@@ -98,7 +98,7 @@ the W mark `_w-32` (8rem wide), `h-16`, the h3 quote in white with a `<br>`,
     left, and the section is 256 + 4 × 240 = 1216 tall.
 - Circles: 5rem, 1px secondary border, white. Active is `--secondary`
   (CSS:L6009, L6023), with `transition: background-color .2s
-  cubic-bezier(.215,.61,.355,1)` (CSS:L6027). HEAD-STYLE offsets them
+cubic-bezier(.215,.61,.355,1)` (CSS:L6027). HEAD-STYLE offsets them
   `left: calc(-4.5rem - 1px)` (odd) and `right: calc(-4.5rem - 1px)` (even).
   The number h3 turns white on `.active` (CSS:L5717).
 - Behaviour (`countersAnim.js`, loaded with `$.getScript` from raw.githack;
