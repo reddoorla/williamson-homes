@@ -187,8 +187,11 @@ const cta = (top_space = null, bottom_space = null) =>
     contactButtons,
   );
 
-/** @param {"tan" | "blue" | null} [mark_style] */
-const family = (mark_style = null) =>
+/**
+ * @param {"tan" | "blue" | null} [mark_style]
+ * @param {"0" | "4rem" | "8rem"} [top_space]
+ */
+const family = (mark_style = null, top_space = "8rem") =>
   slice(
     "statement",
     {
@@ -201,7 +204,7 @@ const family = (mark_style = null) =>
       body: [],
       show_mark: true,
       ground: "white",
-      top_space: "8rem",
+      top_space,
       bottom_space: "8rem",
       mark_style,
     },
@@ -496,6 +499,7 @@ export function documents(img) {
             mark: "ocean-w",
             ken_burns: false,
             height: "short",
+            bottom_space: "4rem",
           },
           [
             { button_label: "Email Us", button_link: email },
@@ -522,7 +526,7 @@ export function documents(img) {
             },
           ],
         ),
-        family("blue"),
+        family("blue", "0"),
       ],
       ...seo(),
     },

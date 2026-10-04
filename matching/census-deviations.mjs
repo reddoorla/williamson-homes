@@ -19,6 +19,9 @@ const row = (label, ref, cand, why) => ({
 });
 
 export const DECLARED = [
+  row("\"mark@williamson-homes.com\"", "Montserrat | 300 | 14px | 17px | ls=normal | none | rgb(109, 106, 105)", "Montserrat | 300 | 14px | 24px | ls=normal | none | rgb(109, 106, 105)", "contact links are inline-block at the paragraph's 24px line so each is a 24px target (WCAG 2.5.8); the reference's are 17px (LEDGER contact review)"),
+  row("\"310.709.7380\"", "Montserrat | 300 | 14px | 17px | ls=normal | none | rgb(109, 106, 105)", "Montserrat | 300 | 14px | 24px | ls=normal | none | rgb(109, 106, 105)", "contact links are inline-block at the paragraph's 24px line so each is a 24px target (WCAG 2.5.8); the reference's are 17px (LEDGER contact review)"),
+  row("\"310.570.7278\"", "Montserrat | 300 | 13px | 20px | ls=normal | none | rgb(147, 147, 147)", "Montserrat | 300 | 13px | 20px | ls=normal | none | rgb(255, 255, 255)", "contact hero phone button is #939393 on the teal ground, about 1.4:1; ours is white (LEDGER contact gate)"),
   row("\"-tim holmes, homeowner\"", "Montserrat | 300 | 17px | 32px | ls=normal | none | rgb(255, 255, 255)", "Montserrat | 300 | 17px | 32px | ls=normal | uppercase | rgb(255, 255, 255)", "uppercase from CSS here, typed into the reference's text (LEDGER (a))"),
   row("\"1\"", "Montserrat | 400 | 22px | 36px | ls=normal | none | rgb(109, 106, 105)", "Montserrat | 400 | 22px | 36px | ls=normal | none | rgb(255, 255, 255)", "counter number colour depends on how far the reference's script had run (LEDGER (b))"),
   row("\"let's get this project started!\"", "Montserrat | 400 | 22px | 36px | ls=normal | none | rgb(51, 51, 51)", "Montserrat | 400 | 22px | 36px | ls=normal | none | rgb(109, 106, 105)", "reference h3 is #333 above 479; Statement has no heading-tone field (LEDGER (c))"),
