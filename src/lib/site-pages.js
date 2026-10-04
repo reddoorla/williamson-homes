@@ -5,7 +5,7 @@ export const PROJECTS = [
     uid: "pv-malaga-cove",
     title: "Malaga Cove",
     hero: "6466599ec11038f4a001121d/6487834b9e74d606eb7d5b44_pvmc-featured.jpg",
-    credits: [],
+    credits: ["Design: Christien Vroom Interiors"],
     gallery: [
       "6466599ec11038f4a001121d/64877c27f08fb34f2481e9af_pvmc-bath.jpg",
       "6466599ec11038f4a001121d/64877c261ec3a8d344941230_pvmc-beachdoor.jpg",
@@ -27,7 +27,7 @@ export const PROJECTS = [
     uid: "manhattan-beach",
     title: "Manhattan Beach",
     hero: "6466599ec11038f4a001121d/648778be8ddb002de0dccc64_mb-stove.jpg",
-    credits: [],
+    credits: ["Design: Christine Vroom Interiors"],
     gallery: [
       "6466599ec11038f4a001121d/648778beda4ec766208c4db2_mb-bath.jpg",
       "6466599ec11038f4a001121d/648778be5c0b56634b50b42c_mb-couch.jpg",
@@ -77,7 +77,7 @@ export const PROJECTS = [
     uid: "hermosa-home-gym",
     title: "Hermosa Home Gym",
     hero: "6466599ec11038f4a001121d/64877a062386f73936b1e557_hhg-featured.jpg",
-    credits: [],
+    credits: ["Design: Christine Vroom Interiors"],
     gallery: [
       "6466599ec11038f4a001121d/64877a0a1ec3a8d34491331b_hhg-bench.jpg",
       "6466599ec11038f4a001121d/64877a062386f73936b1e557_hhg-featured.jpg",

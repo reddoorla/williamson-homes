@@ -38,11 +38,11 @@
   </section>
 
   <section
-    class="mx-auto max-w-[1280px] px-4 py-32"
+    class="mx-auto max-w-[1280px] border-l border-transparent px-4 pt-32 pb-16 min-[480px]:border-l-0"
     data-wh-header-show="(min-width: 992px), (min-width: 480px) and (max-width: 767px)"
   >
     {#if isFilled.richText(project.data.credits)}
-      <div class="wh-credits text-center text-secondary">
+      <div class="wh-credits wh-p flow-root text-center text-secondary [&_p]:mb-2.5">
         <RichTextBody field={project.data.credits} />
       </div>
     {/if}

@@ -13,7 +13,7 @@
 <section
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="px-4 pt-16"
+  class="border-l border-transparent px-4 pt-16 min-[480px]:border-l-0"
 >
   <div class="mx-auto max-w-[948px]">
     {#if slice.primary.heading}
