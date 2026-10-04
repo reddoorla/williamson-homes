@@ -167,7 +167,11 @@ const heroButtons = [
   { button_label: "Call Us", button_link: phone },
 ];
 
-const cta = () =>
+/**
+ * @param {"4rem" | "0" | "8rem" | null} [top_space]
+ * @param {"4rem" | "8rem" | null} [bottom_space]
+ */
+const cta = (top_space = null, bottom_space = null) =>
   slice(
     "statement",
     {
@@ -177,11 +181,14 @@ const cta = () =>
       body: [],
       show_mark: false,
       ground: "white",
+      top_space,
+      bottom_space,
     },
     contactButtons,
   );
 
-const family = () =>
+/** @param {"tan" | "blue" | null} [mark_style] */
+const family = (mark_style = null) =>
   slice(
     "statement",
     {
@@ -194,6 +201,9 @@ const family = () =>
       body: [],
       show_mark: true,
       ground: "white",
+      top_space: "8rem",
+      bottom_space: "8rem",
+      mark_style,
     },
     contactButtons,
   );
@@ -301,7 +311,7 @@ export function documents(img) {
             },
           ],
         ),
-        cta(),
+        cta("0", "8rem"),
         slice("lets_talk", {
           image: W("6466748f771bae48a751e4d2_williamson-lets-talk.png"),
           heading: "Make your dream home a reality.",
@@ -364,6 +374,8 @@ export function documents(img) {
             mark: "w",
             ken_burns: false,
             height: "short",
+            top_space: "8rem",
+            image_position: "bottom",
           },
           [{ button_label: "About Us", button_link: { link_type: "Web", url: "#about-us" } }],
         ),
@@ -384,13 +396,13 @@ export function documents(img) {
         slice("timeline", { section_id: "builders", heading: "A family of builders" }, [
           {
             name: rt("heading3", "Glen Alwin Bentley"),
-            body: "Started a building company in the South Bay with 10 workers, 1950.",
+            body: "Started a building company in the South Bay with 10 workers, 1950",
             image: W("646695f390d09d6b435f292e_williamson-old-timey.png"),
             caption: "1954 commercial job-site",
           },
           {
             name: rt("heading3", "Ron Bentley"),
-            body: "Continued the family business operating in the commercial construction world, 1976.",
+            body: "Continued the family business operating in the commercial construction world, 1976",
             image: W("64669932a504d3491a0b6403_construction-1976.png"),
             caption: "1976 commercial job-site",
           },
@@ -426,6 +438,7 @@ export function documents(img) {
             section_id: "collab",
             heading: "Collaborative approach",
             step_height: "tall",
+            heading_style: "eyebrow",
             intro: paras(
               "We're not just your contractor. Our approach is collaborative at every step. From initial call, to project completion; we are there working with your team, mapping out costs, and overseeing every aspect of building your dream home",
             ),
@@ -457,7 +470,7 @@ export function documents(img) {
             },
           ],
         ),
-        cta(),
+        cta("8rem", "8rem"),
       ],
       ...seo(),
     },
@@ -506,7 +519,7 @@ export function documents(img) {
             },
           ],
         ),
-        family(),
+        family("blue"),
       ],
       ...seo(),
     },

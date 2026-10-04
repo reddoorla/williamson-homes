@@ -8,17 +8,25 @@
   let { slice }: { slice: Content.StatementSlice } = $props();
 
   const buttons = $derived(buttonsOf(slice.items));
+  const topSpace = $derived(
+    ({ "0": "pt-0", "8rem": "pt-32" } as Record<string, string>)[slice.primary.top_space ?? ""] ??
+      "pt-16",
+  );
+  const bottomSpace = $derived(slice.primary.bottom_space === "8rem" ? "pb-32" : "pb-16");
 </script>
 
 <section
   id={slice.primary.section_id || undefined}
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="px-4 py-16 {slice.primary.ground === 'light' ? 'bg-light' : 'bg-white'}"
+  class="px-4 {topSpace} {bottomSpace} {slice.primary.ground === 'light' ? 'bg-light' : 'bg-white'}"
 >
   <div class="mx-auto max-w-[940px] text-center">
     {#if slice.primary.show_mark}
-      <WMark variant="black" class="mb-8 w-16" />
+      <WMark
+        variant={slice.primary.mark_style === "blue" ? "blue" : "tan"}
+        class="mb-16 {slice.primary.mark_style === 'blue' ? 'w-32' : 'w-16'}"
+      />
     {/if}
     {#if slice.primary.eyebrow}
       <p class="wh-eyebrow mb-8 max-[479px]:text-[15px]">{slice.primary.eyebrow}</p>

@@ -658,3 +658,61 @@ printed nothing, which proved nothing, so it was rerun unfiltered.
 The matching gate was not re-run for this section, by the operator's call;
 `matching/LEDGER.md` says so, and marks the older counters entries as
 describing the removed port.
+
+## 2026-10-04 — About Us matched: 19 of 21 gate regions pass; the two left are the reference's own phone defects (PR to follow)
+
+The operator, after the steps stage: "about us and projects should be
+matched, my comment was for the homepage and the steps specifically". About
+Us had been specced but never gated; its 10-01 baseline failed every region.
+
+The first thing the gate had to be taught was where About Us's sections are.
+Below 480 the reference hides its desktop timeline and steps sections and
+shows later phone-only twins, and page-diff resolves an anchor to the first
+element in document order whether it is visible or not, so every anchor in
+those sections cut at y=0. `matching/gate-about.sh` is gate.sh's own call
+plus one disclosed `--pin-state` that removes `display:none` sections, which
+changes no pixel. "Collaborative approach" also first matched circle 3's label
+near the top of the page, so the steps are cut at their first title, and the
+title's screen-reader "Step 1:" moved into an `aria-label` so the visible text
+can be an anchor. An earlier draft of this simply deleted the prefix; a test
+written for exactly that prefix went red, and it was right.
+
+What was different, by section, each read from the reference's source:
+
+- The hero is an `<img>` pinned bottom-left at full width (sand and walkers
+  in frame), under 8rem of top space, not home's 12rem and centred cover.
+  Heroes differ per page (home, about, contact/projects), so PageHero took
+  three optional fields with defaults that leave every other page alone.
+- The timeline was the wrong layout, not the wrong spacing: the reference
+  puts text and photo on opposite sides of the line, alternating, in fixed
+  32rem rows. Rebuilt; photos at natural size. That last part needed the dev
+  surface to stop claiming every image is 1600×1067; it now reads the
+  captured file's real size, as Prismic does in production.
+- The family statement and closing CTA are spaced per page (home's CTA 0/8rem,
+  about's 8rem/8rem), so Statement took two spacing fields. The W mark is not
+  black but tan, from a filter chain in About Us's own page `<style>`, and the
+  same block centres the last timeline circle, overriding the shared
+  stylesheet's 49%. Contact's mark is blue at 8rem; `mark_style` covers it.
+- Commercial Advantage is a flush panel (80px inside) with Webflow row
+  gutters, which is where 444×250 photos come from; ours had 32px gaps and
+  246px photos.
+
+The single most useful discovery: page-diff renders with reduced motion. The
+gate never sees the pinned stage on About Us, it sees the plain list, so that
+list can and now does match the reference's resting layout (its 16rem
+header, which #11 dropped, and the phone column at x=34).
+
+Two regions fail and are left for the operator, both at 390 and both
+reference defects: the family heading is `width: 620px` and runs off a phone
+screen (ours wraps), and the phone steps twin drops the intro paragraph and is
+headed "A Family of Builders", copied from the section above (ours keeps
+"Collaborative approach" and its intro). Copying either makes the page worse.
+
+Home was re-gated after the shared changes: still 18 of 18. Census over both
+pages is clean with every declaration ledgered; one is "email us" at #939393,
+3.0:1 on white, kept at our AA colour under the operator's "accessibility
+wins".
+
+Not done here: the live Prismic documents need the new field values (about,
+home's CTA, contact's mark), which is a release for the operator to publish
+after the models land.

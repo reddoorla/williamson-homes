@@ -14,23 +14,24 @@
   id={slice.primary.section_id || undefined}
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="px-4 py-16"
 >
-  <div class="mx-auto max-w-[940px] bg-light p-4 py-16 text-center">
+  <div
+    class="mx-auto max-w-[940px] bg-light px-4 py-20 text-center max-[992px]:max-w-[728px] max-[480px]:max-w-none"
+  >
     {#if slice.primary.eyebrow}
       <p class="wh-eyebrow text-primary">{slice.primary.eyebrow}</p>
     {/if}
     {#if isFilled.richText(slice.primary.heading)}
-      <div class="wh-statement-heading mx-auto mt-8 max-w-[600px] text-secondary">
+      <div class="wh-statement-heading mx-auto mt-16 w-4/5 max-w-[600px] text-secondary">
         <RichTextBody field={slice.primary.heading} />
       </div>
     {/if}
     {#if isFilled.image(slice.primary.logo)}
-      <PrismicImage field={slice.primary.logo} fallbackAlt="" class="mx-auto mt-8 w-1/5" />
+      <PrismicImage field={slice.primary.logo} fallbackAlt="" class="mx-auto mt-16 w-1/5" />
     {/if}
-    <ul class="mt-16 grid gap-8 md:grid-cols-2">
+    <ul class="mt-16 grid md:-mx-2.5 md:grid-cols-2">
       {#each slice.items as card, i (i)}
-        <li>
+        <li class="px-2.5">
           <div class="relative aspect-video overflow-hidden bg-accent">
             {#if isFilled.image(card.image)}
               <PrismicImage

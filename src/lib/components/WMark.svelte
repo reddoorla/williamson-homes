@@ -1,6 +1,6 @@
 <script lang="ts">
   type Props = {
-    variant?: "white" | "black" | "ocean";
+    variant?: "white" | "black" | "tan" | "blue" | "ocean";
     class?: string;
   };
 
@@ -14,5 +14,11 @@
 <img
   {src}
   alt=""
-  class="mx-auto block {variant === 'black' ? 'wh-filter-black' : ''} {passedClasses}"
+  class="mx-auto block {(
+    {
+      black: 'wh-filter-black',
+      tan: 'wh-filter-tan',
+      blue: 'wh-filter-blue',
+    } as Record<string, string>
+  )[variant] ?? ''} {passedClasses}"
 />

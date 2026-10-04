@@ -310,3 +310,88 @@ regression, now fixed:
   where the hero ends, so at those widths the header never leaves a project
   page until the gallery does, and the gallery runs to the footer. Only the
   slide follows it; the phone bar's colour still follows the hero.
+
+## 2026-10-04 — about-us gated: 19 of 21 regions pass; the two left are reference defects at 390
+
+Operator, 2026-10-01: "about us and projects should be matched, my comment
+was for the homepage and the steps specifically".
+
+- [harness] `matching/gate-about.sh` runs gate.sh's exact page-diff call plus
+  one disclosed `--pin-state` that removes `display:none` `<section>`s on both
+  pages. Below 480 the reference hides its desktop builders and collab
+  sections and shows later `-resp-rep` twins; page-diff resolves an anchor to
+  the first element in document order, hidden or not, so every anchor in
+  those sections cut at y=0 (`base1`). Removing a `display:none` section
+  changes no pixel. gate.sh is the recipe's file and is not edited; a
+  per-page pin in `harness.json` is the recipe change that would retire this
+  script.
+- [harness] anchors: "Collaborative approach" first matches circle 3's label
+  under the intro, so the steps are cut at their first title, "Design and
+  Construction". The step titles' "Step N:" moved from an sr-only span into
+  each h3's `aria-label`, so the visible text starts with the title and
+  heading navigation still announces the number.
+- [harness] the dev surface gave every image 1600×1067. It now reads each
+  captured file's real size (`src/lib/image-size.ts`), which is what Prismic
+  serves in production; the timeline needs it for natural-width photos. Home
+  was re-gated after this and the shared spacing changes: r9 PASS, 18 of 18.
+- [fixed] hero: `top_space` 8rem and `image_position: bottom` (the
+  `bg-about-beach` img, bottom-left, full width, full height below 992),
+  `max-h-[90vh]`. 0.0% at 1440 and 834.
+- [fixed] circles: the paragraph keeps its 10px margin (as padding, so it
+  does not collapse into the list's 64), labels sit flush at 28px leading,
+  Webflow row gutters (−10/10), 64px between stacked circles on phones, and
+  the section ends at the labels (the third label's pb-6).
+- [fixed] timeline rebuilt to the reference: text and photo on opposite
+  sides of a 2px line (two 1px borders), alternating, in 32rem rows with a
+  16rem last row; photos at natural width; the first photo up 9px; the last
+  circle centred (`calc(50% - .625rem)` from the page's own style block, not
+  the shared stylesheet's 49%). Phones get the `-resp-rep` layout: line at
+  x=34, text from 67, the line stopping at the last entry.
+- [fixed] family statement and closing CTA: Statement takes `top_space` /
+  `bottom_space` (home's CTA is 0/8rem, about's 8rem/8rem), and the W mark is
+  tan (`tan-w-icon`'s filter chain from about's page style block; contact's is
+  `blue-w` at 8rem, field `mark_style`).
+- [fixed] Commercial Advantage: a flush `w-container` panel, 80px inside
+  (16 padding + 64 spacer), 64 between eyebrow and heading and before the
+  logo, 444×250 photos from the row gutters, 728px under 992, full width on
+  phones, heading `width: 80%`.
+- [fixed] steps heading: `heading_style: eyebrow` on about; the tall pinned
+  head is a fixed 16rem block as the reference's `counter-head.h-64`; the
+  plain list (reduced motion, which is what page-diff captures) gets back the
+  `md:min-h-64` #11 dropped and the phone geometry above.
+- [content] desktop timeline copy has no trailing periods ("…1950",
+  "…1976"); the seed now matches. The phone twin has periods, "1979
+  commercial job-site" and "Williamson HQ consctruction"; those are typos in
+  the twin and are not copied.
+- [a11y] "email us" in the family statement: the reference is #939393, 3.0:1
+  on white; ours stays secondary. Accessibility wins (operator 2026-10-01).
+  Declared in `census-deviations.mjs`.
+- [deviation] step circle numbers ("1"–"4") in the census follow the pinned
+  stage; declared for home and about-us.
+- [ACK-REQUIRED] vw390 "We treat our clients like family" FAIL, Δh 10.2%,
+  mm 1.8%: the reference h3 is `width: 620px`, so on a 390 phone it runs off
+  the screen (the page scrolls sideways). Ours wraps to four lines inside the
+  screen. Matching it means shipping cut-off text.
+- [ACK-REQUIRED] vw390 "Our mission as a commercial company" FAIL, Δh 9.4%,
+  mm 0.4%: the region ends at the first step. The reference's phone steps
+  twin has no intro paragraph and is headed "A Family of Builders" (a copy
+  of the previous section's heading); ours keeps "Collaborative approach"
+  and its intro on phones, so the region is taller.
+- [gate] r10 (final tree): `page-diff — FAIL (threshold=0.1)`, pin-state disclosed, no
+  masks; 19 PASS, worst passing region 1.8%; FAIL only the two rows above.
+  Census over both pages: `home 0 0 0`, `about-us 0 0 0`, "Phase 3 CLEAN —
+  0 undeclared type mismatches (45 declared, 17 ambiguous)"; the ambiguous
+  rows are the numbers 1–4, where the anchor circles match and the stage
+  circles sharing the text do not.
+- [review] adversarial review of #16, one major and five minors fixed: the
+  hero's `max-h-[90vh]` (added for about) applied to every hero and would clip
+  a tall heading's buttons on a short phone, so it is gone (about never needed
+  it: its photo is absolute); an empty step title no longer reads "Step 2:
+  null"; timeline rows are `min-h-128`/`min-h-64`, so a tall CMS photo grows
+  its row instead of overlapping the next; `md:pr-0` no longer rides beside
+  `md:pr-16` on the same step; `max-[991px]`/`max-[479px]` (Tailwind v4:
+  `width < 991px`) became `max-[992px]`/`max-[480px]` so 991 and 479 behave as
+  Webflow's inclusive `max-width`. Re-gated: about-us r11 19 of 21 (same two
+  ACK rows), home r11 PASS 18 of 18. The review also noted home's plain list
+  changes on phones (the x=34 column and `md:min-h-64`): intended, both
+  references share that geometry, and home passes.

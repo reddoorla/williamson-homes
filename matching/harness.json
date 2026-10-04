@@ -22,11 +22,27 @@
       "anchors": [
         "Featured Projects",
         "Construction Partner",
-        "“I was kept in the loop",
+        "\u201cI was kept in the loop",
         "Let's get this project started!",
         "Make your dream home a reality."
       ],
       "spec": "home",
+      "group": "nav"
+    },
+    "about-us": {
+      "uid": "about-us",
+      "ref": "/about-us",
+      "cand": "/dev/match/about-us",
+      "published": "/about-us",
+      "anchors": [
+        "As a family of builders working",
+        "A family of builders",
+        "We treat our clients like family",
+        "Our mission as a commercial company",
+        "Design and Construction",
+        "Let's get this project started!"
+      ],
+      "spec": "about-us",
       "group": "nav"
     }
   }

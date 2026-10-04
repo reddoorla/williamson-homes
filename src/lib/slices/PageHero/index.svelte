@@ -19,6 +19,9 @@
       isFilled.image(slice.primary.background_image),
   );
   const buttons = $derived(buttonsOf(slice.items));
+  const pinnedBottom = $derived(slice.primary.image_position === "bottom");
+  const topSpace = $derived(slice.primary.top_space === "8rem" ? "pt-32" : "pt-48");
+  const bottomSpace = $derived(slice.primary.bottom_space === "4rem" ? "pb-16" : "pb-32");
   const tall = $derived(
     (slice.primary.height ?? (slice.primary.ken_burns ? "tall" : "short")) === "tall",
   );
@@ -36,13 +39,13 @@
     <PrismicImage
       field={slice.primary.background_image}
       alt=""
-      class="absolute inset-0 h-full w-full object-cover {slice.primary.ken_burns
-        ? 'wh-ken-burns'
-        : ''}"
+      class="absolute object-cover {pinnedBottom
+        ? 'bottom-0 left-0 w-full max-[992px]:h-full max-[992px]:w-auto max-[992px]:min-w-full'
+        : 'inset-0 h-full w-full'} {slice.primary.ken_burns ? 'wh-ken-burns' : ''}"
       imgixParams={{ w: 2400 }}
     />
   {/if}
-  <div class="relative mx-auto w-full max-w-[600px] px-4 pt-48 pb-32 text-center">
+  <div class="relative mx-auto w-full max-w-[600px] px-4 text-center {topSpace} {bottomSpace}">
     {#if slice.primary.mark !== "none"}
       <WMark variant={slice.primary.mark === "ocean-w" ? "ocean" : "white"} class="h-40" />
     {/if}

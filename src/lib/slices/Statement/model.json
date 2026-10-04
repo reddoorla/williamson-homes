@@ -60,6 +60,27 @@
             "options": ["white", "light"],
             "default_value": "white"
           }
+        },
+        "top_space": {
+          "type": "Select",
+          "config": {
+            "label": "top space (blank: 4rem; 0 as home's closing call to action; 8rem as about's)",
+            "options": ["4rem", "0", "8rem"]
+          }
+        },
+        "bottom_space": {
+          "type": "Select",
+          "config": {
+            "label": "bottom space (blank: 4rem; 8rem as the closing call to action and the family statement)",
+            "options": ["4rem", "8rem"]
+          }
+        },
+        "mark_style": {
+          "type": "Select",
+          "config": {
+            "label": "W mark style (blank: tan, 4rem, as about; blue is 8rem, as contact)",
+            "options": ["tan", "blue"]
+          }
         }
       },
       "items": {
