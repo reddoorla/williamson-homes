@@ -476,3 +476,22 @@ was for the homepage and the steps specifically".
   About Us; ours wraps. The region still passes (9.4%).
 - [gate] c4: contact 6/9 PASS, the three FAILs the hero colour above, no masks,
   no pin-state. Census `contact 0 0 0`, Phase 3 CLEAN (10 declared).
+- [review] #19 adversarial review, two majors and five minors, all fixed:
+  - **3+ people overlapped.** Every card sat in grid row 1, so a third
+    person landed on the first. Each pair now takes its own row (inline
+    `grid-row`).
+  - **Overflow at 480–560.** Long names and emails overflowed the narrow
+    columns, and the right text was padded twice. The text now breaks
+    (`overflow-wrap: anywhere`) and the double padding is gone.
+  - **Fixed heights.** Card heights are minimums, so wrapped text grows the
+    card instead of crossing the line's cap.
+  - **One person.** A lone person starts at the top, not 24rem down.
+  - **Inert line-height.** The phone line-height class did nothing on an
+    inline link. Links are inline-block at the paragraph's line, 24px on
+    phones, a 24px target (WCAG 2.5.8) against the reference's 17px. The two
+    census rows that changes are declared.
+  - **Narrow JSDoc.** `family()`'s JSDoc type now allows "4rem".
+  - **Tests.** New tests cover three people, one person without a photo, and
+    wrapping.
+  - **Re-gated c5.** Same 6/9, same three hero-colour FAILs. The census
+    declares 13 rows and has no undeclared mismatches.

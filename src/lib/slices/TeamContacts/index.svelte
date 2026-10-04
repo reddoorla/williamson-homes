@@ -5,7 +5,7 @@
 
   let { slice }: { slice: Content.TeamContactsSlice } = $props();
 
-  const link = "text-[14px] max-[768px]:leading-[1.2] min-[992px]:text-[16px]";
+  const link = "inline-block text-[14px] min-[992px]:text-[16px]";
 </script>
 
 <section
@@ -22,10 +22,14 @@
     >
       {#each slice.items as person, i (i)}
         {@const left = i % 2 === 0}
+        {@const stagger = left && i + 1 < slice.items.length}
         <li
-          class="relative h-96 border-secondary pt-32 min-[480px]:row-start-1 min-[480px]:h-64 min-[480px]:border-0 min-[480px]:pt-0 {left
-            ? 'border-r min-[480px]:col-start-1 min-[480px]:mt-96 min-[480px]:pr-[129px] text-right'
-            : 'border-l mt-32 min-[480px]:col-start-2 min-[480px]:mt-0 min-[480px]:pr-2.5 min-[480px]:pl-[129px] text-left'}"
+          style:grid-row={Math.floor(i / 2) + 1}
+          class="relative min-h-96 border-secondary pt-32 min-[480px]:min-h-64 min-[480px]:border-0 min-[480px]:pt-0 {left
+            ? 'border-r text-right min-[480px]:col-start-1 min-[480px]:pr-[129px]'
+            : 'mt-32 border-l text-left min-[480px]:col-start-2 min-[480px]:mt-0 min-[480px]:pr-2.5 min-[480px]:pl-[129px]'} {stagger
+            ? 'min-[480px]:mt-96'
+            : ''}"
         >
           {#if isFilled.image(person.photo)}
             <PrismicImage
@@ -37,7 +41,11 @@
               imgixParams={{ w: 400, h: 400, fit: "crop" }}
             />
           {/if}
-          <div class={left ? "pr-[33px] min-[480px]:pr-0" : "pr-2.5 pl-[33px] min-[480px]:pl-0"}>
+          <div
+            class="[overflow-wrap:anywhere] {left
+              ? 'pr-[33px] min-[480px]:pr-0'
+              : 'pr-2.5 pl-[33px] min-[480px]:pr-0 min-[480px]:pl-0'}"
+          >
             <h3 class="wh-h3 text-secondary">
               {person.name}
               {#if person.role}<span class="block">{person.role}</span>{/if}

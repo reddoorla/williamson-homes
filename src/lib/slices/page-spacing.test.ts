@@ -435,7 +435,7 @@ describe("TeamContacts (the contact timeline)", () => {
       "text-left",
     ])
       expect(has(brian, cls)).toBe(true);
-    for (const li of [mark, brian]) expect(has(li, "min-[480px]:h-64")).toBe(true);
+    for (const li of [mark, brian]) expect(has(li, "min-[480px]:min-h-64")).toBe(true);
   });
 
   it("centres each photo on the line, draws the line, and caps it with a circle", () => {
@@ -454,14 +454,14 @@ describe("TeamContacts (the contact timeline)", () => {
     expect(has(mark, "border-r")).toBe(true);
     expect(has(brian, "border-l")).toBe(true);
     expect(has(brian, "mt-32")).toBe(true);
-    for (const li of [mark, brian]) expect(has(li, "h-96")).toBe(true);
+    for (const li of [mark, brian]) expect(has(li, "min-h-96")).toBe(true);
   });
 
-  it("sets the links at the reference's 14px, 16px from 992, with the phone's tight line", () => {
+  it("sets the links at the reference's 14px, 16px from 992, each a block at least one line tall", () => {
     const links = [...c().querySelectorAll("li a")];
     expect(links).toHaveLength(4);
     for (const a of links)
-      for (const cls of ["text-[14px]", "min-[992px]:text-[16px]", "max-[768px]:leading-[1.2]"])
+      for (const cls of ["text-[14px]", "min-[992px]:text-[16px]", "inline-block"])
         expect(has(a, cls)).toBe(true);
     expect(links.map((a) => a.getAttribute("href"))).toEqual([
       "mailto:mark@x.com",
@@ -469,6 +469,38 @@ describe("TeamContacts (the contact timeline)", () => {
       "mailto:brian@x.com",
       "tel:3105707278",
     ]);
+  });
+
+  it("gives each pair its own row, so a third person never lands on the first", () => {
+    const three = render(TeamContacts, {
+      props: {
+        slice: slice("team_contacts", { heading: null }, [
+          ...people,
+          { ...people[0], name: "Third Person", email: "third@x.com" },
+        ]),
+      },
+    }).container;
+    const lis = [...three.querySelectorAll("li")];
+    expect(lis.map((li) => li.style.gridRow)).toEqual(["1", "1", "2"]);
+    expect(has(lis[0], "min-[480px]:mt-96")).toBe(true);
+    expect(has(lis[2], "min-[480px]:mt-96")).toBe(false);
+  });
+
+  it("starts a lone person at the top, and lays out without a photo", () => {
+    const one = render(TeamContacts, {
+      props: { slice: slice("team_contacts", { heading: null }, [{ ...people[0], photo: {} }]) },
+    }).container;
+    const li = one.querySelector("li");
+    expect(has(li, "min-[480px]:mt-96")).toBe(false);
+    expect(li?.querySelector("img")).toBeNull();
+    expect(li?.querySelector("h3")?.textContent).toContain("Mark Mayotte");
+  });
+
+  it("breaks long names and emails instead of running off narrow columns", () => {
+    for (const div of c().querySelectorAll("li > div"))
+      expect(has(div, "[overflow-wrap:anywhere]")).toBe(true);
+    const brianText = c().querySelectorAll("li > div")[1];
+    expect(has(brianText, "min-[480px]:pr-0")).toBe(true);
   });
 
   it("keeps 8rem above and below and the reference's 1px phone inset", () => {

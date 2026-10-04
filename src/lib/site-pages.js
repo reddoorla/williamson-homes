@@ -189,7 +189,7 @@ const cta = (top_space = null, bottom_space = null) =>
 
 /**
  * @param {"tan" | "blue" | null} [mark_style]
- * @param {"0" | "8rem"} [top_space]
+ * @param {"0" | "4rem" | "8rem"} [top_space]
  */
 const family = (mark_style = null, top_space = "8rem") =>
   slice(
