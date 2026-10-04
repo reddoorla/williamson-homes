@@ -27,7 +27,7 @@
     <div class="absolute inset-0 bg-black/10"></div>
     <div class="relative mx-auto w-full max-w-[940px] px-4 pt-80 pb-32 text-center">
       <WMark class="h-40" />
-      <h1 class="mt-16 px-8 text-[22px] leading-9 font-normal text-white">
+      <h1 class="wh-h3 mt-16 px-8 text-white">
         {project.data.title}
       </h1>
       <div class="mt-8 flex justify-center gap-12">

@@ -395,3 +395,43 @@ was for the homepage and the steps specifically".
   ACK rows), home r11 PASS 18 of 18. The review also noted home's plain list
   changes on phones (the x=34 column and `md:min-h-64`): intended, both
   references share that geometry, and home passes.
+
+## 2026-10-04 — projects and project gated: both PASS at 1440/834/390
+
+- [fixed] projects hero is heading-first: the reference puts "Featured
+  Projects" above the W, with the buttons 6rem below, on 8rem/4rem. PageHero
+  took a `layout` field (`mark-first` default, `heading-first`).
+- [fixed] project list: one column of 60% squares alternating sides above 480,
+  stacked and centred under it, titles as eyebrows aligned to the photo's
+  bottom edge. Before this it was a three-column card grid.
+- [fixed] the 1px phone inset. Below 480 the reference's `.px-4` carries a
+  transparent 1px left border (the same rule Timeline already copies), so its
+  content is 357px wide at 390, not 358. Each photo is 1px shorter; over 14
+  gallery photos that is 18px, which alone failed the 390 gallery region at
+  19%. Both the list and the gallery take it now.
+- [fixed] credits: the reference's paragraph scale (17/32, 14/32, 12/24) with
+  10px under each line. The margin is kept inside the block (`flow-root`), or
+  it collapses into the gallery's 8rem and the photos start 10px high.
+- [fixed] gallery ends 4rem under the last photo (each reference item is
+  followed by an `h-16` spacer), not 8rem.
+- [fixed] footer 16px too tall on every page: the links sat in 24px list rows;
+  the reference's links are `display:block` at their own 20px (16.8px on
+  phones). The links are block now; 612px at 1440, as the reference.
+- [fixed] project title takes the heading ladder (`wh-h3`: 22/400, 20/300,
+  16/300); it was a fixed 22/400. Found by the census at 834 and 390.
+- [content] pv-malaga-cove, manhattan-beach and hermosa-home-gym show a
+  "Design: …" line from a separate Webflow field the migration dropped. The
+  seed now carries it in `credits`; the live documents need it too (Prismic
+  release). The reference spells it "Christien Vroom" on Malaga Cove and
+  "Christine Vroom" on the other two; copied as is, and flagged to the
+  operator.
+- [instrument] the project page's "Home" anchor is dropped. page-diff's
+  anchor query is `h1–h6,p,a,li,span,div,section,button`: it has `section`,
+  which the reference's footer is, and not `footer`, which ours is. The
+  reference cut at the footer top and ours at the first link, 128px lower,
+  so every footer region read Δh 18–21% from the cut alone. The last region
+  now runs from the credits through the footer.
+- [gate] p8 (final tree): project 6/6 PASS, projects p5 9/9 PASS, no masks, no
+  pin-state. Census: projects `0 0 0`, project `0 0 0`, "Phase 3 CLEAN".
+  Re-gated after the shared footer change: home p6 18/18, about-us p6 19/21
+  (the two ACK rows above, unchanged).

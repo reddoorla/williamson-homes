@@ -20,7 +20,9 @@
       <ul class="flex flex-col gap-16 pb-16 text-right">
         {#each FOOTER_LINKS as link (link.href)}
           <li>
-            <a href={link.href} class="wh-link wh-hover-fade block text-white [--wh-hover-opacity:.87]"
+            <a
+              href={link.href}
+              class="wh-link wh-hover-fade block text-white [--wh-hover-opacity:.87]"
               >{link.label}</a
             >
           </li>

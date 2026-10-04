@@ -716,3 +716,41 @@ wins".
 Not done here: the live Prismic documents need the new field values (about,
 home's CTA, contact's mark), which is a release for the operator to publish
 after the models land.
+
+## 2026-10-04 — Projects and the project template matched: both gates pass at all three widths (PR to follow)
+
+The projects index was a three-column card grid; the reference is one column
+of 60% squares that alternate sides, with the title as an eyebrow at the
+photo's bottom edge, and a hero that puts the heading above the W. PageHero
+took a `layout` field for that, and ProjectList was rebuilt. At 1440 the index
+then matched to the pixel: hero 695, cards 633 apart, CTA anchor at 4656.
+
+The template's gallery was already the right size photo for photo. What
+failed was smaller and spread across the page. The credit line was 24px where
+the reference's is 32px with 10px under it, and that 10px collapsed into the
+gallery's margin until the block was made `flow-root`. The gallery ended 8rem
+under the last photo, not 4rem. The 390 region still failed at 19% after
+those fixes, and the cause was a 1px transparent left border the reference's
+`.px-4` carries below 480. It makes every photo 357px wide, not 358, and
+across 14 photos that is 18px of drift. The rule was already copied once, in
+Timeline, and nobody had generalised it.
+
+The footer has been 16px too tall on every page since the build: its links
+sat in 24px list rows, where the reference's are block links at 20px. Home
+and About Us were re-gated after the change, unchanged at 18/18 and 19/21.
+
+One correction to the instrument. The project page's "Home" anchor never
+measured what it claimed. page-diff resolves anchors over a fixed tag list
+that includes `section` and not `footer`, so it cut the reference at its
+footer section and ours at the first link inside, 128px lower. Every footer
+region read an 18–21% height delta from the cut alone. The anchor is gone and
+the reasoning is in the LEDGER.
+
+The census caught the last one: the project title was a fixed 22px where the
+reference steps down to 20 and 16. Nine mutations, one per change, each turn
+a test red.
+
+Content found on the way: three projects had a "Design: …" line from a
+Webflow field the migration dropped. The seed has it now; the live documents
+need a Prismic release. The reference spells the designer "Christien" on one
+page and "Christine" on two, and that is the operator's call.

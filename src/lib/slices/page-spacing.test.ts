@@ -72,19 +72,18 @@ describe("PageHero spacing and photo position", () => {
     const withButtons = (layout: string | null) =>
       render(PageHero, {
         props: {
-          slice: {
-            ...slice("page_hero", {
+          slice: slice(
+            "page_hero",
+            {
               heading: rt("Featured Projects"),
               background: "photo",
               background_image: image("beach"),
               text_tone: "light",
               mark: "w",
               layout,
-            }),
-            items: [
-              { button_label: "Email Us", button_link: { link_type: "Web", url: "mailto:a@b.c" } },
-            ],
-          } as never,
+            },
+            [{ button_label: "Email Us", button_link: { link_type: "Web", url: "mailto:a@b.c" } }],
+          ),
         },
       }).container;
     const markFirst = withButtons(null);
@@ -365,5 +364,21 @@ describe("SiteFooter", () => {
     const links = [...render(SiteFooter).container.querySelectorAll("nav a")];
     expect(links.length).toBeGreaterThan(0);
     for (const a of links) expect(has(a, "block")).toBe(true);
+  });
+});
+
+describe("ProjectView title", () => {
+  it("steps the title down the heading ladder on tablets and phones", () => {
+    const c = render(ProjectView, {
+      props: {
+        project: {
+          id: "p",
+          uid: "x",
+          type: "project",
+          data: { title: "Malaga Cove", hero_image: image("h"), credits: [], gallery: [] },
+        } as never,
+      },
+    }).container;
+    expect(has(c.querySelector("h1"), "wh-h3")).toBe(true);
   });
 });
