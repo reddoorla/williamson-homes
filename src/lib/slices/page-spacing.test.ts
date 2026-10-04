@@ -67,7 +67,13 @@ describe("PageHero spacing and photo position", () => {
   it("puts the mark first by default, and below the heading for projects, with the buttons 6rem down", () => {
     const order = (c: HTMLElement) =>
       [...c.querySelectorAll(".wh-hero > div > *")].map((el) =>
-        el.tagName === "IMG" ? "mark" : has(el, "wh-hero-heading") ? "heading" : "buttons",
+        el.tagName === "IMG"
+          ? "mark"
+          : has(el, "wh-hero-heading")
+            ? "heading"
+            : el.querySelector("a") && has(el, "justify-center")
+              ? "buttons"
+              : `unexpected ${el.tagName}`,
       );
     const withButtons = (layout: string | null) =>
       render(PageHero, {
@@ -307,6 +313,9 @@ describe("ProjectList (the projects index)", () => {
     expect(links.map((a) => has(a, "min-[480px]:flex-row-reverse"))).toEqual([true, false, true]);
     expect(has(links[1], "min-[480px]:flex-row")).toBe(true);
     for (const a of links) expect(has(a, "flex-col")).toBe(true);
+    const title = links[0].querySelector("h3");
+    expect(has(title, "min-[480px]:self-end")).toBe(true);
+    expect(has(title, "min-[480px]:text-left")).toBe(true);
   });
 
   it("draws each photo as a 60% square and keeps the reference's 1px phone inset", () => {
@@ -360,10 +369,14 @@ describe("ProjectView gallery spacing", () => {
 });
 
 describe("SiteFooter", () => {
-  it("makes each link its own line box, so a link row is the link's 20px and not the list's 24px", () => {
+  it("makes each link its own line box, so a link row is the link's 20px and not the list's 24px, and only as wide as its text", () => {
     const links = [...render(SiteFooter).container.querySelectorAll("nav a")];
     expect(links.length).toBeGreaterThan(0);
-    for (const a of links) expect(has(a, "block")).toBe(true);
+    for (const a of links) {
+      expect(has(a, "block")).toBe(true);
+      expect(has(a, "w-fit")).toBe(true);
+      expect(has(a, "ml-auto")).toBe(true);
+    }
   });
 });
 

@@ -22,7 +22,7 @@
           <li>
             <a
               href={link.href}
-              class="wh-link wh-hover-fade block text-white [--wh-hover-opacity:.87]"
+              class="wh-link wh-hover-fade ml-auto block w-fit text-white [--wh-hover-opacity:.87]"
               >{link.label}</a
             >
           </li>

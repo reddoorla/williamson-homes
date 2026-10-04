@@ -435,3 +435,10 @@ was for the homepage and the steps specifically".
   pin-state. Census: projects `0 0 0`, project `0 0 0`, "Phase 3 CLEAN".
   Re-gated after the shared footer change: home p6 18/18, about-us p6 19/21
   (the two ACK rows above, unchanged).
+- [review] #17 adversarial review, no majors in code, four minors fixed: the
+  footer links were block and so full-row tap targets on phones; they are
+  `w-fit ml-auto` now. The project anchor is "Design:" so the operator's
+  Christien/Christine call cannot unresolve it. The hero order test fails on
+  an unexpected child instead of calling it "buttons", and the list test
+  checks the title's bottom/left alignment. Re-gated p9: project 6/6, home
+  18/18.

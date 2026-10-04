@@ -750,6 +750,10 @@ The census caught the last one: the project title was a fixed 22px where the
 reference steps down to 20 and 16. Nine mutations, one per change, each turn
 a test red.
 
+The gates ran on the seed. Production /projects keeps the W first until the
+PageHero model is pushed (on merge) and a Prismic release sets the projects
+hero to `heading-first` with 8rem/4rem and its CTA to 8rem/8rem.
+
 Content found on the way: three projects had a "Design: …" line from a
 Webflow field the migration dropped. The seed has it now; the live documents
 need a Prismic release. The reference spells the designer "Christien" on one
