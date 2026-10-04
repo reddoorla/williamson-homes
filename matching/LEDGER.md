@@ -442,3 +442,9 @@ was for the homepage and the steps specifically".
   an unexpected child instead of calling it "buttons", and the list test
   checks the title's bottom/left alignment. Re-gated p9: project 6/6, home
   18/18.
+
+## 2026-10-04 — Malaga Cove credit corrected to "Christine"
+
+- [content] the operator confirmed the designer is Christine Vroom; the
+  reference's "Christien" on pv-malaga-cove is a typo and is not copied. The
+  project gate anchors on "Design:", so it is unaffected.

@@ -5,7 +5,7 @@ export const PROJECTS = [
     uid: "pv-malaga-cove",
     title: "Malaga Cove",
     hero: "6466599ec11038f4a001121d/6487834b9e74d606eb7d5b44_pvmc-featured.jpg",
-    credits: ["Design: Christien Vroom Interiors"],
+    credits: ["Design: Christine Vroom Interiors"],
     gallery: [
       "6466599ec11038f4a001121d/64877c27f08fb34f2481e9af_pvmc-bath.jpg",
       "6466599ec11038f4a001121d/64877c261ec3a8d344941230_pvmc-beachdoor.jpg",
