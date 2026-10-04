@@ -1,10 +1,10 @@
 ## about-us
 
-Not in the gate table yet. The 2026-10-01 baseline (`out-base0-about-us`, local)
-failed every region, with Δh up to 23.5%. Gating the page is a geometry
-project of its own (LEDGER, and BACKLOG in reddoor-maintenance). This section
-records the about-us half of the counters, which OD7-P1b ports, plus the facts
-read so far.
+In the gate table since 2026-10-04 (anchors in `harness.json`; run with
+`matching/gate-about.sh`, which adds one disclosed `--pin-state`; LEDGER
+2026-10-04). The 2026-10-01 baseline failed every region with Δh up to 23.5%;
+round r10 passes 19 of 21, and the two left are reference defects at 390. The
+counters half below describes the port that the steps stage replaced.
 
 ### Census (live, 1440 × 900, 2026-10-01)
 
