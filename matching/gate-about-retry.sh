@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export MATCHING_SKILL_DIR=/home/user/claude-skills/skills/matching-a-page
+export MATCHING_SKILL_DIR="${MATCHING_SKILL_DIR:?set MATCHING_SKILL_DIR to the matching-a-page skill directory}"
 for i in 1 2 3; do
   bash matching/gate-about.sh "$1"
   grep -q "Execution context was destroyed" "matching/out-$1-about-us.log" || break
