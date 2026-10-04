@@ -383,3 +383,15 @@ was for the homepage and the steps specifically".
   0 undeclared type mismatches (45 declared, 17 ambiguous)"; the ambiguous
   rows are the numbers 1–4, where the anchor circles match and the stage
   circles sharing the text do not.
+- [review] adversarial review of #16, one major and five minors fixed: the
+  hero's `max-h-[90vh]` (added for about) applied to every hero and would clip
+  a tall heading's buttons on a short phone, so it is gone (about never needed
+  it: its photo is absolute); an empty step title no longer reads "Step 2:
+  null"; timeline rows are `min-h-128`/`min-h-64`, so a tall CMS photo grows
+  its row instead of overlapping the next; `md:pr-0` no longer rides beside
+  `md:pr-16` on the same step; `max-[991px]`/`max-[479px]` (Tailwind v4:
+  `width < 991px`) became `max-[992px]`/`max-[480px]` so 991 and 479 behave as
+  Webflow's inclusive `max-width`. Re-gated: about-us r11 19 of 21 (same two
+  ACK rows), home r11 PASS 18 of 18. The review also noted home's plain list
+  changes on phones (the x=34 column and `md:min-h-64`): intended, both
+  references share that geometry, and home passes.

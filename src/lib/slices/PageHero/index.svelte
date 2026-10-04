@@ -31,7 +31,7 @@
   data-wh-hero
   data-slice-type={slice.slice_type}
   data-slice-variation={slice.variation}
-  class="wh-hero relative flex max-h-[90vh] items-start overflow-hidden {tall
+  class="wh-hero relative flex items-start overflow-hidden {tall
     ? 'min-h-[90vh]'
     : 'min-h-[50vh]'} {groundClass}"
 >
@@ -40,7 +40,7 @@
       field={slice.primary.background_image}
       alt=""
       class="absolute object-cover {pinnedBottom
-        ? 'bottom-0 left-0 w-full max-[991px]:h-full max-[991px]:w-auto max-[991px]:min-w-full'
+        ? 'bottom-0 left-0 w-full max-[992px]:h-full max-[992px]:w-auto max-[992px]:min-w-full'
         : 'inset-0 h-full w-full'} {slice.primary.ken_burns ? 'wh-ken-burns' : ''}"
       imgixParams={{ w: 2400 }}
     />

@@ -16,7 +16,7 @@
   data-slice-variation={slice.variation}
 >
   <div
-    class="mx-auto max-w-[940px] bg-light px-4 py-20 text-center max-[991px]:max-w-[728px] max-[479px]:max-w-none"
+    class="mx-auto max-w-[940px] bg-light px-4 py-20 text-center max-[992px]:max-w-[728px] max-[480px]:max-w-none"
   >
     {#if slice.primary.eyebrow}
       <p class="wh-eyebrow text-primary">{slice.primary.eyebrow}</p>

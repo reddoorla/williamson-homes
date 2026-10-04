@@ -27,8 +27,8 @@
           <li
             class="wh-timeline-entry relative border-l px-4 min-[480px]:grid min-[480px]:grid-cols-2 min-[480px]:border-l-0 min-[480px]:px-0 {i ===
             last
-              ? 'border-transparent min-[480px]:h-64'
-              : 'border-secondary min-[480px]:h-128'}"
+              ? 'border-transparent min-[480px]:min-h-64'
+              : 'border-secondary min-[480px]:min-h-128'}"
           >
             <span
               class="absolute top-0 -left-[19px] h-9 w-9 rounded-full border border-secondary bg-white min-[480px]:left-1/2 min-[480px]:z-10 min-[480px]:h-5 min-[480px]:w-5 min-[480px]:-translate-x-1/2"

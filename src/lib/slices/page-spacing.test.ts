@@ -61,8 +61,8 @@ describe("PageHero spacing and photo position", () => {
     expect(has(body, "pb-16")).toBe(true);
   });
 
-  it("never grows past 90vh", () => {
-    expect(has(hero({}).querySelector(".wh-hero"), "max-h-[90vh]")).toBe(true);
+  it("never caps its height, so a tall heading cannot clip the buttons on a short phone", () => {
+    expect(hero({}).querySelector(".wh-hero")?.className).not.toMatch(/max-h-/);
   });
 });
 
@@ -115,6 +115,19 @@ describe("ProcessSteps heading style", () => {
       },
     }).container;
 
+  it("names a step for heading navigation only when it has a title", () => {
+    const c = render(ProcessSteps, {
+      props: {
+        slice: slice("process_steps", { section_id: null, heading: "Steps", intro: [] }, [
+          { title: "Meet with Us", body: [] },
+          { title: null, body: [] },
+        ]),
+      },
+    }).container;
+    const h3s = [...c.querySelectorAll("h3")];
+    expect(h3s.map((h) => h.getAttribute("aria-label"))).toEqual(["Step 1: Meet with Us"]);
+  });
+
   it("uses the heading style by default and the eyebrow for about", () => {
     expect(has(steps(null).querySelector("h2"), "wh-h3")).toBe(true);
     expect(has(steps("eyebrow").querySelector("h2"), "wh-eyebrow")).toBe(true);
@@ -145,8 +158,8 @@ describe("ImageCards (Commercial Advantage)", () => {
     for (const cls of [
       "py-20",
       "max-w-[940px]",
-      "max-[991px]:max-w-[728px]",
-      "max-[479px]:max-w-none",
+      "max-[992px]:max-w-[728px]",
+      "max-[480px]:max-w-none",
     ])
       expect(has(panel, cls)).toBe(true);
     expect(has(c().querySelector("section"), "py-16")).toBe(false);
@@ -185,8 +198,8 @@ describe("Timeline (A family of builders)", () => {
   it("puts text and photo on opposite sides, alternating, in 32rem rows and a 16rem last row", () => {
     const lis = [...c().querySelectorAll("li")];
     expect(lis).toHaveLength(3);
-    expect(has(lis[0], "min-[480px]:h-128")).toBe(true);
-    expect(has(lis[2], "min-[480px]:h-64")).toBe(true);
+    expect(has(lis[0], "min-[480px]:min-h-128")).toBe(true);
+    expect(has(lis[2], "min-[480px]:min-h-64")).toBe(true);
     const textCol = (li: Element) => li.querySelector(":scope > div");
     const photoCol = (li: Element) => li.querySelector(":scope > figure");
     expect(has(textCol(lis[0]), "min-[480px]:col-start-1")).toBe(true);

@@ -146,7 +146,7 @@
         {#if slice.primary.heading}
           <h2
             class="text-center text-primary {slice.primary.heading_style === 'eyebrow'
-              ? 'wh-eyebrow text-primary'
+              ? 'wh-eyebrow'
               : 'wh-h3'}"
           >
             {slice.primary.heading}
@@ -184,11 +184,11 @@
             style:z-index={pinning ? i + 1 : undefined}
             class="wh-step border-secondary pb-8 md:w-1/2 {pinning
               ? 'absolute top-12 right-0 left-5 pl-10'
-              : 'relative border-l pr-4 pl-8 md:border-l-0 md:pr-0 ' +
+              : 'relative border-l pr-4 pl-8 md:border-l-0 ' +
                 (tall ? 'md:min-h-[40rem]' : 'md:min-h-[15rem]')} {i % 2 === 0
               ? pinning
                 ? 'md:right-auto md:left-1/2 md:pl-16'
-                : 'md:ml-auto md:pl-16'
+                : 'md:ml-auto md:pr-0 md:pl-16'
               : pinning
                 ? 'md:right-1/2 md:left-auto md:pr-16 md:pl-0 md:text-right'
                 : 'md:mr-auto md:pr-16 md:pl-0 md:text-right'}"
@@ -218,7 +218,7 @@
               {i + 1}
             </span>
             <h3
-              aria-label={`Step ${i + 1}: ${step.title}`}
+              aria-label={step.title ? `Step ${i + 1}: ${step.title}` : undefined}
               class="wh-h3 text-secondary md:pt-5 {pinning ? 'pt-1' : ''} {i % 2 === 0
                 ? 'md:text-left'
                 : 'md:text-right'}"
