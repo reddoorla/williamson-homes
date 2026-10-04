@@ -44,6 +44,30 @@
       ],
       "spec": "about-us",
       "group": "nav"
+    },
+    "projects": {
+      "uid": "projects",
+      "ref": "/projects",
+      "cand": "/dev/match/projects",
+      "published": "/projects",
+      "anchors": [
+        "Featured Projects",
+        "Let's get this project started!"
+      ],
+      "spec": "projects",
+      "group": "nav"
+    },
+    "project": {
+      "uid": "pv-malaga-cove",
+      "ref": "/projects/pv-malaga-cove",
+      "cand": "/dev/match/pv-malaga-cove",
+      "published": "/projects/pv-malaga-cove",
+      "anchors": [
+        "Design: Christien Vroom",
+        "Home"
+      ],
+      "spec": "project",
+      "group": "detail"
     }
   }
 }
