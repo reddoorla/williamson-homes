@@ -76,7 +76,7 @@
         {/each}
       </ol>
       <span
-        class="absolute top-full left-[49%] z-10 hidden h-5 w-5 rounded-full border border-secondary bg-white min-[480px]:block"
+        class="absolute top-full left-1/2 z-10 hidden h-5 w-5 -translate-x-1/2 rounded-full border border-secondary bg-white min-[480px]:block"
         aria-hidden="true"
       ></span>
     </div>

@@ -219,9 +219,12 @@ describe("ProcessSteps", () => {
         ]),
       },
     });
-    expect(getAllByRole("heading", { level: 3 }).map((h) => h.textContent?.trim())).toEqual([
+    const headings = getAllByRole("heading", { level: 3 });
+    expect(headings.map((h) => h.getAttribute("aria-label"))).toEqual([
       "Step 1: Meet with Us",
       "Step 2: Partner Early",
     ]);
+    expect(getAllByRole("heading", { level: 3, name: "Step 2: Partner Early" })).toHaveLength(1);
+    expect(headings.map((h) => h.textContent?.trim())).toEqual(["Meet with Us", "Partner Early"]);
   });
 });

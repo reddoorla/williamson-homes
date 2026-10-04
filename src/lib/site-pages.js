@@ -167,7 +167,7 @@ const heroButtons = [
   { button_label: "Call Us", button_link: phone },
 ];
 
-const cta = () =>
+const cta = (top_space = null, bottom_space = null) =>
   slice(
     "statement",
     {
@@ -177,11 +177,13 @@ const cta = () =>
       body: [],
       show_mark: false,
       ground: "white",
+      top_space,
+      bottom_space,
     },
     contactButtons,
   );
 
-const family = () =>
+const family = (mark_style = null) =>
   slice(
     "statement",
     {
@@ -194,6 +196,9 @@ const family = () =>
       body: [],
       show_mark: true,
       ground: "white",
+      top_space: "8rem",
+      bottom_space: "8rem",
+      mark_style,
     },
     contactButtons,
   );
@@ -301,7 +306,7 @@ export function documents(img) {
             },
           ],
         ),
-        cta(),
+        cta("0", "8rem"),
         slice("lets_talk", {
           image: W("6466748f771bae48a751e4d2_williamson-lets-talk.png"),
           heading: "Make your dream home a reality.",
@@ -428,6 +433,7 @@ export function documents(img) {
             section_id: "collab",
             heading: "Collaborative approach",
             step_height: "tall",
+            heading_style: "eyebrow",
             intro: paras(
               "We're not just your contractor. Our approach is collaborative at every step. From initial call, to project completion; we are there working with your team, mapping out costs, and overseeing every aspect of building your dream home",
             ),
@@ -459,7 +465,7 @@ export function documents(img) {
             },
           ],
         ),
-        cta(),
+        cta("8rem", "8rem"),
       ],
       ...seo(),
     },
@@ -508,7 +514,7 @@ export function documents(img) {
             },
           ],
         ),
-        family(),
+        family("blue"),
       ],
       ...seo(),
     },

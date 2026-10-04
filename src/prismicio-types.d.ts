@@ -1258,6 +1258,16 @@ export interface ProcessStepsSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   step_height: prismic.SelectField<"short" | "tall">;
+
+  /**
+   * heading style (blank: heading, as home; eyebrow is the small uppercase label, as about) field in *ProcessSteps → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: process_steps.default.primary.heading_style
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  heading_style: prismic.SelectField<"heading" | "eyebrow">;
 }
 
 /**
@@ -1635,6 +1645,36 @@ export interface StatementSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   ground: prismic.SelectField<"white" | "light", "filled">;
+
+  /**
+   * top space (blank: 4rem; 0 as home's closing call to action; 8rem as about's) field in *Statement → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: statement.default.primary.top_space
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  top_space: prismic.SelectField<"4rem" | "0" | "8rem">;
+
+  /**
+   * bottom space (blank: 4rem; 8rem as the closing call to action and the family statement) field in *Statement → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: statement.default.primary.bottom_space
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  bottom_space: prismic.SelectField<"4rem" | "8rem">;
+
+  /**
+   * W mark style (blank: tan, 4rem, as about; blue is 8rem, as contact) field in *Statement → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: statement.default.primary.mark_style
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  mark_style: prismic.SelectField<"tan" | "blue">;
 }
 
 /**

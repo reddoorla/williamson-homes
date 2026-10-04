@@ -381,6 +381,16 @@ main > section.hero-band:first-child {
   filter: invert(1);
 }
 
+@utility wh-filter-tan {
+  filter: invert(100%) invert(94%) sepia(11%) saturate(627%) hue-rotate(340deg) brightness(91%)
+    contrast(87%);
+}
+
+@utility wh-filter-blue {
+  filter: invert(100%) invert(22%) sepia(54%) saturate(2087%) hue-rotate(167deg) brightness(98%)
+    contrast(102%);
+}
+
 @utility wh-h2 {
   font-size: 32px;
   line-height: 36px;

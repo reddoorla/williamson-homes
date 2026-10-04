@@ -41,6 +41,13 @@
             "label": "step height (blank: short, 15rem; tall is 40rem, for long step text)",
             "options": ["short", "tall"]
           }
+        },
+        "heading_style": {
+          "type": "Select",
+          "config": {
+            "label": "heading style (blank: heading, as home; eyebrow is the small uppercase label, as about)",
+            "options": ["heading", "eyebrow"]
+          }
         }
       },
       "items": {

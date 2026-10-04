@@ -44,7 +44,7 @@
     const viewport = window.innerHeight;
     const tallest = Math.max(0, ...stepEls.filter(Boolean).map((el) => el.offsetHeight));
     areaHeight = HEADROOM + Math.max(tallest + 64, gap + 80);
-    const content = (headEl?.offsetHeight ?? 0) + areaHeight + 96;
+    const content = (headEl?.offsetHeight ?? 0) + areaHeight + 88;
     if (!roomy && content > viewport) {
       pinning = false;
       at = { t: 0, solid: 0 };
@@ -129,16 +129,28 @@
     style:height={pinning && track ? `${track}px` : undefined}
   >
     <div
-      class="wh-steps-stage mx-auto max-w-[948px] {pinning ? 'sticky overflow-hidden pt-10' : ''}"
+      class="wh-steps-stage mx-auto max-w-[948px] {pinning ? 'sticky overflow-hidden pt-8' : ''}"
       style:top={pinning ? `${stageTop}px` : undefined}
       style:height={pinning && stageHeight ? `${stageHeight}px` : undefined}
     >
       <div
         bind:this={headEl}
-        class="wh-steps-head bg-white {pinning ? '' : tall ? 'md:pt-8' : 'pt-16 md:pt-32'}"
+        class="wh-steps-head bg-white {pinning
+          ? tall
+            ? 'min-[480px]:h-[calc(16rem-88px)]'
+            : ''
+          : tall
+            ? 'md:min-h-64 md:pt-8'
+            : 'pt-16 md:min-h-64 md:pt-32'}"
       >
         {#if slice.primary.heading}
-          <h2 class="wh-h3 text-center text-primary">{slice.primary.heading}</h2>
+          <h2
+            class="text-center text-primary {slice.primary.heading_style === 'eyebrow'
+              ? 'wh-eyebrow text-primary'
+              : 'wh-h3'}"
+          >
+            {slice.primary.heading}
+          </h2>
         {/if}
         {#if isFilled.richText(slice.primary.intro)}
           <div class="wh-prose mx-auto mt-6 max-w-[600px] text-center text-secondary">
@@ -149,7 +161,7 @@
       <ol
         class="wh-steps relative mx-auto mt-16 w-full max-w-[800px] md:max-w-none {pinning
           ? 'md:mt-2 [mask-image:linear-gradient(to_bottom,#000_calc(100%-6rem),transparent)]'
-          : 'md:before:absolute md:before:top-0 md:before:left-1/2 md:before:w-px md:before:-translate-x-1/2 md:before:bg-secondary md:mt-0 ' +
+          : 'pr-4 pl-[18px] md:pr-0 md:pl-0 md:before:absolute md:before:top-0 md:before:left-1/2 md:before:w-px md:before:-translate-x-1/2 md:before:bg-secondary md:mt-0 ' +
             (tall ? 'md:before:bottom-[36rem]' : 'md:before:bottom-[13.5rem]')}"
         style:height={pinning && areaHeight ? `${areaHeight}px` : undefined}
       >
@@ -170,9 +182,9 @@
             data-active={lit ? "" : undefined}
             style:transform={pinning ? `translate3d(0, ${look.rise * gap}px, 0)` : undefined}
             style:z-index={pinning ? i + 1 : undefined}
-            class="wh-step border-secondary pb-8 pl-10 md:w-1/2 {pinning
-              ? 'absolute top-12 right-0 left-5'
-              : 'relative border-l md:border-l-0 ' +
+            class="wh-step border-secondary pb-8 md:w-1/2 {pinning
+              ? 'absolute top-12 right-0 left-5 pl-10'
+              : 'relative border-l pr-4 pl-8 md:border-l-0 md:pr-0 ' +
                 (tall ? 'md:min-h-[40rem]' : 'md:min-h-[15rem]')} {i % 2 === 0
               ? pinning
                 ? 'md:right-auto md:left-1/2 md:pl-16'
@@ -206,7 +218,8 @@
               {i + 1}
             </span>
             <h3
-              class="wh-h3 pt-1 text-secondary md:pt-5 {i % 2 === 0
+              aria-label={`Step ${i + 1}: ${step.title}`}
+              class="wh-h3 text-secondary md:pt-5 {pinning ? 'pt-1' : ''} {i % 2 === 0
                 ? 'md:text-left'
                 : 'md:text-right'}"
               style:opacity={pinning ? look.titleOpacity : undefined}
