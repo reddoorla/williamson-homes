@@ -1,0 +1,5 @@
+{
+  "repositoryName": "williamson-homes",
+  "libraries": ["./src/lib/slices"],
+  "routes": []
+}

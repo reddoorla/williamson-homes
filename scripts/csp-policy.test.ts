@@ -52,8 +52,8 @@ describe("the template's Content-Security-Policy", () => {
 
 describe("the Prismic toolbar under this site's policy", () => {
   const directives = config.kit?.csp?.directives ?? {};
-  const slicemachine = JSON.parse(
-    readFileSync(new URL("../slicemachine.config.json", import.meta.url), "utf8"),
+  const prismicConfig = JSON.parse(
+    readFileSync(new URL("../prismic.config.json", import.meta.url), "utf8"),
   ) as { repositoryName: string };
 
   it("lets the toolbar scripts load from prismic.io's toolbar path, and nothing else there", () => {
@@ -68,7 +68,7 @@ describe("the Prismic toolbar under this site's policy", () => {
   });
 
   it("frames only this site's own Prismic repository", () => {
-    expect(directives["frame-src"]).toContain(`https://${slicemachine.repositoryName}.prismic.io`);
+    expect(directives["frame-src"]).toContain(`https://${prismicConfig.repositoryName}.prismic.io`);
     expect(directives["frame-src"]).not.toContain("https://*.prismic.io");
   });
 });

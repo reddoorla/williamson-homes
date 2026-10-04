@@ -1,4 +1,4 @@
-import type { PageDocument } from "../prismicio-types";
+import type { PageDocument } from "../../prismicio-types";
 
 export type HeaderTone = "light" | "dark";
 

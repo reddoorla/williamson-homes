@@ -3,7 +3,7 @@ import { NotFoundError, RepositoryNotFoundError } from "@prismicio/client";
 import { isHttpError } from "@sveltejs/kit";
 
 import { loadProject, pickProjects, projectHref, toCard, type ProjectCard } from "./projects";
-import type { ProjectDocument } from "../prismicio-types";
+import type { ProjectDocument } from "../../prismicio-types";
 
 const doc = (uid: string, title: string | null = uid) =>
   ({

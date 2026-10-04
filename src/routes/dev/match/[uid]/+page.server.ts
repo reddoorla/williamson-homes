@@ -7,7 +7,7 @@ import { captureFileFor } from "$lib/capture-files.js";
 import { documents } from "$lib/site-pages.js";
 import { headerToneFor } from "$lib/header-tone";
 import { toCard } from "$lib/projects";
-import type { ProjectDocument } from "../../../../prismicio-types";
+import type { ProjectDocument } from "../../../../../prismicio-types";
 
 // Local matching surface: renders the assemblies in $lib/site-pages.js — the
 // same module a Prismic Migration API script publishes from (start from the

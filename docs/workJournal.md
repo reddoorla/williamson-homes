@@ -783,3 +783,70 @@ mutations, each turning a test red.
 Contact was the last unmatched page. Every page and the project template now
 has a gate; the failures left are the hero teal here and About Us's two phone
 defects, and all three are the reference's own problems.
+
+## 2026-10-04 — Off Slice Machine, onto the Prismic CLI (reddoor-maintenance#1090, `claude/prismic-cli`)
+
+Phase 4 of the fleet migration, after williamson-construction-co, which shares
+this template. Slice Machine is deprecated by Prismic since 2026-09-18; models
+are now edited in the Type Builder, and the generated files come from
+`pnpm prismic:gen`. `prismic.config.json` replaces `slicemachine.config.json`
+in the five places that read it (svelte.config.js, `$lib/prismicio`,
+`scripts/csp-policy.test.ts`, `tests/smoke/routes.ts`, `.env.example`), and
+the nine relative imports of the types file follow it to the project root
+(one more than on construction: `$lib/header-tone`). Those imports already
+name the file by path, so svelte-check keeps its `@prismicio/client`
+augmentation without an `app.d.ts` import: 0 errors before and after.
+`slice-machine-ui`, the adapter and `concurrently` are gone, `pnpm dev` is
+plain `vite dev --host`, and the lockfile lost 2,366 lines. No matching file
+and no LEDGER line was touched.
+
+**No stale model.** The regenerated types export the same 80 names as the
+Slice Machine file, and the slice index maps the same 20 components; the only
+differences are the generator's own formatting.
+
+**The simulator could not be framed, for the same reason as on
+construction.** The root layout's `prerender = "auto"` built
+`/slice-simulator` to a static file, so Netlify served it with netlify.toml's
+`/*` `X-Frame-Options: SAMEORIGIN` and only a `<meta>` CSP, which cannot carry
+`frame-ancestors`. Read live on `williamson-homes.netlify.app` at 22:47Z:
+`/slice-simulator`, `/` and `/health` all answer `SAMEORIGIN`.
+(`www.williamson-homes.com` is still the old site behind Cloudflare, so the
+Type Builder's simulator URL belongs on the netlify.app host for now.) The
+route is now `prerender = false`, and the hook, on that path only, drops
+X-Frame-Options and widens the CSP to
+`frame-ancestors 'self' http://localhost:* https://*.prismic.io https://prismic.io`.
+From `vite preview`, before and after: `/` and `/about-us` are static with
+neither header both times, `/health` sends `SAMEORIGIN` both times, and
+`/slice-simulator` went from a static file with neither header to a 200 with
+the widened policy and no X-Frame-Options. Prerendered HTML went from 11 files
+to 10. As on construction, that Netlify's static header stays off a function
+response cannot be told apart here from the hook's own SAMEORIGIN on other
+routes; the deploy preview is where to read it.
+
+**The ported tests had two holes, and mutations found both.** Construction's
+`hooks.server.test.ts` only ever hands the hook a response without
+X-Frame-Options, so deleting the hook's `headers.delete("X-Frame-Options")`
+passed every test; a test now feeds it an upstream `DENY` and expects none.
+And the framers were asserted against `CMS_FRAME_ANCESTORS` itself, so
+narrowing that constant (dropping `https://*.prismic.io`) also passed; a test
+now spells the directive out. After both, every mutation went red:
+`prerender = true` (1), the delete removed (1), `widenFrameAncestors` skipped
+(1), SAMEORIGIN set after the framed branch (3), the route renamed (4), the
+framers narrowed (1), SAMEORIGIN dropped from ordinary pages (1), the
+trailing-slash normalisation removed (1). One first-attempt mutation, setting
+SAMEORIGIN before the framed branch, was equivalent: the branch deletes it
+again. svelte.config.js pointed back at the deleted config fails to load
+(ENOENT). The codegen gate went red when a field was added to Hero's model
+without regenerating, green on the committed tree.
+
+**Prismic agrees with the repo, after one normalisation.** This site is not in
+the nightly drift log, so the 3 custom types and 20 slices were read through
+the Prismic connector and compared field by field (type and config;
+slice-zone choices by key). The first run reported two differences: Hero's
+`cta_link` and SectionGrid's `item_link` omit `select` locally, and Prismic
+returns `select: null`. That is Prismic's codec, not drift:
+`@prismicio/types-internal`'s `LinkConfig` decodes an absent `select` with
+`withFallback(..., null)`. With only that key normalised, 0 differences. The
+comparison was shown to fail on five deliberate local edits (a dropped Select
+option, a renamed slice choice, a changed label, a Link `select` set to
+`document`, a field's type changed), each reported once, then restored.
