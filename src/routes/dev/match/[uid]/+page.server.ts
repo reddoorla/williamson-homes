@@ -26,7 +26,7 @@ export async function load({ params, url }) {
   const sizes = new Map<string, { width: number; height: number }>();
   const sizeOf = (file: string) => {
     if (!sizes.has(file)) {
-      let size = null;
+      let size: { width: number; height: number } | null;
       try {
         size = imageSize(readFileSync(`matching/spec/${file}`));
       } catch {

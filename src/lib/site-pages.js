@@ -167,6 +167,10 @@ const heroButtons = [
   { button_label: "Call Us", button_link: phone },
 ];
 
+/**
+ * @param {"4rem" | "0" | "8rem" | null} [top_space]
+ * @param {"4rem" | "8rem" | null} [bottom_space]
+ */
 const cta = (top_space = null, bottom_space = null) =>
   slice(
     "statement",
@@ -183,6 +187,7 @@ const cta = (top_space = null, bottom_space = null) =>
     contactButtons,
   );
 
+/** @param {"tan" | "blue" | null} [mark_style] */
 const family = (mark_style = null) =>
   slice(
     "statement",
@@ -391,13 +396,13 @@ export function documents(img) {
         slice("timeline", { section_id: "builders", heading: "A family of builders" }, [
           {
             name: rt("heading3", "Glen Alwin Bentley"),
-            body: "Started a building company in the South Bay with 10 workers, 1950.",
+            body: "Started a building company in the South Bay with 10 workers, 1950",
             image: W("646695f390d09d6b435f292e_williamson-old-timey.png"),
             caption: "1954 commercial job-site",
           },
           {
             name: rt("heading3", "Ron Bentley"),
-            body: "Continued the family business operating in the commercial construction world, 1976.",
+            body: "Continued the family business operating in the commercial construction world, 1976",
             image: W("64669932a504d3491a0b6403_construction-1976.png"),
             caption: "1976 commercial job-site",
           },

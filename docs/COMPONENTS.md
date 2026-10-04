@@ -60,6 +60,7 @@ source. It is the fastest way to recognise what a thing does.
 | [`contact.ts`](../src/lib/contact.ts) | `CONTACT_EMAIL`, `CONTACT_PHONE_DISPLAY`, `CONTACT_EMAIL_HREF`, `CONTACT_PHONE_HREF`, `NAV_LINKS`, `FOOTER_LINKS`, `telHref` | — |  |
 | [`easing.ts`](../src/lib/easing.ts) | `cubicBezier`, `ix2EaseIn`, `ix2EaseOut` | 3 |  |
 | [`header-tone.ts`](../src/lib/header-tone.ts) | `headerToneFor` | 4 |  |
+| [`image-size.ts`](../src/lib/image-size.ts) | `imageSize` | 4 |  |
 | [`index.ts`](../src/lib/index.ts) | — | — | place files you want to import through the `$lib` alias in this folder |
 | [`indexability.ts`](../src/lib/indexability.ts) | `MIRROR_ROBOTS_TAG`, `isNetlifyMirrorHost` | 6 | Which HOST a request arrived on decides whether it may be indexed (#140) |
 | [`links.ts`](../src/lib/links.ts) | `hrefOf`, `buttonsOf` | — |  |
@@ -82,4 +83,4 @@ source. It is the fastest way to recognise what a thing does.
 | [`richTextHeadings.ts`](../src/lib/utils/richTextHeadings.ts) | `RT_HEADING_CTX`, `defaultLevel`, `buildHeadingLevelMap` | 9 | Editors author arbitrary heading levels inside Prismic rich-text bodies (heading1–6 are all enabled in the slice models) |
 | [`vimeo.ts`](../src/lib/utils/vimeo.ts) | `checkVimeoVideo` | 5 | True when the Vimeo video exists and is embeddable (oEmbed responds 200) |
 
-61 modules, 381 tests behind them.
+62 modules, 385 tests behind them.

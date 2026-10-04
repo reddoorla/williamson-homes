@@ -57,9 +57,13 @@ describe("imageSize", () => {
   });
 
   it("matches the reference's natural size for the captured timeline photo", () => {
-    const dir = "matching/spec/files/cdn.prod.website-files.com/645ec08251dadc9000a072e5";
-    const file = readdirSync(dir).find((f) => f.includes("williamson-old-timey"));
+    const file = (readdirSync("matching/spec/files", { recursive: true }) as string[]).find((f) =>
+      f.endsWith("williamson-old-timey.png"),
+    );
     if (!file) return;
-    expect(imageSize(readFileSync(`${dir}/${file}`))).toEqual({ width: 333, height: 333 });
+    expect(imageSize(readFileSync(`matching/spec/files/${file}`))).toEqual({
+      width: 333,
+      height: 333,
+    });
   });
 });
