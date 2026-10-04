@@ -67,6 +67,18 @@
       ],
       "spec": "project",
       "group": "detail"
+    },
+    "contact": {
+      "uid": "contact",
+      "ref": "/contact",
+      "cand": "/dev/match/contact",
+      "published": "/contact",
+      "anchors": [
+        "We would love to talk",
+        "We treat our clients like family"
+      ],
+      "spec": "contact",
+      "group": "nav"
     }
   }
 }
