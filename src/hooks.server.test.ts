@@ -10,7 +10,11 @@ import { prerender as simulatorPrerender } from "./routes/slice-simulator/+page"
 const POLICY =
   "default-src 'self'; frame-src 'self' https://williamson-homes.prismic.io; frame-ancestors 'self'; base-uri 'self'";
 
-async function headersFor(pathname: string, policy: string | null = POLICY) {
+async function headersFor(
+  pathname: string,
+  policy: string | null = POLICY,
+  upstream: Record<string, string> = {},
+) {
   const response = await handle({
     event: { url: new URL(`https://williamson-homes.netlify.app${pathname}`) } as never,
     resolve: async () =>
@@ -18,6 +22,7 @@ async function headersFor(pathname: string, policy: string | null = POLICY) {
         headers: {
           "content-type": "text/html",
           ...(policy ? { "Content-Security-Policy": policy } : {}),
+          ...upstream,
         },
       }),
   });
@@ -57,6 +62,23 @@ describe("CMS framing", () => {
     expect(csp.match(/frame-ancestors/g)).toHaveLength(1);
     expect(csp).toContain("frame-src 'self' https://williamson-homes.prismic.io");
     expect(csp).toContain("base-uri 'self'");
+  });
+
+  // The hook must REMOVE an X-Frame-Options that reaches it, not merely skip
+  // setting one: every other test hands it a response with none, so a hook that
+  // only stopped adding the header would pass them all.
+  it("strips an X-Frame-Options the response already carries on /slice-simulator", async () => {
+    const headers = await headersFor("/slice-simulator", POLICY, { "X-Frame-Options": "DENY" });
+    expect(headers.get("X-Frame-Options")).toBeNull();
+  });
+
+  // Spelled out rather than read from CMS_FRAME_ANCESTORS: a test that compares
+  // the constant with itself passes whatever the constant is narrowed to.
+  it("names exactly the Type Builder's framers", async () => {
+    const csp = (await headersFor("/slice-simulator")).get("Content-Security-Policy") ?? "";
+    expect(csp).toContain(
+      "frame-ancestors 'self' http://localhost:* https://*.prismic.io https://prismic.io",
+    );
   });
 
   it("treats a trailing slash as the same route, and nothing else", () => {
