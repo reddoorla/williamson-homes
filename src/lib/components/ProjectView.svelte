@@ -5,7 +5,7 @@
   import WMark from "$lib/components/WMark.svelte";
   import WhButton from "$lib/components/WhButton.svelte";
   import { CONTACT_EMAIL_HREF, CONTACT_PHONE_HREF } from "$lib/contact";
-  import type { ProjectDocument } from "../../prismicio-types";
+  import type { ProjectDocument } from "../../../prismicio-types";
 
   type Props = { project: ProjectDocument };
 
