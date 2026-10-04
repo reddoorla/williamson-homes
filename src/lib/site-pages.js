@@ -364,6 +364,8 @@ export function documents(img) {
             mark: "w",
             ken_burns: false,
             height: "short",
+            top_space: "8rem",
+            image_position: "bottom",
           },
           [{ button_label: "About Us", button_link: { link_type: "Web", url: "#about-us" } }],
         ),

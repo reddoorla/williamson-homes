@@ -1131,6 +1131,36 @@ export interface PageHeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   height: prismic.SelectField<"tall" | "short">;
+
+  /**
+   * top space (blank: 12rem, as home, contact and projects; 8rem as about) field in *PageHero → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page_hero.default.primary.top_space
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  top_space: prismic.SelectField<"12rem" | "8rem">;
+
+  /**
+   * bottom space (blank: 8rem, as home and about; 4rem as contact and projects) field in *PageHero → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page_hero.default.primary.bottom_space
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  bottom_space: prismic.SelectField<"8rem" | "4rem">;
+
+  /**
+   * photo position (blank: cover; bottom pins it to the bottom edge, full width, as about) field in *PageHero → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page_hero.default.primary.image_position
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  image_position: prismic.SelectField<"cover" | "bottom">;
 }
 
 /**

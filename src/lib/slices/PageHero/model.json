@@ -68,6 +68,27 @@
             "label": "height (blank: tall with slow zoom, short without)",
             "options": ["tall", "short"]
           }
+        },
+        "top_space": {
+          "type": "Select",
+          "config": {
+            "label": "top space (blank: 12rem, as home, contact and projects; 8rem as about)",
+            "options": ["12rem", "8rem"]
+          }
+        },
+        "bottom_space": {
+          "type": "Select",
+          "config": {
+            "label": "bottom space (blank: 8rem, as home and about; 4rem as contact and projects)",
+            "options": ["8rem", "4rem"]
+          }
+        },
+        "image_position": {
+          "type": "Select",
+          "config": {
+            "label": "photo position (blank: cover; bottom pins it to the bottom edge, full width, as about)",
+            "options": ["cover", "bottom"]
+          }
         }
       },
       "items": {

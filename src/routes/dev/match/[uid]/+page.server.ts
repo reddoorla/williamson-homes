@@ -1,6 +1,8 @@
 import { error } from "@sveltejs/kit";
 import { dev } from "$app/environment";
 import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
+import { imageSize } from "$lib/image-size";
 import { captureFileFor } from "$lib/capture-files.js";
 import { documents } from "$lib/site-pages.js";
 import { headerToneFor } from "$lib/header-tone";
@@ -21,11 +23,24 @@ export async function load({ params, url }) {
   if (!dev) error(404, { message: "Not found" });
 
   const manifest = JSON.parse(await readFile("matching/spec/manifest.json", "utf8"));
+  const sizes = new Map<string, { width: number; height: number }>();
+  const sizeOf = (file: string) => {
+    if (!sizes.has(file)) {
+      let size = null;
+      try {
+        size = imageSize(readFileSync(`matching/spec/${file}`));
+      } catch {
+        size = null;
+      }
+      sizes.set(file, size ?? { width: 1600, height: 1067 });
+    }
+    return sizes.get(file)!;
+  };
   const devImg = (key: string) => ({
     url: `${url.origin}/dev/spec/${encodeURI(captureFileFor(manifest, key))}`,
     alt: null,
     copyright: null,
-    dimensions: { width: 1600, height: 1067 },
+    dimensions: sizeOf(captureFileFor(manifest, key)),
     edit: { x: 0, y: 0, zoom: 1, background: "transparent" },
     id: key,
   });
