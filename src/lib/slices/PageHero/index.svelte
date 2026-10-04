@@ -19,6 +19,7 @@
       isFilled.image(slice.primary.background_image),
   );
   const buttons = $derived(buttonsOf(slice.items));
+  const headingFirst = $derived(slice.primary.layout === "heading-first");
   const pinnedBottom = $derived(slice.primary.image_position === "bottom");
   const topSpace = $derived(slice.primary.top_space === "8rem" ? "pt-32" : "pt-48");
   const bottomSpace = $derived(slice.primary.bottom_space === "4rem" ? "pb-16" : "pb-32");
@@ -26,6 +27,20 @@
     (slice.primary.height ?? (slice.primary.ken_burns ? "tall" : "short")) === "tall",
   );
 </script>
+
+{#snippet mark(spacing: string)}
+  {#if slice.primary.mark !== "none"}
+    <WMark variant={slice.primary.mark === "ocean-w" ? "ocean" : "white"} class="h-40 {spacing}" />
+  {/if}
+{/snippet}
+
+{#snippet heading(spacing: string)}
+  {#if isFilled.richText(slice.primary.heading)}
+    <div class="wh-hero-heading wh-h3 mx-auto {spacing} {dark ? 'text-primary' : 'text-white'}">
+      <PrismicRichText field={slice.primary.heading} />
+    </div>
+  {/if}
+{/snippet}
 
 <section
   data-wh-hero
@@ -46,20 +61,15 @@
     />
   {/if}
   <div class="relative mx-auto w-full max-w-[600px] px-4 text-center {topSpace} {bottomSpace}">
-    {#if slice.primary.mark !== "none"}
-      <WMark variant={slice.primary.mark === "ocean-w" ? "ocean" : "white"} class="h-40" />
-    {/if}
-    {#if isFilled.richText(slice.primary.heading)}
-      <div
-        class="wh-hero-heading wh-h3 mx-auto mt-16 max-w-[450px] px-8 {dark
-          ? 'text-primary'
-          : 'text-white'}"
-      >
-        <PrismicRichText field={slice.primary.heading} />
-      </div>
+    {#if headingFirst}
+      {@render heading("")}
+      {@render mark("mt-16")}
+    {:else}
+      {@render mark("")}
+      {@render heading("mt-16 max-w-[450px] px-8")}
     {/if}
     {#if buttons.length > 0}
-      <div class="mt-8 flex justify-center gap-12">
+      <div class="{headingFirst ? 'mt-24' : 'mt-8'} flex justify-center gap-12">
         {#each buttons as button, i (i)}
           <WhButton
             href={button.href}

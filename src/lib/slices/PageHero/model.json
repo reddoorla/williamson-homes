@@ -89,6 +89,13 @@
             "label": "photo position (blank: cover; bottom pins it to the bottom edge, full width, as about)",
             "options": ["cover", "bottom"]
           }
+        },
+        "layout": {
+          "type": "Select",
+          "config": {
+            "label": "layout (blank: W mark first, as home and about; heading-first puts the heading above the mark, full width, as projects)",
+            "options": ["mark-first", "heading-first"]
+          }
         }
       },
       "items": {

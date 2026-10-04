@@ -7,6 +7,9 @@ import ProcessSteps from "./ProcessSteps/index.svelte";
 import ImageCards from "./ImageCards/index.svelte";
 import Timeline from "./Timeline/index.svelte";
 import AnchorIntro from "./AnchorIntro/index.svelte";
+import ProjectList from "./ProjectList/index.svelte";
+import ProjectView from "$lib/components/ProjectView.svelte";
+import SiteFooter from "$lib/components/SiteFooter.svelte";
 
 afterEach(() => cleanup());
 
@@ -59,6 +62,45 @@ describe("PageHero spacing and photo position", () => {
   it("takes contact's and projects' 4rem bottom", () => {
     const body = hero({ bottom_space: "4rem" }).querySelector(".wh-hero > div");
     expect(has(body, "pb-16")).toBe(true);
+  });
+
+  it("puts the mark first by default, and below the heading for projects, with the buttons 6rem down", () => {
+    const order = (c: HTMLElement) =>
+      [...c.querySelectorAll(".wh-hero > div > *")].map((el) =>
+        el.tagName === "IMG"
+          ? "mark"
+          : has(el, "wh-hero-heading")
+            ? "heading"
+            : el.querySelector("a") && has(el, "justify-center")
+              ? "buttons"
+              : `unexpected ${el.tagName}`,
+      );
+    const withButtons = (layout: string | null) =>
+      render(PageHero, {
+        props: {
+          slice: slice(
+            "page_hero",
+            {
+              heading: rt("Featured Projects"),
+              background: "photo",
+              background_image: image("beach"),
+              text_tone: "light",
+              mark: "w",
+              layout,
+            },
+            [{ button_label: "Email Us", button_link: { link_type: "Web", url: "mailto:a@b.c" } }],
+          ),
+        },
+      }).container;
+    const markFirst = withButtons(null);
+    expect(order(markFirst)).toEqual(["mark", "heading", "buttons"]);
+    expect(has(markFirst.querySelector(".wh-hero-heading"), "mt-16")).toBe(true);
+    expect(has(markFirst.querySelector(".wh-hero-heading"), "max-w-[450px]")).toBe(true);
+    const headingFirst = withButtons("heading-first");
+    expect(order(headingFirst)).toEqual(["heading", "mark", "buttons"]);
+    expect(has(headingFirst.querySelector(".wh-hero > div > img"), "mt-16")).toBe(true);
+    expect(has(headingFirst.querySelector(".wh-hero-heading"), "max-w-[450px]")).toBe(false);
+    expect(has(headingFirst.querySelector(".wh-hero > div > div:last-child"), "mt-24")).toBe(true);
   });
 
   it("never caps its height, so a tall heading cannot clip the buttons on a short phone", () => {
@@ -248,5 +290,108 @@ describe("AnchorIntro (the three circles)", () => {
     const link = c().querySelector("a");
     expect(has(link, "gap-2")).toBe(false);
     expect(has(link?.querySelector(".wh-eyebrow") ?? null, "leading-7")).toBe(true);
+  });
+});
+
+describe("ProjectList (the projects index)", () => {
+  const cards = ["a", "b", "c"].map((uid) => ({
+    id: uid,
+    uid,
+    title: uid.toUpperCase(),
+    image: image(uid),
+  }));
+  const c = () =>
+    render(ProjectList, {
+      props: {
+        slice: slice("project_list", { heading: "Featured Projects" }),
+        context: { projects: cards },
+      },
+    }).container;
+
+  it("alternates photo sides above 480 and stacks centred below it", () => {
+    const links = [...c().querySelectorAll("a")];
+    expect(links.map((a) => has(a, "min-[480px]:flex-row-reverse"))).toEqual([true, false, true]);
+    expect(has(links[1], "min-[480px]:flex-row")).toBe(true);
+    for (const a of links) expect(has(a, "flex-col")).toBe(true);
+    const title = links[0].querySelector("h3");
+    expect(has(title, "min-[480px]:self-end")).toBe(true);
+    expect(has(title, "min-[480px]:text-left")).toBe(true);
+  });
+
+  it("draws each photo as a 60% square and keeps the reference's 1px phone inset", () => {
+    const root = c();
+    const frame = root.querySelector("a > div");
+    expect(has(frame, "aspect-square")).toBe(true);
+    expect(has(frame, "min-[480px]:w-[60%]")).toBe(true);
+    const section = root.querySelector("section");
+    expect(has(section, "border-l")).toBe(true);
+    expect(has(section, "min-[480px]:border-l-0")).toBe(true);
+  });
+});
+
+describe("ProjectView gallery spacing", () => {
+  const project = (credits: unknown[]) =>
+    ({
+      id: "p",
+      uid: "pv-malaga-cove",
+      type: "project",
+      data: {
+        title: "Malaga Cove",
+        hero_image: image("hero"),
+        credits,
+        gallery: [{ image: image("one") }],
+        meta_title: null,
+        meta_description: null,
+        meta_image: {},
+      },
+    }) as never;
+
+  it("sets the credits at the paragraph scale with 10px under each line, kept out of the gallery's margin", () => {
+    const c = render(ProjectView, {
+      props: {
+        project: project([
+          { type: "paragraph", text: "Design: Christien Vroom Interiors", spans: [] },
+        ]),
+      },
+    }).container;
+    const credits = c.querySelector(".wh-credits");
+    for (const cls of ["wh-p", "flow-root", "[&_p]:mb-2.5"]) expect(has(credits, cls)).toBe(true);
+  });
+
+  it("ends 4rem under the last photo, with the 1px phone inset", () => {
+    const gallery = render(ProjectView, {
+      props: { project: project([]) },
+    }).container.querySelectorAll("section")[1];
+    expect(has(gallery, "pb-16")).toBe(true);
+    expect(has(gallery, "py-32")).toBe(false);
+    expect(has(gallery, "min-[480px]:border-l-0")).toBe(true);
+  });
+});
+
+describe("SiteFooter", () => {
+  it("makes each link its own line box, so a link row is the link's 20px and not the list's 24px, and only as wide as its text", () => {
+    const links = [...render(SiteFooter).container.querySelectorAll("nav a")];
+    expect(links.length).toBeGreaterThan(0);
+    for (const a of links) {
+      expect(has(a, "block")).toBe(true);
+      expect(has(a, "w-fit")).toBe(true);
+      expect(has(a, "ml-auto")).toBe(true);
+    }
+  });
+});
+
+describe("ProjectView title", () => {
+  it("steps the title down the heading ladder on tablets and phones", () => {
+    const c = render(ProjectView, {
+      props: {
+        project: {
+          id: "p",
+          uid: "x",
+          type: "project",
+          data: { title: "Malaga Cove", hero_image: image("h"), credits: [], gallery: [] },
+        } as never,
+      },
+    }).container;
+    expect(has(c.querySelector("h1"), "wh-h3")).toBe(true);
   });
 });

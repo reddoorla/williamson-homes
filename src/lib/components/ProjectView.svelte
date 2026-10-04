@@ -27,7 +27,7 @@
     <div class="absolute inset-0 bg-black/10"></div>
     <div class="relative mx-auto w-full max-w-[940px] px-4 pt-80 pb-32 text-center">
       <WMark class="h-40" />
-      <h1 class="mt-16 px-8 text-[22px] leading-9 font-normal text-white">
+      <h1 class="wh-h3 mt-16 px-8 text-white">
         {project.data.title}
       </h1>
       <div class="mt-8 flex justify-center gap-12">
@@ -38,11 +38,11 @@
   </section>
 
   <section
-    class="mx-auto max-w-[1280px] px-4 py-32"
+    class="mx-auto max-w-[1280px] border-l border-transparent px-4 pt-32 pb-16 min-[480px]:border-l-0"
     data-wh-header-show="(min-width: 992px), (min-width: 480px) and (max-width: 767px)"
   >
     {#if isFilled.richText(project.data.credits)}
-      <div class="wh-credits text-center text-secondary">
+      <div class="wh-credits wh-p flow-root text-center text-secondary [&_p]:mb-2.5">
         <RichTextBody field={project.data.credits} />
       </div>
     {/if}

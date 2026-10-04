@@ -1161,6 +1161,16 @@ export interface PageHeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   image_position: prismic.SelectField<"cover" | "bottom">;
+
+  /**
+   * layout (blank: W mark first, as home and about; heading-first puts the heading above the mark, full width, as projects) field in *PageHero → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page_hero.default.primary.layout
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  layout: prismic.SelectField<"mark-first" | "heading-first">;
 }
 
 /**
