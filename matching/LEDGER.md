@@ -448,3 +448,31 @@ was for the homepage and the steps specifically".
 - [content] the operator confirmed the designer is Christine Vroom; the
   reference's "Christien" on pv-malaga-cove is a typo and is not copied. The
   project gate anchors on "Design:", so it is unaffected.
+
+## 2026-10-04 — contact gated: 6 of 9 regions pass; the 3 left are the a11y teal
+
+- [fixed] headshots: the reference is a timeline, not a grid. Two columns
+  share a centre line 640px tall. The first person sits 24rem down the left
+  column and the second at the top of the right, each a 16rem block, with the
+  192px photo centred on the line and the text 129px off it. A 20px circle caps
+  the line. On phones each person is a 384px block with its own side line,
+  right then left, 128px apart, and the photo 96px above the text. TeamContacts
+  was rebuilt to that; DOM and reading order stay Mark, then Brian, as in the
+  reference.
+- [fixed] the links in the contact lines are 14px, 16px from 992, with a 1.2
+  line on phones; they were inheriting the paragraph's 17px and 12px/24px.
+  Found by the census.
+- [fixed] hero `bottom_space: 4rem`, and the contact info Statement has no top
+  space (`top_space: 0`): the blue W is its first child.
+- [a11y] [ACK-REQUIRED] vw1440/834/390 `top` FAIL, mm 93–98%, dE ≈ 21: the
+  hero ground is #407f82, not the reference's #77b9bc (white text 4.59:1
+  against 2.3:1; LEDGER rule 8 above). Control: a disclosed diagnostic run
+  that paints our hero the reference teal (`--pin-state` on `[data-wh-hero]`,
+  `matching/out-diagteal-contact`, not a gate result) reads 0.0%, 0.0% and
+  1.1%. The colour is the whole difference.
+- [a11y] the hero's phone button is #939393 on teal in the reference (about
+  1.4:1); ours is white. Declared in `census-deviations.mjs`.
+- [deviation] at 390 the family heading is 620px wide in the reference, as on
+  About Us; ours wraps. The region still passes (9.4%).
+- [gate] c4: contact 6/9 PASS, the three FAILs the hero colour above, no masks,
+  no pin-state. Census `contact 0 0 0`, Phase 3 CLEAN (10 declared).

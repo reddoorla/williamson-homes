@@ -758,3 +758,28 @@ Content found on the way: three projects had a "Design: …" line from a
 Webflow field the migration dropped. The seed has it now; the live documents
 need a Prismic release. The reference spells the designer "Christien" on one
 page and "Christine" on two, and that is the operator's call.
+
+## 2026-10-04 — Contact matched: everything but the deliberate hero teal passes (PR to follow)
+
+The contact headshots were a two-photo grid. The reference is a small
+timeline: two columns share a centre line, with Brian at the top right and
+Mark 24rem lower on the left, each photo centred on the line and a circle
+capping it. On phones each person gets their own side line instead. With
+TeamContacts rebuilt to those measurements, the region passed on its first
+gate run at all three widths. The hero was 64px too tall (8rem bottom against
+4rem), and the closing statement had 8rem above a section that, in the
+reference, starts at the W.
+
+The hero still fails, and on purpose. Its ground is the darker teal chosen in
+September for contrast: white on the reference's #77b9bc is about 2.3:1. To
+show that the colour is the entire failure and not a cover for geometry, a
+diagnostic run painted our hero the reference teal and read 0.0%, 0.0% and
+1.1%. That run is disclosed and kept out of the gate results.
+
+The census found the one thing the pixels did not: the email and phone links
+are 14px and 16px in the reference, not the paragraph's 17px. Eight
+mutations, each turning a test red.
+
+Contact was the last unmatched page. Every page and the project template now
+has a gate; the failures left are the hero teal here and About Us's two phone
+defects, and all three are the reference's own problems.
