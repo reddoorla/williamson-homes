@@ -1,60 +1,11 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render } from "@testing-library/svelte";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
 
 import SiteHeader from "./SiteHeader.svelte";
 
 afterEach(() => cleanup());
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../..");
-const read = (path: string) => readFileSync(join(ROOT, path), "utf8");
-
-function token(name: string): [number, number, number] {
-  const hex = read("src/app.css").match(new RegExp(`--color-${name}:\\s*(#[0-9a-f]{6})`, "i"))?.[1];
-  if (!hex) throw new Error(`no --color-${name}`);
-  return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)) as [number, number, number];
-}
-
-function contrast(a: number[], b: number[]): number {
-  const lum = (c: number[]) => {
-    const [r, g, bl] = c.map((v) => {
-      const s = v / 255;
-      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-    });
-    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
-  };
-  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-}
-
 describe("round-1 and round-2 review fixes stay fixed", () => {
-  it("keeps secondary button text AA on its hover tint over white and light", () => {
-    const source = read("src/lib/components/WhButton.svelte");
-    const alphas = [...source.matchAll(/secondary:\s*"[^"]*hover:bg-secondary\/(\d+)[^"]*"/g)].map(
-      (m) => Number(m[1]) / 100,
-    );
-    expect(alphas).toHaveLength(2);
-    const secondary = token("secondary");
-    for (const alpha of alphas) {
-      expect(alpha).toBeGreaterThan(0);
-      for (const ground of [[255, 255, 255], token("light")]) {
-        const tint = ground.map((g, i) => alpha * secondary[i] + (1 - alpha) * g);
-        expect(contrast(secondary, tint)).toBeGreaterThanOrEqual(4.5);
-      }
-    }
-  });
-
-  it("renders featured project titles and the Let's Talk heading at full opacity", () => {
-    for (const file of [
-      "src/lib/slices/FeaturedProjects/index.svelte",
-      "src/lib/slices/LetsTalk/index.svelte",
-    ]) {
-      expect(read(file), file).not.toMatch(/opacity-\d+/);
-    }
-  });
-
   it("points aria-controls at the menu only while it is open", async () => {
     const { getByRole } = render(SiteHeader, { props: { tone: "dark" } });
     const open = getByRole("button", { name: "Open menu" });

@@ -9,8 +9,8 @@ import { expect, test, type Page } from "@playwright/test";
 // behind it scrolling, which on a phone reads as the modal having closed.
 //
 // Both are GEOMETRY, and jsdom performs no layout — Modal.test.ts can only pin
-// the mechanism (which classes are on the element). This file is the actual
-// measurement, which is why it exists at all.
+// the mechanism. This file is the actual measurement, which is why it exists at
+// all.
 const FIXTURES = "/dev/a11y-fixtures";
 
 /** Retrying click: a single click can land on markup that has not hydrated yet,
