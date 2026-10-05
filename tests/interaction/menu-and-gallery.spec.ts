@@ -46,7 +46,7 @@ test.describe("the phone menu under reduced motion", () => {
   });
 
   test(
-    "opens as a named dialog, and Close hands focus back to the menu button",
+    "opens as a named dialog, and Close or Escape hands focus back to the menu button",
     { tag: "@smoke" },
     async ({ page }) => {
       await page.goto("/");
@@ -61,6 +61,19 @@ test.describe("the phone menu under reduced motion", () => {
         })
         .toBe(true);
       await page.getByRole("button", { name: "Close menu" }).click();
+      await expect(menu).toBeHidden();
+      await expect(page.getByRole("button", { name: "Open menu" })).toBeFocused();
+
+      // Escape is the other way out, and the only one a keyboard user does not
+      // have to Tab to: it closes the menu and hands focus back the same way.
+      await page.getByRole("button", { name: "Open menu" }).click();
+      await expect(menu).toBeVisible();
+      await expect
+        .poll(() => menu.evaluate((el) => el.contains(document.activeElement)), {
+          message: "focus moved into the reopened menu",
+        })
+        .toBe(true);
+      await page.keyboard.press("Escape");
       await expect(menu).toBeHidden();
       await expect(page.getByRole("button", { name: "Open menu" })).toBeFocused();
     },

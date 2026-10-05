@@ -167,12 +167,9 @@ test.describe("the steps stay a plain list under reduced motion", () => {
     await page.waitForLoadState("networkidle");
     const pinned = page.locator(`${SECTION}[data-pinning]`);
     await expect(pinned).toHaveCount(0);
-    await page.emulateMedia({ reducedMotion: "no-preference" });
-    await expect(pinned, "control: the stage is live and pins when motion is allowed").toHaveCount(
-      1,
-    );
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await expect(pinned).toHaveCount(0);
+    // Read the page a reduced-motion visitor loads, before the control below
+    // toggles motion on and off: reading after the toggle raced the un-pin,
+    // which can leave a step's inline opacity at 0 for a frame.
     const opacities = await page
       .locator(`${SECTION} li`)
       .evaluateAll((lis) =>
@@ -184,6 +181,12 @@ test.describe("the steps stay a plain list under reduced motion", () => {
       );
     expect(opacities.length, "steps with text").toBeGreaterThan(0);
     expect(opacities, "no step's text is left at opacity 0").not.toContain("0");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await expect(pinned, "control: the stage is live and pins when motion is allowed").toHaveCount(
+      1,
+    );
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(pinned).toHaveCount(0);
   });
 });
 

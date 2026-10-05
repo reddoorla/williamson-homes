@@ -889,3 +889,26 @@ The pre-commit prettier hook from reddoor-starter#169 is in too. `matching/` is 
 - #34: the nav drops to 3.57:1 on hover over the teal hero.
 
 #35, a stale comment citing a deleted pin, is fixed here.
+
+## 2026-10-05 — The freeze round: designer edits stay green, real bugs go red, and two gate gaps closed (#36)
+
+The tiers entry above claimed the gate no longer freezes design. This entry is that claim tested. Each edit below was made to the site source, run through the whole gate (vitest and the `@smoke` tier), and then reverted.
+
+**Designer edits.** Four were applied together:
+
+- the footer link hover opacity moved from .87 to .9;
+- the home hero padding changed from `pt-48` to `pt-56`;
+- `MENU_SLIDE_MS` changed from 500 to 250;
+- the desktop step gap changed from 240 to 260.
+
+On main they turned 10 tests red: 9 in vitest (hover-rules 1, page-spacing 1, ProcessSteps 7) and the Playwright menu-offset test. On this branch the gate stayed green: vitest 639, `@smoke` 23/23.
+
+**Real bugs.** Two of the three were invisible to the gate before this entry:
+
+- **The phone menu could lose `onEscape`.** No test pressed Escape on SiteHeader's menu; the template's Nav tests cover a different component. The `@smoke` "opens as a named dialog" test now reopens the menu and presses Escape. It expects the dialog hidden and focus back on "Open menu", which is what `trapFocus` does through `closeMenu`.
+- **The header Contact link could point at `/contact-us` (a 404).** Nothing followed header or footer hrefs. A new `@smoke` spec, `tests/smoke/chrome-links.spec.ts`, collects every same-origin href in the header, the sticky bar and the footer and requires a 200 for each. It is guarded against passing with zero links.
+- **Footer hover opacity at .8 (below AA)** was already red in hover-rules before this entry.
+
+Each new test was proven green on the clean tree and red under its bug.
+
+**One `@smoke` read raced.** "no pinning, every step's text visible" read the step opacities just after toggling motion back to reduce. During the un-pin, a step's inline opacity can still be 0 for a frame. It went red once under load and then passed when run alone. It now reads the page a reduced-motion visitor loads, before the control toggle, and passed 5/5 on repeat. Forcing the step body to opacity 0 under reduced motion turns it red, so the check is not vacuous.
