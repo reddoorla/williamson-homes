@@ -151,19 +151,20 @@ describe("theme contrast", () => {
   );
 
   /**
-   * The 13 none-hued Tailwind tokens app.css overrides with a 0 hue (#152) are
+   * The none-hued Tailwind tokens app.css overrides with a 0 hue (#152) are
    * in this @theme block, so a `text-neutral-*` in src is classified here
-   * like any other token, and this guard has to be able to measure it. These
-   * are Tailwind's own sRGB values for the same greys.
+   * like any other token, and this guard has to be able to measure it. The
+   * converter is checked on literals, against Tailwind's own sRGB values for
+   * the same greys.
    */
   it("measures the none-hued palette overrides, and refuses a none hue", () => {
     const overrides = Object.keys(colors).filter((t) => /^(neutral-\d+|zinc-50|mauve-50)$/.test(t));
-    expect(overrides).toHaveLength(13);
-    for (const token of overrides) expect(() => resolveToken(token)).not.toThrow();
-    expect(resolveToken("neutral-50")).toEqual([250, 250, 250]);
-    expect(resolveToken("neutral-600")).toEqual([82, 82, 82]);
-    expect(resolveToken("neutral-900")).toEqual([23, 23, 23]);
-    expect(resolveToken("neutral-950")).toEqual([10, 10, 10]);
+    expect(overrides.length).toBeGreaterThan(0);
+    for (const token of overrides) expect(() => resolveToken(token), token).not.toThrow();
+    expect(toRgb("oklch(98.5% 0 0)", "x")).toEqual([250, 250, 250]);
+    expect(toRgb("oklch(43.9% 0 0)", "x")).toEqual([82, 82, 82]);
+    expect(toRgb("oklch(20.5% 0 0)", "x")).toEqual([23, 23, 23]);
+    expect(toRgb("oklch(14.5% 0 0)", "x")).toEqual([10, 10, 10]);
     expect(() => toRgb("oklch(20.5% 0 none)", "neutral-900")).toThrow(/cannot measure/);
   });
 

@@ -162,14 +162,31 @@ for (const path of ["/dev/match/home", "/dev/match/about-us"]) {
 test.describe("the steps stay a plain list under reduced motion", () => {
   test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
 
-  test("no pinning, every step's text visible", async ({ page }) => {
+  test("no pinning, every step's text visible", { tag: "@smoke" }, async ({ page }) => {
     await page.goto("/dev/match/home");
     await page.waitForLoadState("networkidle");
-    await expect(page.locator(`${SECTION}[data-pinning]`)).toHaveCount(0);
+    const pinned = page.locator(`${SECTION}[data-pinning]`);
+    await expect(pinned).toHaveCount(0);
+    // Read the page a reduced-motion visitor loads, before the control below
+    // toggles motion on and off: reading after the toggle raced the un-pin,
+    // which can leave a step's inline opacity at 0 for a frame.
     const opacities = await page
-      .locator(`${SECTION} li .wh-prose`)
-      .evaluateAll((els) => els.map((el) => getComputedStyle(el).opacity));
-    expect(opacities).toEqual(["1", "1", "1", "1"]);
+      .locator(`${SECTION} li`)
+      .evaluateAll((lis) =>
+        lis.flatMap((li) =>
+          [...li.children]
+            .filter((el) => el.getAttribute("aria-hidden") !== "true")
+            .map((el) => getComputedStyle(el).opacity),
+        ),
+      );
+    expect(opacities.length, "steps with text").toBeGreaterThan(0);
+    expect(opacities, "no step's text is left at opacity 0").not.toContain("0");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await expect(pinned, "control: the stage is live and pins when motion is allowed").toHaveCount(
+      1,
+    );
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(pinned).toHaveCount(0);
   });
 });
 

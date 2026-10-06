@@ -11,20 +11,33 @@ import { resolve } from "node:path";
 // Resolved from the project root, not `import.meta.url`: under the jsdom
 // environment vite serves this module over http, so `new URL(..., import.meta.url)`
 // is not a file: URL and readFileSync rejects it.
-const css = readFileSync(resolve(process.cwd(), "src/app.css"), "utf-8");
+const css = readFileSync(resolve(process.cwd(), "src/app.css"), "utf-8").replace(
+  /\/\*[\s\S]*?\*\//g,
+  "",
+);
 
-const FLOOR_SELECTOR = ':where(a, button, summary, [tabindex]:not([tabindex="-1"])):focus-visible';
+const names = (selector: string, el: string) =>
+  new RegExp(`(?:^|[(,\\s])${el.replace(/[[\]]/g, "\\$&")}(?=[,):[\\s]|$)`).test(selector);
+
+/** The floor: the `:focus-visible` rule whose selector names plain `a` and
+ *  `button`, read from the rule itself rather than the comment above it. */
+const floor = [...css.matchAll(/([^{};]+):focus-visible\s*\{([^}]*)\}/g)]
+  .map((m) => ({ selector: m[1].trim(), body: m[2] }))
+  .find(({ selector }) => ["a", "button"].every((el) => names(selector, el)));
 
 describe("the keyboard-focus floor", () => {
   it("gives every interactive element a visible outline on :focus-visible", () => {
-    // Located by string, then sliced to the closing brace. A regex for the
-    // selector is a trap here: `[^)]*` stops at the nested `)` inside
-    // `:not([tabindex="-1"])`, so it matches nothing however good the CSS is —
-    // which is exactly how a check that can only ever fail gets written.
-    const at = css.indexOf(FLOOR_SELECTOR);
-    expect(at, "no :focus-visible floor rule in app.css").toBeGreaterThan(-1);
-    const rule = css.slice(at, css.indexOf("}", at) + 1);
-    expect(rule).toMatch(/outline:\s*2px solid/);
+    expect(floor, "no :focus-visible floor over a and button in app.css").toBeDefined();
+    for (const el of ["a", "button", "summary", "[tabindex]"]) {
+      expect(names(floor!.selector, el), `the floor does not cover ${el}`).toBe(true);
+    }
+    const style =
+      /(?<![\w-])outline(?:-style)?:[^;]*?\b(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|auto)\b/.exec(
+        floor!.body,
+      )?.[1];
+    expect(style, "the floor's outline has no style, so it draws nothing").toBeDefined();
+    expect(["none", "hidden"]).not.toContain(style);
+    expect(floor!.body).not.toMatch(/(?<![\w-])outline(?:-width)?:\s*0(?![.\d])/);
   });
 
   // `:where()` contributes ZERO specificity, so the floor weighs one
@@ -32,8 +45,12 @@ describe("the keyboard-focus floor", () => {
   // over — higher specificity AND a later cascade layer. Written as a bare
   // selector it would outrank the utilities it is meant to sit under.
   it("is written with :where() so authored rings still win", () => {
-    expect(css).toContain(
-      ':where(a, button, summary, [tabindex]:not([tabindex="-1"])):focus-visible',
+    expect(floor?.selector).toMatch(/^:where\(.*\)$/);
+  });
+
+  it("is never stripped on hover", () => {
+    expect(css).not.toMatch(
+      /:hover[^{]*\{[^}]*outline(?:-style|-width)?:\s*(?:0(?![.\d])|none\b|hidden\b)/,
     );
   });
 });

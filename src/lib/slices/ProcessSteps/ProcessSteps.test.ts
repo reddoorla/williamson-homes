@@ -8,6 +8,7 @@ vi.mock("$app/navigation", () => ({
 }));
 
 import ProcessSteps from "./index.svelte";
+import { stageLengths } from "./stage";
 
 const makeSlice = (step_height: "short" | "tall" | null = null) =>
   ({
@@ -52,11 +53,8 @@ function setMedia() {
 const VIEWPORT = 1000;
 const HEAD = 100;
 const STEP = 200;
-const AREA = 48 + 240 + 80;
-const CONTENT = HEAD + AREA + 88;
-const PIN = (VIEWPORT - CONTENT) / 2;
-const STEP_LEN = 600;
-const HOLD = 800;
+const SHORT = HEAD + STEP;
+const { step: STEP_LEN, hold: HOLD } = stageLengths(VIEWPORT, false);
 
 beforeEach(() => {
   navigated.callbacks = [];
@@ -104,7 +102,7 @@ async function mount(step_height: "short" | "tall" | null = null) {
 }
 
 async function scrollBy(scrolled: number) {
-  trackTop = PIN - scrolled;
+  trackTop = (parseFloat(stage(document.body).style.top) || 0) - scrolled;
   window.dispatchEvent(new Event("scroll"));
   await flushFrames();
 }
@@ -117,8 +115,14 @@ const circles = (c: HTMLElement) =>
   steps(c).map((li) => opacity(li.querySelector(".wh-step-number")));
 const titles = (c: HTMLElement) => steps(c).map((li) => opacity(li.querySelector("h3")));
 const rises = (c: HTMLElement) => steps(c).map((li) => li.style.transform);
+const lifts = (c: HTMLElement) => rises(c).map((t) => Number(/(-?[\d.]+)px/.exec(t)?.[1]));
 const stage = (c: HTMLElement) => c.querySelector(".wh-steps-stage") as HTMLElement;
 const track = (c: HTMLElement) => c.querySelector(".wh-steps-track") as HTMLElement;
+const heightOf = (el: HTMLElement) => parseFloat(el.style.height);
+const pinned = (c: HTMLElement) => ({
+  top: parseFloat(stage(c).style.top),
+  height: heightOf(stage(c)),
+});
 
 describe("ProcessSteps, the pinned steps stage", () => {
   it("server-renders every step's text as a plain list, step 1 lit, nothing pinned", () => {
@@ -126,132 +130,124 @@ describe("ProcessSteps, the pinned steps stage", () => {
     expect(active(container)).toEqual([true, false, false, false]);
     expect(bodies(container)).toEqual(["", "", "", ""]);
     expect(container.querySelector("[data-pinning]")).toBeNull();
-    expect(stage(container).className).not.toMatch(/(^|\s)sticky(\s|$)/);
     expect(container.textContent).toContain("Finish Your Dream Home body");
   });
 
-  it("pins the heading and steps together, centred in the viewport", async () => {
+  it("pins the heading and steps together, wholly on screen", async () => {
     const { container } = await mount();
     expect(container.querySelector("[data-pinning]")).not.toBeNull();
     expect(stage(container).className).toMatch(/(^|\s)sticky(\s|$)/);
     expect(stage(container).contains(container.querySelector(".wh-steps-head"))).toBe(true);
-    expect(stage(container).style.top).toBe(`${PIN}px`);
-    expect(stage(container).style.height).toBe(`${CONTENT}px`);
-    expect(track(container).style.height).toBe(`${CONTENT + 3 * STEP_LEN + HOLD}px`);
+    const { top, height } = pinned(container);
+    expect(height).toBeGreaterThanOrEqual(HEAD + STEP);
+    expect(top).toBeGreaterThanOrEqual(0);
+    expect(top + height).toBeLessThanOrEqual(VIEWPORT);
+    expect(heightOf(track(container))).toBe(height + 3 * STEP_LEN + HOLD);
   });
 
-  it("pins from the bottom edge when the stage is taller than the viewport", async () => {
-    vi.stubGlobal("innerHeight", 400);
+  it("keeps the stage's bottom on screen when the stage is taller than the viewport", async () => {
+    vi.stubGlobal("innerHeight", SHORT);
     const { container } = await mount();
-    expect(stage(container).style.top).toBe(`${400 - CONTENT}px`);
+    const { top, height } = pinned(container);
+    expect(height).toBeGreaterThan(SHORT);
+    expect(top + height).toBeLessThanOrEqual(SHORT);
   });
 
   it("rests on step 1 with step 2 waiting one gap below", async () => {
     const { container } = await mount();
     await scrollBy(0);
     expect(active(container)).toEqual([true, false, false, false]);
-    expect(rises(container)).toEqual([
-      "translate3d(0, 0px, 0)",
-      "translate3d(0, 240px, 0)",
-      "translate3d(0, 480px, 0)",
-      "translate3d(0, 720px, 0)",
-    ]);
+    const gap = lifts(container)[1];
+    expect(gap).toBeGreaterThan(0);
+    expect(lifts(container)).toEqual([0, gap, 2 * gap, 3 * gap]);
     expect(bodies(container)).toEqual(["1", "0", "0", "0"]);
     expect(titles(container)).toEqual(["1", "0", "0", "0"]);
     const waiting = steps(container)[1].querySelector(".wh-step-number") as HTMLElement;
     expect(waiting.style.opacity).toBe("");
-    expect(waiting.style.borderColor).toBe("color-mix(in srgb, var(--color-secondary) 30%, white)");
   });
 
-  it("sits the circles 48px below the list's top, so the solidify pulse is never clipped", async () => {
-    const { container } = await mount();
-    for (const li of steps(container)) expect(li.className).toMatch(/(^|\s)top-12(\s|$)/);
-    const rail = (container.querySelector(".wh-steps-rail") as HTMLElement).className;
-    expect(rail).toMatch(/(^|\s)top-\[84px\](\s|$)/);
-    expect(rail).toMatch(/(^|\s)md:top-32(\s|$)/);
-  });
-
-  it("pins on a phone too, with a shorter gap and filled phone-sized circles, when the stage fits", async () => {
+  it("pins on a phone too when the stage fits, its outgoing text gone before the next title shows", async () => {
     wide = false;
     const { container } = await mount();
     expect(container.querySelector("[data-pinning]")).not.toBeNull();
     await scrollBy(0);
-    expect(rises(container)[1]).toBe("translate3d(0, 200px, 0)");
-    const lit = steps(container)[0].querySelector(".wh-step-number") as HTMLElement;
-    expect(lit.className).toMatch(/(^|\s)bg-secondary(\s|$)/);
+    expect(lifts(container)[1]).toBeGreaterThan(0);
     const rail = container.querySelector(".wh-steps-rail") as HTMLElement;
-    expect(rail.style.height).toBe(`${3 * 200 - 36}px`);
-    await scrollBy(STEP_LEN / 2);
-    expect(bodies(container)[0]).toBe("0");
+    expect(heightOf(rail)).toBeGreaterThan(0);
+    for (let i = 0; i <= 24; i++) {
+      await scrollBy((STEP_LEN * i) / 24);
+      if (titles(container)[1] !== "0") expect(bodies(container)[0]).toBe("0");
+    }
   });
 
   it("keeps the plain list on a phone whose screen is shorter than the stage", async () => {
     wide = false;
-    vi.stubGlobal("innerHeight", 400);
+    vi.stubGlobal("innerHeight", SHORT);
     const { container } = await mount();
     expect(container.querySelector("[data-pinning]")).toBeNull();
     expect(track(container).style.height).toBe("");
     expect(rises(container)).toEqual(["", "", "", ""]);
-    expect(steps(container)[0].className).toMatch(/(^|\s)border-l(\s|$)/);
   });
 
-  it("re-fits when the viewport narrows below md, and back when it widens", async () => {
+  it("re-fits to the one-column fade when the viewport narrows below md, and back when it widens", async () => {
     const { container } = await mount();
     const query = "(min-width: 768px)";
+    await scrollBy(0);
+    const roomy = lifts(container)[1];
     wide = false;
     for (const fn of listeners.get(query) ?? []) fn();
     await flushFrames();
     await scrollBy(0);
-    expect(rises(container)[1]).toBe("translate3d(0, 200px, 0)");
+    expect(lifts(container)[1]).toBeGreaterThan(0);
+    for (let i = 0; i <= 24; i++) {
+      await scrollBy((STEP_LEN * i) / 24);
+      if (titles(container)[1] !== "0") expect(bodies(container)[0]).toBe("0");
+    }
     wide = true;
     for (const fn of listeners.get(query) ?? []) fn();
     await flushFrames();
     await scrollBy(0);
-    expect(rises(container)[1]).toBe("translate3d(0, 240px, 0)");
+    expect(lifts(container)[1]).toBe(roomy);
   });
 
-  it("keeps an arriving circle's white disc solid, so the rail never shows through it", async () => {
+  it("keeps an arriving circle's disc solid, so the rail never shows through it", async () => {
     const { container } = await mount();
     for (const scrolled of [0, STEP_LEN / 3, STEP_LEN / 2, 2.4 * STEP_LEN]) {
       await scrollBy(scrolled);
-      for (const li of steps(container)) {
-        const rise = li.style.transform.match(/, ([\d.]+)px/)?.[1];
-        if (!rise || Number(rise) === 0 || li.hasAttribute("data-active")) continue;
+      const rise = lifts(container);
+      for (const [i, li] of steps(container).entries()) {
+        if (!(rise[i] > 0) || li.hasAttribute("data-active")) continue;
         const number = li.querySelector(".wh-step-number") as HTMLElement;
         expect(number.style.opacity).toBe("");
         expect(number.style.backgroundColor).toBe("");
-        expect(number.className).toMatch(/(^|\s)bg-white(\s|$)/);
       }
     }
   });
 
   it("rises step 2 into the circle as the page scrolls, then hands it the circle", async () => {
     const { container } = await mount();
+    await scrollBy(0);
+    const gap = lifts(container)[1];
     await scrollBy(STEP_LEN / 2);
-    expect(rises(container)[1]).toBe("translate3d(0, 120px, 0)");
+    expect(lifts(container)[1]).toBeGreaterThan(0);
+    expect(lifts(container)[1]).toBeLessThan(gap);
     expect(active(container)).toEqual([true, false, false, false]);
     await scrollBy(STEP_LEN);
-    expect(rises(container)[1]).toBe("translate3d(0, 0px, 0)");
+    expect(lifts(container)[1]).toBe(0);
     expect(active(container)).toEqual([false, true, false, false]);
     expect(circles(container)[0]).toBe("0");
     expect(titles(container)[0]).toBe("0");
   });
 
-  it("parks Finish Your Dream Home alone, then solidifies it in the primary colour", async () => {
+  it("parks Finish Your Dream Home alone, then solidifies it", async () => {
     const { container } = await mount();
     await scrollBy(3 * STEP_LEN);
-    const last = steps(container)[3];
     expect(circles(container)).toEqual(["0", "0", "0", "1"]);
     expect(titles(container)).toEqual(["0", "0", "0", "1"]);
     expect(active(container)).toEqual([false, false, false, true]);
     expect(container.querySelector("[data-solid]")).toBeNull();
     await scrollBy(3 * STEP_LEN + HOLD);
     expect(container.querySelector("section")?.hasAttribute("data-solid")).toBe(true);
-    const number = last.querySelector(".wh-step-number") as HTMLElement;
-    expect(number.style.backgroundColor).toBe("var(--color-primary)");
-    expect((last.querySelector("h3") as HTMLElement).style.color).toBe("var(--color-primary)");
-    expect(last.querySelector(".wh-step-halo")).not.toBeNull();
-    expect(steps(container)[2].querySelector(".wh-step-halo")).toBeNull();
   });
 
   it("un-solidifies when the page scrolls back up", async () => {
@@ -266,16 +262,19 @@ describe("ProcessSteps, the pinned steps stage", () => {
     const { container } = await mount();
     const rail = () => (container.querySelector(".wh-steps-rail") as HTMLElement).style.height;
     await scrollBy(0);
-    expect(rail()).toBe(`${3 * 240 - 80}px`);
+    expect(parseFloat(rail())).toBeGreaterThan(0);
     await scrollBy(3 * STEP_LEN);
     expect(rail()).toBe("0px");
   });
 
-  it("uses a longer gap and scroll per step when tall", async () => {
+  it("uses a longer gap when tall, and sizes the track from the tall scroll lengths", async () => {
+    const plain = await mount();
+    const gap = lifts(plain.container)[1];
+    plain.unmount();
     const { container } = await mount("tall");
-    expect(rises(container)[1]).toBe("translate3d(0, 360px, 0)");
-    const content = HEAD + 48 + 360 + 80 + 88;
-    expect(track(container).style.height).toBe(`${content + 3 * 850 + HOLD}px`);
+    expect(lifts(container)[1]).toBeGreaterThan(gap);
+    const tall = stageLengths(VIEWPORT, true);
+    expect(heightOf(track(container))).toBe(heightOf(stage(container)) + 3 * tall.step + tall.hold);
   });
 
   it("does not pin or fade under reduced motion", async () => {
@@ -305,7 +304,11 @@ describe("ProcessSteps, the pinned steps stage", () => {
     vi.stubGlobal("innerHeight", 1200);
     window.dispatchEvent(new Event("resize"));
     await flushFrames();
-    expect(stage(container).style.top).toBe(`${(1200 - CONTENT) / 2}px`);
+    const { top, height } = pinned(container);
+    expect(top).toBeGreaterThanOrEqual(0);
+    expect(top + height).toBeLessThanOrEqual(1200);
+    const big = stageLengths(1200, false);
+    expect(heightOf(track(container))).toBe(height + 3 * big.step + big.hold);
   });
 
   it("removes exactly the listeners it added when it unmounts", async () => {

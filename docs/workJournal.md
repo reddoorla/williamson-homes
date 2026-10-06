@@ -860,3 +860,55 @@ Measured from the build manifest as each client node's static-import closure, gz
 The hook asked `isCmsFramedRoute(event.url.pathname)`, the raw path, while SvelteKit routes on the decoded one. From `vite preview` of `main`, `/slice%2Dsimulator` and `/slice%2dsimulator` rendered the simulator with `X-Frame-Options: SAMEORIGIN` and `frame-ancestors 'self'`. That failed closed, but it was the wrong route test. The hook now asks `event.route.id`, and both encoded paths answer like `/slice-simulator`.
 
 All nine existing hook tests stay, each event now carrying a route id. The trailing-slash test became the exact-match test, because a route id has no trailing slash to forgive. The encoded-path, null-route and route-exists tests are new. The bundle check lives in vitest as `scripts/prismic-barrel.test.ts`, so the smoke spec carries only the framing tests. Against a `main` build, with the plugin file present but unregistered so that the test file could import it, vitest failed 4 of 20 (the bundle check, the encoded path, the null route and the exact match), and the smoke spec failed 2 of 4 (both encoded paths). On the branch, everything passes. With the plugin removed and the site rebuilt, the bundle check fails on home's node. With the hook back on the pathname, the encoded-path and null-route tests fail. With the hook's `X-Frame-Options` delete removed, the upstream-header test fails, so it still bites under route ids.
+
+## 2026-10-05 — Tests build; they don't freeze: the matching-era pins leave the gate (#36)
+
+On 2026-10-01 the operator ended matching: "don't worry about matching webflow any more, just make it good". The tests written during the match still gated every PR, so the edits that instruction invited would each have turned `ci / ci` red: hero padding, a hover opacity, header timing, a step gap. The model is reddoorla/roalson-interests#256, which the native template now ships as reddoor-starter#180.
+
+**What a red now means.**
+
+- **The gate.** 22 of 41 Playwright tests are tagged `@smoke`: every route plus the 404, slice-simulator, the a11y fixtures, landscape, the no-JS reveal, the reduced-motion steps stage, and a new menu focus-return test. vitest has had its pins removed:
+  - `page-spacing.test.ts`, about 90% Tailwind classes, is deleted. Its contract checks moved into `site-slices.test.ts`: hero order by `layout`, the step aria-label rule, `mailto:`/`tel:` containment, and non-overlapping team rows.
+  - ProcessSteps now asserts relations derived from `stageLengths` instead of 240/200/360px.
+  - SiteHeader asserts `inert` and `data-hero-out` instead of `-translate-y-[152px]`.
+  - Link lists became containment checks.
+- **Nightly.** `test:nightly` and `nightly.yml` run the steps stage, the menu and gallery motion and the reveal trace, and block nothing.
+- **Scaffold.** `test:scaffold` holds the rest.
+
+The pre-commit prettier hook from reddoor-starter#169 is in too. `matching/` is untouched; whether to add `matching/PAUSED` is the operator's call.
+
+**Measured.** On `main` the full suite was 40 Playwright tests in 3.6 min locally, with 3 red under load: the reveal-trace timeout and two steps-stage counts. `ci / ci` on this branch passed in 2 min 20 s. Locally, lint and svelte-check are clean and vitest passes 639.
+
+**Found and filed.**
+
+- #22: PageHero `text_tone: dark` on a solid ground renders at 1.00:1.
+- #30: Let's Talk sits on a photo with no scrim.
+- #31: the contrast tests measure an ancestor's colour.
+- #32: hover-rules rejects measurable arbitrary values.
+- #33: prove the two rewritten `@smoke` tests in a browser.
+- #34: the nav drops to 3.57:1 on hover over the teal hero.
+
+#35, a stale comment citing a deleted pin, is fixed here.
+
+## 2026-10-05 — The freeze round: designer edits stay green, real bugs go red, and two gate gaps closed (#36)
+
+The tiers entry above claimed the gate no longer freezes design. This entry is that claim tested. Each edit below was made to the site source, run through the whole gate (vitest and the `@smoke` tier), and then reverted.
+
+**Designer edits.** Four were applied together:
+
+- the footer link hover opacity moved from .87 to .9;
+- the home hero padding changed from `pt-48` to `pt-56`;
+- `MENU_SLIDE_MS` changed from 500 to 250;
+- the desktop step gap changed from 240 to 260.
+
+On main they turned 10 tests red: 9 in vitest (hover-rules 1, page-spacing 1, ProcessSteps 7) and the Playwright menu-offset test. On this branch the gate stayed green: vitest 639, `@smoke` 23/23.
+
+**Real bugs.** Two of the three were invisible to the gate before this entry:
+
+- **The phone menu could lose `onEscape`.** No test pressed Escape on SiteHeader's menu; the template's Nav tests cover a different component. The `@smoke` "opens as a named dialog" test now reopens the menu and presses Escape. It expects the dialog hidden and focus back on "Open menu", which is what `trapFocus` does through `closeMenu`.
+- **The header Contact link could point at `/contact-us` (a 404).** Nothing followed header or footer hrefs. A new `@smoke` spec, `tests/smoke/chrome-links.spec.ts`, collects every same-origin href in the header, the sticky bar and the footer and requires a 200 for each. It is guarded against passing with zero links.
+- **Footer hover opacity at .8 (below AA)** was already red in hover-rules before this entry.
+
+Each new test was proven green on the clean tree and red under its bug.
+
+**One `@smoke` read raced.** "no pinning, every step's text visible" read the step opacities just after toggling motion back to reduce. During the un-pin, a step's inline opacity can still be 0 for a frame. It went red once under load and then passed when run alone. It now reads the page a reduced-motion visitor loads, before the control toggle, and passed 5/5 on repeat. Forcing the step body to opacity 0 under reduced motion turns it red, so the check is not vacuous.
