@@ -88,11 +88,11 @@ describe("this site itself", () => {
   // off because nothing loads fonts.googleapis.com though the CSP admits it.
   // ga4 flips to true the moment the analytics-tag PR adds initAnalytics: update
   // this line then, and clear GA4_DISCLOSED_AHEAD_OF_TAG (the test below).
-  it("lists Netlify and the Vimeo its CSP admits, and no form, GA4 or fonts it never loads", async () => {
+  it("lists Netlify, the Vimeo its CSP admits and the GA4 its hook starts, and no form or fonts it never loads", async () => {
     expect(await collectBuildServices(site)).toEqual({
       forms: false,
       newsletter: false,
-      ga4: false,
+      ga4: true,
       netlify: true,
       vimeo: true,
       youtube: false,

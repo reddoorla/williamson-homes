@@ -56,10 +56,11 @@ describe("the privacy page's load", () => {
     expect((out as unknown as { noindex: boolean }).noindex).toBe(true);
   });
 
-  it("discloses Google Analytics while the tag is still on its way", () => {
-    // The build-time mock above says ga4: false, as this site's own source does
-    // until the analytics-tag PR lands. GA4_DISCLOSED_AHEAD_OF_TAG carries it.
-    expect(run().privacy.services.ga4).toBe(true);
+  it("does not disclose Google Analytics from the override alone", () => {
+    // The build-time mock above says ga4: false. With the tag shipped,
+    // GA4_DISCLOSED_AHEAD_OF_TAG is off, so only the derived switch can
+    // carry GA4, which scripts/privacy-services.test.ts asserts it does.
+    expect(run().privacy.services.ga4).toBe(false);
   });
 
   it("names the business from the site config", () => {
