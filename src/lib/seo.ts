@@ -47,6 +47,13 @@ export function isNoindexPath(pathname: string): boolean {
   return NOINDEX_PREFIXES.some((p) => pathname.startsWith(p));
 }
 
+/** Whether a page stays out of the index: a NOINDEX_PREFIXES path, or a route
+ *  whose load returns `noindex: true` (the DRAFT /privacy page). Only a literal
+ *  `true` counts, so a CMS string cannot switch it on by accident. */
+export function isNoindexPage(pathname: string, data?: Record<string, unknown>): boolean {
+  return isNoindexPath(pathname) || data?.noindex === true;
+}
+
 /** Noindex is a PRODUCTION contract, and the vite dev server must NOT enforce
  *  it: the fleet lighthouse audit scores /dev/a11y-fixtures on `vite dev`, and
  *  BOTH the robots meta and a robots.txt Disallow fail its is-crawlable audit

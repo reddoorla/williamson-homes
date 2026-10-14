@@ -5,7 +5,7 @@
   import { repositoryName } from "$lib/prismicio";
   import "../app.css";
   import Seo from "$lib/components/Seo.svelte";
-  import { composeTitle, DEFAULT_OG_IMAGE, isNoindexPath, NOINDEX_ENFORCED } from "$lib/seo";
+  import { composeTitle, DEFAULT_OG_IMAGE, isNoindexPage, NOINDEX_ENFORCED } from "$lib/seo";
   import TransitionOverlay from "$lib/components/TransitionOverlay.svelte";
   import SiteHeader from "$lib/components/SiteHeader.svelte";
   import SiteFooter from "$lib/components/SiteFooter.svelte";
@@ -28,7 +28,7 @@
   image={page.data.meta_image || DEFAULT_OG_IMAGE || undefined}
   imageAlt={page.data.meta_image_alt}
   url={page.url}
-  noindex={NOINDEX_ENFORCED && isNoindexPath(page.url.pathname)}
+  noindex={NOINDEX_ENFORCED && isNoindexPage(page.url.pathname, page.data)}
 />
 <a
   href="#main-content"

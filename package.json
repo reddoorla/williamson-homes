@@ -29,7 +29,8 @@
       "/projects",
       "/about-us",
       "/contact",
-      "/projects/palos-verdes-cove"
+      "/projects/palos-verdes-cove",
+      "/privacy"
     ]
   },
   "devDependencies": {

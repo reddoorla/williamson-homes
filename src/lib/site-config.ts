@@ -18,7 +18,14 @@ export type FooterImage = {
 export type FooterItem = FooterText | FooterImage;
 export type FooterColumn = { items: FooterItem[] };
 
+export type PrivacyConfig = {
+  legalName?: string;
+  contactEmail?: string;
+  effectiveDate?: string;
+};
+
 export type SiteConfig = {
+  privacy?: PrivacyConfig;
   nav: {
     logo?: { url: string; maxWidth?: string };
     items: NavItem[];
