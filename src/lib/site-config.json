@@ -1,5 +1,9 @@
 {
   "nav": { "items": [] },
   "footer": { "socials": [] },
-  "privacy": { "legalName": "Williamson Homes", "contactEmail": "", "effectiveDate": "" }
+  "privacy": {
+    "legalName": "Williamson Homes",
+    "contactEmail": "info@williamson-homes.com",
+    "effectiveDate": "2026-10-14"
+  }
 }
