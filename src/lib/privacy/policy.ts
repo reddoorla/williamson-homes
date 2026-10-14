@@ -14,17 +14,9 @@ export function formatEffectiveDate(iso: string | undefined): string | null {
   });
 }
 
-/** Google Analytics is disclosed before the code that starts it exists.
- *
- *  The GA4 switch is normally derived from the source (`startsAnalytics` in
- *  ./services.ts finds an `initAnalytics(` call), so the page can never claim a
- *  tag the site does not run. This site gets its tag from
- *  `@reddoorla/maintenance`'s `initAnalytics` (the analytics-tag recipe) in the
- *  PR right after this page, and the policy has to be live before the tag is,
- *  not after. So the switch is forced on here until then.
- *
- *  Set this to false in the PR that adds the tag: from then on the derived
- *  switch carries GA4 by itself. scripts/privacy-services.test.ts goes red if
- *  the tag lands while this is still true, so the override cannot outlive its
- *  reason. */
-export const GA4_DISCLOSED_AHEAD_OF_TAG = true;
+/** Google Analytics was disclosed ahead of its tag while the tag PR was
+ *  pending. The tag now ships (src/hooks.client.ts), so the GA4 switch is
+ *  derived from the source like every other service, and this stays false.
+ *  scripts/privacy-services.test.ts goes red if it is ever true while the tag
+ *  is present. */
+export const GA4_DISCLOSED_AHEAD_OF_TAG = false;
