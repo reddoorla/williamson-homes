@@ -6,6 +6,7 @@ import {
   organizationJsonLd,
   composeTitle,
   isNoindexPath,
+  isNoindexPage,
   NOINDEX_ENFORCED,
   NOINDEX_PREFIXES,
   SITE_NAME,
@@ -203,5 +204,18 @@ describe("noindex routes", () => {
   // only. Vitest also runs with DEV=true, hence the MODE escape it relies on.
   it("is enforced under the test runner, which stands in for production", () => {
     expect(NOINDEX_ENFORCED).toBe(true);
+  });
+});
+
+describe("isNoindexPage", () => {
+  it("keeps a page whose data asks for it out of the index", () => {
+    expect(isNoindexPage("/privacy", { noindex: true })).toBe(true);
+    expect(isNoindexPage("/privacy", { noindex: false })).toBe(false);
+    expect(isNoindexPage("/privacy", { noindex: "yes" })).toBe(false);
+    expect(isNoindexPage("/privacy")).toBe(false);
+  });
+
+  it("still honours the noindex prefixes", () => {
+    expect(isNoindexPage("/dev/a11y-fixtures", {})).toBe(true);
   });
 });

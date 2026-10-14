@@ -73,3 +73,10 @@ describe("GET /sitemap.xml", () => {
     expect(prismic.getAllByType).not.toHaveBeenCalled();
   });
 });
+
+describe("GET /sitemap.xml and the privacy page", () => {
+  it("keeps /privacy out while its policy is a DRAFT (the page is noindex)", async () => {
+    wired();
+    expect(locs(await body())).not.toContain("https://example.com/privacy");
+  });
+});

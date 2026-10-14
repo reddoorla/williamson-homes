@@ -912,3 +912,17 @@ On main they turned 10 tests red: 9 in vitest (hover-rules 1, page-spacing 1, Pr
 Each new test was proven green on the clean tree and red under its bug.
 
 **One `@smoke` read raced.** "no pinning, every step's text visible" read the step opacities just after toggling motion back to reduce. During the un-pin, a step's inline opacity can still be 0 for a frame. It went red once under load and then passed when run alone. It now reads the page a reduced-motion visitor loads, before the control toggle, and passed 5/5 on repeat. Forcing the step body to opacity 0 under reduced motion turns it red, so the check is not vacuous.
+
+## 2026-10-14 — A /privacy page ported from the starter, with a footer link (branch `claude/privacy-page`)
+
+The starter's `/privacy` route, `src/lib/privacy/*` and the `virtual:privacy-services` plugin were ported with their tests. The plugin reads `svelte.config.js`'s `kit` namespace (this site is on SvelteKit 2), as data-dynamiq's port does, and the page clears the fixed header. The layout now reads `isNoindexPage(path, page.data)`, so the DRAFT page's `noindex: true` reaches the robots meta. It was checked on `vite preview`, since the dev server never enforces noindex. The sitemap leaves `/privacy` out while the policy is DRAFT, which matches the starter.
+
+**The switches as derived from this site:** Netlify and Vimeo are on, from the adapter and the CSP `frame-src` that admits player.vimeo.com. Forms, Turnstile, newsletter, YouTube and both font services are off. **There is no form on this site**: nothing calls `createIngestAction`/`createIngestEndpoint`, and `/contact` is a Prismic page of mailto/tel links. So forms is false and Turnstile follows it off, even though the CSP admits challenges.cloudflare.com. For the same reason `PrivacyNotice` was not ported, because there is no form to put it under. Google Fonts is admitted by the CSP, but nothing loads it.
+
+**GA4 is forced on ahead of its tag.** `GA4_DISCLOSED_AHEAD_OF_TAG` in `policy.ts` is set because the analytics-tag PR follows this one and the policy must be live first. `scripts/privacy-services.test.ts` goes red if `initAnalytics` lands while the flag is still true, so the analytics PR has to clear it.
+
+**Placeholders left:** the privacy contact email renders `[privacy contact email]`, which the operator will supply, and the effective date renders `[effective date]`. Both are filled in `src/lib/site-config.json` → `privacy`. The legal name, "Williamson Homes", comes from the footer's copyright line.
+
+**Not disclosed, and the starter does not disclose it either:** Prismic's image CDN (images.prismic.io) receives each visitor's IP. The starter's policy has no switch for it.
+
+**Environment note:** `@playwright/test` 1.63 wants chromium revision 1243, and the container has 1234. The a11y audit and `@smoke` were run with `PLAYWRIGHT_BROWSERS_PATH` pointed at a scratch directory that aliases 1243 to the installed 1234 binaries. `playwright install` was not run.

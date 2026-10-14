@@ -65,13 +65,20 @@ const SITE_PATHS: Array<[string, string]> = [
   ["/projects/palos-verdes-west", "project: palos verdes west"],
 ];
 
-export const smokeRoutes: SmokeRoute[] = SITE_PATHS.map(([path, name]) =>
-  isPlaceholderRepo
-    ? {
-        path,
-        name: `${name} — placeholder repo, expecting 404`,
-        hydrationMarker: "footer",
-        expectStatus: 404,
-      }
-    : { path, name, hydrationMarker: "footer" },
-);
+// Filesystem routes answer 200 whatever the Prismic repository: they do not
+// read the CMS, so they take no placeholder gate.
+const STATIC_PATHS: Array<[string, string]> = [["/privacy", "privacy policy"]];
+
+export const smokeRoutes: SmokeRoute[] = [
+  ...STATIC_PATHS.map(([path, name]) => ({ path, name, hydrationMarker: "footer" })),
+  ...SITE_PATHS.map(([path, name]) =>
+    isPlaceholderRepo
+      ? {
+          path,
+          name: `${name} — placeholder repo, expecting 404`,
+          hydrationMarker: "footer",
+          expectStatus: 404,
+        }
+      : { path, name, hydrationMarker: "footer" },
+  ),
+];
