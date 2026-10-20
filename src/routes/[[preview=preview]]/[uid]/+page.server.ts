@@ -8,7 +8,7 @@ import { loadProjectCards } from "$lib/projects";
 export async function load({ params, fetch, cookies }) {
   if (params.uid === "home") redirect(308, "/");
 
-  if (isPlaceholderRepo) error(404, { message: "Page not found" });
+  if (isPlaceholderRepo) error(404, "Page not found");
 
   const client = createClient({ fetch, cookies });
   const [loaded, projects] = await Promise.all([

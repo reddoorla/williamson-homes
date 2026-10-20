@@ -1,4 +1,4 @@
-import type { ClientInit } from "@sveltejs/kit";
+import type { ClientInit } from "@sveltejs/kit/hooks";
 import { initAnalytics } from "@reddoorla/maintenance/client";
 
 /**

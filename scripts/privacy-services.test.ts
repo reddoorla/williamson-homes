@@ -13,16 +13,16 @@ const put = (rel: string, text: string) => {
   writeFileSync(join(root, rel), text);
 };
 
-// This site is on SvelteKit 2: its options sit under `kit` in svelte.config.js.
+// SvelteKit 3: the options are top-level in sveltekit.config.js, with no `kit`.
 const config = (directives: Record<string, string[]> | null) =>
-  `export default { kit: { adapter: { name: "@sveltejs/adapter-netlify" }${
+  `export default { adapter: { name: "@sveltejs/adapter-netlify" }${
     directives ? `, csp: { directives: ${JSON.stringify(directives)} }` : ""
-  } } };`;
+  } };`;
 
 beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), "privacy-"));
   put("package.json", `{ "type": "module" }`);
-  put("svelte.config.js", config({ "frame-src": ["self"] }));
+  put("sveltekit.config.js", config({ "frame-src": ["self"] }));
 });
 afterEach(() => rmSync(root, { recursive: true, force: true }));
 
@@ -49,9 +49,9 @@ describe("collectBuildServices", () => {
 
   it("reads the CSP the config resolves to, not the text it is written in", async () => {
     put(
-      "svelte.config.js",
+      "sveltekit.config.js",
       `const base = { "frame-src": ["https://*.vimeo.com"] };
-export default { kit: { csp: { directives: { ...base } } } };`,
+export default { csp: { directives: { ...base } } };`,
     );
     expect((await collectBuildServices(root)).vimeo).toBe(true);
   });
@@ -65,13 +65,13 @@ export default { kit: { csp: { directives: { ...base } } } };`,
   });
 
   it("keeps a CSP with no directives from counting as a CSP", async () => {
-    put("svelte.config.js", `export default { kit: { csp: { directives: {} } } };`);
+    put("sveltekit.config.js", `export default { csp: { directives: {} } };`);
     put("src/lib/V.svelte", `<iframe src="https://player.vimeo.com/video/1"></iframe>`);
     expect((await collectBuildServices(root)).vimeo).toBe(true);
   });
 
   it("falls back to the source when the config sets no CSP", async () => {
-    put("svelte.config.js", config(null));
+    put("sveltekit.config.js", config(null));
     put("src/lib/V.svelte", `<iframe src="https://player.vimeo.com/video/1"></iframe>`);
     expect((await collectBuildServices(root)).vimeo).toBe(true);
   });
@@ -80,7 +80,7 @@ export default { kit: { csp: { directives: { ...base } } } };`,
 describe("this site itself", () => {
   const site = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-  // What williamson-homes's own source and svelte.config.js say, read the way
+  // What williamson-homes's own source and sveltekit.config.js say, read the way
   // the page reads them. forms is false because no route posts to the central
   // ingest (/contact is a Prismic page of mailto/tel links), and so Turnstile,
   // which the CSP still admits, is off too (withRuntime needs a form). Vimeo is

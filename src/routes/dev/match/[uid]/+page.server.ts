@@ -1,5 +1,5 @@
 import { error } from "@sveltejs/kit";
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import { readFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import { imageSize } from "$lib/image-size";

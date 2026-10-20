@@ -28,7 +28,7 @@ export async function loadPage(client: PageClient, uid: string) {
     // RepositoryNotFoundError extends NotFoundError but means "wrong repository
     // name", not "no such page" — that must stay loud.
     if (err instanceof NotFoundError && !(err instanceof RepositoryNotFoundError)) {
-      error(404, { message: "Page not found" });
+      error(404, "Page not found");
     }
     throw err;
   }
