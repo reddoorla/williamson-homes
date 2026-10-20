@@ -73,7 +73,15 @@ describe("the SvelteKit config reaches the sveltekit() plugin", () => {
  *  variables, so the parent's environment cannot leak into the control. */
 function configUnder(env: Record<string, string>) {
   const child = { ...process.env };
-  for (const name of ["URL", "DEPLOY_URL", "DEPLOY_PRIME_URL", "SITE_NAME", "CI", "NETLIFY"]) {
+  for (const name of [
+    "URL",
+    "DEPLOY_URL",
+    "DEPLOY_PRIME_URL",
+    "SITE_NAME",
+    "CI",
+    "NETLIFY",
+    "CONTEXT",
+  ]) {
     delete child[name];
   }
   delete child.VITE_PRISMIC_ENVIRONMENT;
@@ -89,15 +97,26 @@ function configUnder(env: Record<string, string>) {
   return JSON.parse(r.stdout) as { origin: string | null; paths: unknown; csrf: unknown };
 }
 
-async function withNetlifyEnv<T>(run: () => Promise<T>): Promise<T> {
-  const names = ["URL", "DEPLOY_URL", "DEPLOY_PRIME_URL", "SITE_NAME"] as const;
+// Netlify's build sets all of these, and a config can branch on any of them,
+// so a check that sets only URL passes a `paths.origin` guarded on NETLIFY, CI
+// or CONTEXT (P1-53 found the starter-derived test never set NETLIFY or CI).
+// Every deploy context is tried.
+const NETLIFY_CONTEXTS = ["production", "deploy-preview", "branch-deploy"] as const;
+const netlifyEnv = (context: string) => ({
+  NETLIFY: "true",
+  CI: "true",
+  CONTEXT: context,
+  URL: "https://www.example.com",
+  DEPLOY_URL: "https://6123abc--example-site.netlify.app",
+  DEPLOY_PRIME_URL: "https://deploy-preview-4--example-site.netlify.app",
+  SITE_NAME: "example-site",
+});
+
+async function withNetlifyEnv<T>(context: string, run: () => Promise<T>): Promise<T> {
+  const env = netlifyEnv(context);
+  const names = Object.keys(env) as (keyof typeof env)[];
   const saved = Object.fromEntries(names.map((n) => [n, process.env[n]]));
-  Object.assign(process.env, {
-    URL: "https://www.example.com",
-    DEPLOY_URL: "https://6123abc--example-site.netlify.app",
-    DEPLOY_PRIME_URL: "https://deploy-preview-4--example-site.netlify.app",
-    SITE_NAME: "example-site",
-  });
+  Object.assign(process.env, env);
   try {
     return await run();
   } finally {
@@ -127,18 +146,21 @@ describe("the origin a Netlify build bakes in", () => {
     expect(configUnder({ URL: "not a url" }).origin).toBeNull();
   });
 
-  it("never becomes kit's paths.origin or a CSRF list, so a form posts from any host it is served on", async () => {
-    expect(configUnder({ URL: "https://www.example.com" })).toMatchObject({
-      paths: null,
-      csrf: null,
-    });
-    const options = await withNetlifyEnv(kitOptions);
-    expect((options.paths as { origin?: string }).origin).toBeUndefined();
-    expect((options.csrf as { trustedOrigins: string[] }).trustedOrigins).toEqual([]);
-  });
+  it.each(NETLIFY_CONTEXTS)(
+    "never becomes kit's paths.origin or a CSRF list on a Netlify %s build, so a form posts from any host it is served on",
+    async (context) => {
+      expect(configUnder(netlifyEnv(context))).toMatchObject({
+        paths: null,
+        csrf: null,
+      });
+      const options = await withNetlifyEnv(context, kitOptions);
+      expect((options.paths as { origin?: string }).origin).toBeUndefined();
+      expect((options.csrf as { trustedOrigins: string[] }).trustedOrigins).toEqual([]);
+    },
+  );
 
   it("reaches the app through vite.config.ts's define", async () => {
-    const loaded = await withNetlifyEnv(() =>
+    const loaded = await withNetlifyEnv("production", () =>
       loadConfigFromFile(
         { command: "build", mode: "production" },
         join(repoRoot, "vite.config.ts"),

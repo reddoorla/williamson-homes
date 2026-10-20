@@ -184,7 +184,7 @@ const config = {
         // Cloudflare Turnstile contact-form widget (enable via PUBLIC_TURNSTILE_SITE_KEY).
         "https://challenges.cloudflare.com",
         // GA4 loader, injected by initAnalytics (src/hooks.client.ts). The
-        // analytics-tag recipe cannot edit kit.csp, so the hosts are added by
+        // analytics-tag recipe cannot edit `csp`, so the hosts are added by
         // hand, the list it prints (the same as 1836dig and 29 Navy).
         "https://www.googletagmanager.com",
       ],
