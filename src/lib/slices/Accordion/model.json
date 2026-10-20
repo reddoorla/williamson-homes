@@ -1,6 +1,6 @@
 {
-  "id": "accordion",
   "type": "SharedSlice",
+  "id": "accordion",
   "name": "Accordion",
   "description": "Accordion",
   "variations": [
