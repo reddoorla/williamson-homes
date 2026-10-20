@@ -100,7 +100,9 @@ function configUnder(env: Record<string, string>) {
 // Netlify's build sets all of these, and a config can branch on any of them,
 // so a check that sets only URL passes a `paths.origin` guarded on NETLIFY, CI
 // or CONTEXT (P1-53 found the starter-derived test never set NETLIFY or CI).
-// Every deploy context is tried.
+// Every deploy context is tried. The list is representative, not
+// exhaustive: a guard on a variable it does not set (DEPLOY_ID, BUILD_ID)
+// would still pass.
 const NETLIFY_CONTEXTS = ["production", "deploy-preview", "branch-deploy"] as const;
 const netlifyEnv = (context: string) => ({
   NETLIFY: "true",
