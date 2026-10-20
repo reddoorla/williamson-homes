@@ -1,5 +1,5 @@
 import { error } from "@sveltejs/kit";
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 

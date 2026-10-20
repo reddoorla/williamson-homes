@@ -1,11 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const env: Record<string, string | undefined> = {};
-vi.mock("$env/dynamic/public", () => ({
-  env: {
-    get PUBLIC_TURNSTILE_SITE_KEY() {
-      return env.PUBLIC_TURNSTILE_SITE_KEY;
-    },
+vi.mock("$app/env/public", () => ({
+  get PUBLIC_TURNSTILE_SITE_KEY() {
+    return env.PUBLIC_TURNSTILE_SITE_KEY;
   },
 }));
 vi.mock("virtual:privacy-services", () => ({
