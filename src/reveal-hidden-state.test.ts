@@ -56,18 +56,6 @@ const hiddenByAction = (() => {
 
 const noscript = html.slice(html.indexOf("<noscript>"), html.indexOf("</noscript>"));
 
-/** The value each property a hidden state may set reads when nothing hides. */
-const SHOWN: Record<string, string> = {
-  opacity: "1",
-  transform: "none",
-  translate: "none",
-  scale: "none",
-  rotate: "none",
-  filter: "none",
-  "clip-path": "none",
-  visibility: "visible",
-};
-
 describe("the scroll reveal's first-paint hidden state", () => {
   // If the CSS hides an element 50% down and the action reveals it from 24px,
   // hydration is a jump rather than the byte-identical no-op the whole design
@@ -80,21 +68,6 @@ describe("the scroll reveal's first-paint hidden state", () => {
     );
     expect(declared(rule, "opacity")).toBe(hiddenByAction.opacity);
     expect(declared(rule, "transform")).toBe(hiddenByAction.transform);
-  });
-
-  it("gives scripting-off browsers a way back out of everything it hides, in app.html", () => {
-    expect(noscript, "no <noscript> block in app.html").toContain("data-reveal");
-    const rule = gatedRule(css) ?? "";
-    const hidden = [...rule.slice(rule.indexOf("{")).matchAll(/([a-z-]+)\s*:/g)].map((m) => m[1]);
-    expect(hidden.length, "no declarations in the hidden state").toBeGreaterThan(0);
-    for (const property of hidden) {
-      expect(SHOWN[property], `no shown value known for ${property}`).toBeDefined();
-      expect(noscript, property).toMatch(
-        new RegExp(
-          `(?<![\\w-])${property}:\\s*(?:${SHOWN[property]}|initial|unset|revert)\\s*!important`,
-        ),
-      );
-    }
   });
 
   // The guard has to be a STYLE, not an inline `classList.add("js")` script:

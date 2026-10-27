@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 
 // THE SCROLL REVEAL'S HIDDEN STATE BELONGS TO THE FIRST PAINT.
@@ -24,6 +26,31 @@ import { expect, test, type Page } from "@playwright/test";
 // so a spec that inherits the default measures a page where the CSS never
 // applies and passes no matter what the template ships.
 const FIXTURE = "/dev/animate-in";
+
+/** The computed value each property a hidden state may set reads when nothing hides. */
+const SHOWN: Record<string, string> = {
+  opacity: "1",
+  transform: "none",
+  translate: "none",
+  scale: "none",
+  rotate: "none",
+  filter: "none",
+  "clip-path": "none",
+  visibility: "visible",
+};
+
+/** Every property app.css's `[data-reveal]` hidden state sets, so a property
+ *  added there is checked here without editing this spec. */
+const HIDDEN_PROPERTIES = (() => {
+  const css = readFileSync(resolve(process.cwd(), "src/app.css"), "utf-8").replace(
+    /\/\*[\s\S]*?\*\//g,
+    "",
+  );
+  const at = css.indexOf("[data-reveal] {");
+  if (at === -1) return [];
+  const rule = css.slice(css.indexOf("{", at), css.indexOf("}", at));
+  return [...rule.matchAll(/([a-z-]+)\s*:/g)].map((m) => m[1]!);
+})();
 
 /** Per-frame opacity of the first server-hidden reveal target, sampled from
  *  before the first script the page ships.
@@ -72,19 +99,27 @@ test(
       const page = await context.newPage();
       await page.goto(FIXTURE, { waitUntil: "domcontentloaded" });
 
-      const states = await page.evaluate(() =>
-        Array.from(document.querySelectorAll("[data-reveal]")).map((el) => {
-          const cs = getComputedStyle(el);
-          return { opacity: cs.opacity, transform: cs.transform };
-        }),
+      const properties = [...new Set(["opacity", "transform", ...HIDDEN_PROPERTIES])];
+      const states = await page.evaluate(
+        (props) =>
+          Array.from(document.querySelectorAll("[data-reveal]")).map((el) => {
+            const cs = getComputedStyle(el);
+            return Object.fromEntries(props.map((p) => [p, cs.getPropertyValue(p)]));
+          }),
+        properties,
       );
 
-      // Non-vacuity guard: with no subject, "every subject is visible" is true
-      // and says nothing.
+      // Non-vacuity guards: with no subject, "every subject is visible" is true
+      // and says nothing; with no hidden properties read, nothing was checked.
       expect(states.length, "the page ships data-reveal markup").toBeGreaterThan(0);
+      expect(HIDDEN_PROPERTIES.length, "app.css's [data-reveal] rule was read").toBeGreaterThan(0);
       for (const s of states) {
         expect(s.opacity, "scripting off: opacity").toBe("1");
         expect(s.transform, "scripting off: transform").toBe("none");
+        for (const property of HIDDEN_PROPERTIES) {
+          expect(SHOWN[property], `no shown value known for ${property}`).toBeDefined();
+          expect(s[property], `scripting off: ${property}`).toBe(SHOWN[property]);
+        }
       }
     } finally {
       await context.close();

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, cleanup } from "@testing-library/svelte";
 import { tick } from "svelte";
-import ScreenWidthMedia from "./ScreenWidthMedia.svelte";
+import ScreenWidthMedia, { VIDEO_REVEAL_HARD_CAP_MS } from "./ScreenWidthMedia.svelte";
 
 class MockPlayer {
   static instances: MockPlayer[] = [];
@@ -173,17 +173,21 @@ describe("ScreenWidthMedia quality reveal", () => {
     player.resolveQuality();
     await Promise.resolve();
     await tick();
-    expect(vi.getTimerCount(), "no soft cap armed beside the hard cap").toBe(2);
 
-    vi.advanceTimersToNextTimer();
+    // Short of the hard cap: only the soft cap can have revealed it.
+    vi.advanceTimersByTime(VIDEO_REVEAL_HARD_CAP_MS - 1);
     await tick();
     expect(iframe.className).not.toContain("opacity-0");
-    expect(vi.getTimerCount(), "the hard cap fired before the soft cap").toBe(0);
   });
 
   it("hard cap: reveals even if setQuality never settles", async () => {
     const { iframe } = await renderWithPlayer();
-    vi.runOnlyPendingTimers();
+    // Still hidden just short of the exported cap, and shown at it: that is
+    // what proves VIDEO_REVEAL_HARD_CAP_MS is the delay the hard cap uses.
+    await vi.advanceTimersByTimeAsync(VIDEO_REVEAL_HARD_CAP_MS - 1);
+    await tick();
+    expect(iframe.className).toContain("opacity-0");
+    await vi.advanceTimersByTimeAsync(1);
     await tick();
     expect(iframe.className).not.toContain("opacity-0");
   });
