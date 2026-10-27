@@ -192,7 +192,12 @@ test.describe("the steps stage pins while its track scrolls", () => {
           const headBottom = head.getBoundingClientRect().bottom - top;
           return (el as HTMLElement).offsetHeight / 2 - window.innerHeight / 2 > headBottom;
         });
-      await expect.poll(unpinnedOffScreenAtMiddle).toBe(true);
+      await expect
+        .poll(unpinnedOffScreenAtMiddle, {
+          message:
+            "the track is too short for the heading to leave the screen unpinned, so the pin check below would prove nothing",
+        })
+        .toBe(true);
       const middle = await track.evaluate((el) => {
         const box = el.getBoundingClientRect();
         return box.top + window.scrollY + box.height / 2 - window.innerHeight / 2;
