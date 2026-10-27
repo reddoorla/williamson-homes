@@ -174,20 +174,31 @@ test.describe("the steps stage pins while its track scrolls", () => {
       await page.goto("/dev/match/home");
       // Hydration sets data-pinning; the dev server can take a while to get there.
       await page.waitForLoadState("networkidle");
-      await expect(page.locator(`${SECTION}[data-pinning]`)).toHaveCount(1, { timeout: 15_000 });
-      const track = page.locator(`${SECTION} .wh-steps-track`);
-      // Non-vacuity: on a track no taller than the screen, the heading would be
-      // on screen at its middle whether or not anything pins. Polled, because
-      // the stage sizes the track once it has measured itself.
-      await expect
-        .poll(() => track.evaluate((el) => el.getBoundingClientRect().height / window.innerHeight))
-        .toBeGreaterThan(2);
+      await expect(page.locator(`${SECTION}[data-pinning]`).first()).toBeAttached({
+        timeout: 15_000,
+      });
+      const track = page.locator(`${SECTION} .wh-steps-track`).first();
+      // Non-vacuity, asked of the page's own lengths rather than a constant, so
+      // a faster or slower scroll cannot turn it red: halfway down the track,
+      // the heading must be off screen unless something holds it there.
+      // Unpinned, it sits a fixed distance below the track's top. Measured
+      // here, before scrolling, while the stage still sits where it would
+      // unpinned; polled, because the stage sizes the track once it has
+      // measured itself.
+      const unpinnedOffScreenAtMiddle = () =>
+        track.evaluate((el) => {
+          const top = el.getBoundingClientRect().top;
+          const head = el.querySelector(".wh-steps-head h2") as HTMLElement;
+          const headBottom = head.getBoundingClientRect().bottom - top;
+          return el.offsetHeight / 2 - window.innerHeight / 2 > headBottom;
+        });
+      await expect.poll(unpinnedOffScreenAtMiddle).toBe(true);
       const middle = await track.evaluate((el) => {
         const box = el.getBoundingClientRect();
         return box.top + window.scrollY + box.height / 2 - window.innerHeight / 2;
       });
       await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), middle);
-      await expect(page.locator(`${SECTION} .wh-steps-head h2`)).toBeInViewport();
+      await expect(track.locator(".wh-steps-head h2")).toBeInViewport();
     },
   );
 });
