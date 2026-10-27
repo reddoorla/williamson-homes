@@ -190,7 +190,7 @@ test.describe("the steps stage pins while its track scrolls", () => {
           const top = el.getBoundingClientRect().top;
           const head = el.querySelector(".wh-steps-head h2") as HTMLElement;
           const headBottom = head.getBoundingClientRect().bottom - top;
-          return el.offsetHeight / 2 - window.innerHeight / 2 > headBottom;
+          return (el as HTMLElement).offsetHeight / 2 - window.innerHeight / 2 > headBottom;
         });
       await expect.poll(unpinnedOffScreenAtMiddle).toBe(true);
       const middle = await track.evaluate((el) => {
