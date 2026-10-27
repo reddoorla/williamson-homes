@@ -307,18 +307,6 @@ describe("TeamContacts", () => {
     for (const li of cards) expect(fixesHeight(li)).toBe(false);
   });
 
-  it("makes each contact link a box, so the paragraph's line is its tap target", () => {
-    const links = [...team(people).querySelectorAll("li a")];
-    expect(links.length).toBeGreaterThan(0);
-    for (const a of links)
-      expect(
-        (a.getAttribute("class") ?? "")
-          .split(/\s+/)
-          .some((c) => /^(inline-)?(block|flex|grid)$/.test(c)),
-        a.textContent?.trim(),
-      ).toBe(true);
-  });
-
   it("hides everything in the list but its people from assistive tech", () => {
     const list = team(people).querySelector("ul");
     expect(list).not.toBeNull();

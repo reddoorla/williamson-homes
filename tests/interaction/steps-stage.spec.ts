@@ -159,6 +159,39 @@ for (const path of ["/dev/match/home", "/dev/match/about-us"]) {
   });
 }
 
+// The gate's one check that the stage pins at all. The scaffold specs above
+// measure the pin to the pixel; this asks only what a visitor sees: halfway
+// down the tall scroll track, the steps' heading is still on screen. Without
+// position: sticky the stage scrolls away with the track's top and the visitor
+// scrolls through a long blank band instead.
+test.describe("the steps stage pins while its track scrolls", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: "no-preference" });
+
+  test(
+    "halfway down the track, the steps' heading is on screen",
+    { tag: "@smoke" },
+    async ({ page }) => {
+      await page.goto("/dev/match/home");
+      // Hydration sets data-pinning; the dev server can take a while to get there.
+      await page.waitForLoadState("networkidle");
+      await expect(page.locator(`${SECTION}[data-pinning]`)).toHaveCount(1, { timeout: 15_000 });
+      const track = page.locator(`${SECTION} .wh-steps-track`);
+      // Non-vacuity: on a track no taller than the screen, the heading would be
+      // on screen at its middle whether or not anything pins. Polled, because
+      // the stage sizes the track once it has measured itself.
+      await expect
+        .poll(() => track.evaluate((el) => el.getBoundingClientRect().height / window.innerHeight))
+        .toBeGreaterThan(2);
+      const middle = await track.evaluate((el) => {
+        const box = el.getBoundingClientRect();
+        return box.top + window.scrollY + box.height / 2 - window.innerHeight / 2;
+      });
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), middle);
+      await expect(page.locator(`${SECTION} .wh-steps-head h2`)).toBeInViewport();
+    },
+  );
+});
+
 test.describe("the steps stay a plain list under reduced motion", () => {
   test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
 
