@@ -982,7 +982,7 @@ Two claims were corrected:
 - **`svelte-check` reports 25 errors in this worktree and 0 in the clone on `main`.** All are implicit-any `./$types` bindings in route files this PR does not touch. Kit 3 writes its generated tsconfig into `node_modules`, and this worktree shares the clone's `node_modules` through a symlink, so one checkout's sync points the types at the other's `.svelte-kit`.
 - **Each full vitest run had one failure, a different case each time**, in tests this PR does not touch. The second was a 5s timeout in `scripts/kit-config.test.ts`, which passes 16 of 16 alone. Everything else passed: 716 tests, with 3 skipped.
 
-## 2026-10-27 — Inherit the starters' test-pin fixes (#TBD)
+## 2026-10-27 — Inherit the starters' test-pin fixes (#54)
 
 Batch C of the fleet test audit (`reddoorla/reddoor-workspace` `audits/2026-10-26-fleet-test-audit/report.md`) fixed design-value and exact-count pins in the starters, and this site carries the starters' copies of those tests, so the same fixes are ported here. The hunks applied cleanly; the intent is the starters' own, with no design value, no source read as text and no exact list.
 
