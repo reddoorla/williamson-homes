@@ -129,7 +129,7 @@
     style:height={pinning && track ? `${track}px` : undefined}
   >
     <div
-      class="wh-steps-stage mx-auto max-w-[948px] {pinning ? 'overflow-hidden pt-8' : ''}"
+      class="wh-steps-stage mx-auto max-w-[948px] {pinning ? 'sticky overflow-hidden pt-8' : ''}"
       style:top={pinning ? `${stageTop}px` : undefined}
       style:height={pinning && stageHeight ? `${stageHeight}px` : undefined}
     >
