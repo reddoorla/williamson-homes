@@ -999,3 +999,11 @@ This was a migration to a major, so it went to the operator as reddoor-workspace
 Not proven: no test renders `/slice-simulator` inside Prismic's builder. The evidence that it works on v3 is the type check, the build, and a review that read v3's component (it renders `children?.({ slices })` inside its root, and with no simulator message yet it shows only the empty white overlay).
 
 Backlog: P1-80.
+
+## 2026-11-04 — vitest 4 → 5, and the first change through a new `staging` branch (#41, `17766bf`)
+
+Fleet majors phase 2, group B (the workspace's `briefs/2026-11-04-fleet-majors/`). The dashboard listed this site as a major behind on `vitest`. Renovate's PR landed as Renovate opened it: v5 needed no config change, and `vite.config` works as is. Locally, v4.1.12 and v5.1.0 both ran 90 files, with 717 passed and 3 skipped, and every test had the same status on both. CI's log shows `RUN v5.1.0`, 90 files and 720 tests passed, and 26 smoke tests passed. The lockfile moves only the vitest family, so the built site is unchanged.
+
+Because no config changed, there was nothing to revert, so no mutation could go red. Pinning v4 with the same config stays green, as it did on ERP. The proof that v5 is in use is the `RUN v5.1.0` line, not a config difference. The one visible difference is that vitest 5 drops the quotes around `%s` arguments in `.each` titles, which renamed 27 tests here. Nothing filters on those names.
+
+This site had no `staging` branch, so the staging flow starts here. `staging` was created from `main` at `fa8c449`, #41 was moved onto it, and the promotion is #58, which the operator merges. Two steps are still his: the Netlify branch deploy for `staging` (the session's API call was refused) and the `staging` ruleset. Until the branch deploy exists, #58 was checked on its deploy preview instead. All 10 sitemap routes, an unknown path's 404 and `/health` gave the same status as production, and the same markup after normalising.
