@@ -115,7 +115,10 @@ const circles = (c: HTMLElement) =>
   steps(c).map((li) => opacity(li.querySelector(".wh-step-number")));
 const titles = (c: HTMLElement) => steps(c).map((li) => opacity(li.querySelector("h3")));
 const rises = (c: HTMLElement) => steps(c).map((li) => li.style.transform);
-const lifts = (c: HTMLElement) => rises(c).map((t) => Number(/(-?[\d.]+)px/.exec(t)?.[1]));
+// The Y term of `translate3d(0, Ypx, 0)`. jsdom 31 serialises the transform as
+// a browser does, `translate3d(0px, Ypx, 0px)`, so the first px is the X term.
+const lifts = (c: HTMLElement) =>
+  rises(c).map((t) => Number(/translate3d\([^,]+,\s*(-?[\d.]+)px/.exec(t)?.[1]));
 const stage = (c: HTMLElement) => c.querySelector(".wh-steps-stage") as HTMLElement;
 const track = (c: HTMLElement) => c.querySelector(".wh-steps-track") as HTMLElement;
 const heightOf = (el: HTMLElement) => parseFloat(el.style.height);
