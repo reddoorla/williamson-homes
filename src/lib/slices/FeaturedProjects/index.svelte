@@ -37,8 +37,10 @@
           <h3 class="wh-eyebrow mt-8 pb-6 text-center max-[479px]:text-[15px]">
             <a
               href={projectHref(project.uid)}
-              class="wh-hover-fade inline-block [--wh-hover-opacity:.92]">{project.title}</a
+              class="wh-hover-fade inline-block [--wh-hover-opacity:.92]"
             >
+              {project.title}
+            </a>
           </h3>
         </li>
       {/each}

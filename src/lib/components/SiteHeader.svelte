@@ -147,8 +147,10 @@
               class="wh-link wh-hover-fade mx-2 block p-2 whitespace-nowrap {i ===
               NAV_LINKS.length - 1
                 ? 'mr-0'
-                : ''} {tone === 'light' ? 'text-white' : 'text-primary'}">{link.label}</a
+                : ''} {tone === 'light' ? 'text-white' : 'text-primary'}"
             >
+              {link.label}
+            </a>
           </li>
         {/each}
       </ul>
@@ -205,8 +207,10 @@
               class="wh-link wh-hover-fade mx-2 block p-2 whitespace-nowrap text-white {i ===
               NAV_LINKS.length - 1
                 ? 'mr-0'
-                : ''}">{link.label}</a
+                : ''}"
             >
+              {link.label}
+            </a>
           </li>
         {/each}
       </ul>
@@ -246,8 +250,10 @@
         href={link.href}
         aria-current={isCurrent(link.href) ? "page" : undefined}
         class="text-2xl text-white"
-        onclick={closeMenu}>{link.label}</a
+        onclick={closeMenu}
       >
+        {link.label}
+      </a>
     {/each}
   </div>
 {/if}

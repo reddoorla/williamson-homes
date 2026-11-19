@@ -49,8 +49,9 @@
           <WhButton
             href={button.href}
             tone={button.item.button_tone === "primary" ? "primary" : "secondary"}
-            >{button.label}</WhButton
           >
+            {button.label}
+          </WhButton>
         {/each}
       </div>
     {/if}
