@@ -74,8 +74,10 @@
           <WhButton
             href={button.href}
             tone={dark ? "primary" : "light"}
-            flat={slice.primary.background === "teal"}>{button.label}</WhButton
+            flat={slice.primary.background === "teal"}
           >
+            {button.label}
+          </WhButton>
         {/each}
       </div>
     {/if}
