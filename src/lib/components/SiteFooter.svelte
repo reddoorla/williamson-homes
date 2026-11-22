@@ -24,8 +24,9 @@
             <a
               href={link.href}
               class="wh-link wh-hover-fade ml-auto block w-fit text-white [--wh-hover-opacity:.87]"
-              >{link.label}</a
             >
+              {link.label}
+            </a>
           </li>
         {/each}
       </ul>
@@ -33,8 +34,8 @@
   </div>
   <p class="mx-auto max-w-[1280px] px-5 text-xs text-white italic md:text-[14px] md:leading-5">
     © Williamson Homes {year}, All Rights Reserved |
-    <a href={PRIVACY_PATH} class="wh-hover-fade text-white underline [--wh-hover-opacity:.87]"
-      >Privacy Policy</a
-    >
+    <a href={PRIVACY_PATH} class="wh-hover-fade text-white underline [--wh-hover-opacity:.87]">
+      Privacy Policy
+    </a>
   </p>
 </footer>
