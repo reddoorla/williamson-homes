@@ -31,8 +31,10 @@
           >
             <span
               class="wh-h3 flex h-20 w-20 items-center justify-center rounded-full border border-secondary bg-transparent text-secondary [transition:background-color_.7s_ease-in-out,color_.2s_cubic-bezier(.215,.61,.355,1)] group-hover:bg-secondary group-hover:text-white"
-              aria-hidden="true">{i + 1}</span
+              aria-hidden="true"
             >
+              {i + 1}
+            </span>
             <span class="wh-eyebrow p-2 leading-7">{link.label}</span>
           </a>
         </li>
