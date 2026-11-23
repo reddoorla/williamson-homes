@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "counts": {
+    "src/lib/components/Footer.svelte": {
+      "copy\tCompany Name": 1,
+      "copy\tFacebook": 1,
+      "copy\tInstagram": 1,
+      "copy\tLinkedIn": 2,
+      "copy\tPinterest": 1,
+      "copy\tReddit": 1,
+      "copy\tTwitter": 1,
+      "copy\tYouTube": 1
+    },
+    "src/lib/components/LandscapeModal.svelte": {
+      "heading\tPlease Switch to Portrait Mode": 1
+    },
+    "src/lib/components/Nav.svelte": {
+      "alt\tHome": 1,
+      "copy\tClose menu": 2,
+      "copy\tLogo": 1,
+      "copy\tMenu": 2,
+      "copy\tOpen menu": 2,
+      "link\t/": 2
+    },
+    "src/lib/components/ProjectView.svelte": {
+      "copy\t${…} gallery": 1,
+      "copy\tCall Us": 1,
+      "copy\tEmail Us": 1
+    },
+    "src/lib/components/SiteFooter.svelte": {
+      "copy\t, All Rights Reserved |": 1,
+      "copy\tFooter": 1,
+      "copy\tPrivacy Policy": 1,
+      "copy\tWilliamson Homes, home": 1,
+      "copy\t© Williamson Homes": 1,
+      "image\t/images/williamson-homes-logo.svg": 1,
+      "image\t/images/williamson-w.svg": 1,
+      "link\t/": 1
+    },
+    "src/lib/components/SiteHeader.svelte": {
+      "copy\tClose menu": 1,
+      "copy\tMain": 1,
+      "copy\tMain, sticky": 1,
+      "copy\tMenu": 1,
+      "copy\tOpen menu": 1,
+      "copy\tWilliamson Homes, home": 3,
+      "image\t/images/menu-close.png": 1,
+      "image\t/images/menu.svg": 1,
+      "image\t/images/williamson-homes-logo.svg": 3,
+      "link\t/": 3
+    },
+    "src/lib/components/WMark.svelte": {
+      "image\t/images/williamson-ocean-w.png": 1,
+      "image\t/images/williamson-w.svg": 1
+    },
+    "src/lib/contact.ts": {
+      "copy\tAbout": 1,
+      "copy\tAbout Us": 1,
+      "copy\tContact": 1,
+      "copy\tContact Us": 1,
+      "copy\tHome": 1,
+      "copy\tProjects": 2,
+      "email\tinfo@williamson-homes.com": 1,
+      "link\t/": 1,
+      "link\t/about-us": 2,
+      "link\t/contact": 2,
+      "link\t/projects": 2,
+      "phone\t310.570.7278": 1,
+      "phone\ttel:3105707278": 1
+    },
+    "src/lib/page-load.ts": {
+      "copy\tPage not found": 1
+    },
+    "src/lib/projects.ts": {
+      "copy\tProject not found": 1
+    },
+    "src/lib/seo.ts": {
+      "copy\tWilliamson Homes": 1
+    },
+    "src/lib/site-config.json": {
+      "email\tinfo@williamson-homes.com": 1
+    },
+    "src/lib/slices/ProcessSteps/index.svelte": {
+      "copy\tStep ${…}: ${…}": 1
+    },
+    "src/routes/+error.svelte": {
+      "copy\tGo home": 1,
+      "link\t/": 1
+    },
+    "src/routes/+layout.svelte": {
+      "copy\tSkip to main content": 1
+    },
+    "src/routes/[[preview=preview]]/+page.server.ts": {
+      "copy\tPage not found": 1
+    },
+    "src/routes/[[preview=preview]]/[uid]/+page.server.ts": {
+      "copy\tPage not found": 1
+    },
+    "src/routes/[[preview=preview]]/projects/[uid]/+page.server.ts": {
+      "copy\tProject not found": 1
+    }
+  }
+}
